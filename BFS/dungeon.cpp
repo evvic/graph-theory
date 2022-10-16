@@ -34,7 +34,7 @@ int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
 
 
-int solve(int er, int ec);
+int solve(DungeonDisplay display, int er, int ec);
 vector<node*> explore_neighbors(int r, int c, vector<node*> prev);
 vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev);
 //node find_node(pair<int, int> rc, vector<node> prev);
@@ -51,16 +51,18 @@ int main() {
     int er = 3, ec = 3;
     m[er][ec] = 'E';
 
-    DungeonDisplay display;
+    DungeonDisplay display(R, C);
+    //display.setDungeonSize(R, C);
+    display.setDungeonExit(er, ec);
 
-    display.setDungeonSize(R, C);
+
 
     // TODO: init walls
     // walls/rocks will be '#'
 
     // pass prev by reference
 
-    int moves = solve(er, ec);
+    int moves = solve(display, er, ec);
 
     if (moves >= 0) {
         cout << "It took " << moves << " moves to leave the dungeon." << endl;
@@ -72,7 +74,7 @@ int main() {
     return 1;
 }
 
-int solve(int er, int ec) {
+int solve(DungeonDisplay display, int er, int ec) {
     // add star coordinates to the queues
     rq.push(sr);
     cq.push(sc);
