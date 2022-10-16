@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include "dungeon_display.h"
 
 using namespace std;
 
@@ -49,6 +50,10 @@ int main() {
     // init where the Exit spot is
     int er = 3, ec = 3;
     m[er][ec] = 'E';
+
+    DungeonDisplay display;
+
+    display.setDungeonSize(R, C);
 
     // TODO: init walls
     // walls/rocks will be '#'
@@ -159,12 +164,10 @@ vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev) {
     node* curr = prev.at(index);
 
 
-
-
     while (curr->parent != NULL) {
+        cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
         path.push_back(curr->data);
         curr = curr->parent;
-        cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
     }
 
     return path;
