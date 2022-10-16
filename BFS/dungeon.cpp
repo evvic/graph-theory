@@ -20,11 +20,14 @@ bool reached_end = false;
 // RxC matrix of false values to track if node has visited
 vector<vector<bool>> visited(C, vector<bool> (R, false));
 
-// North, south, east, west direction vectors
-//dr = [ -1, +1, 0, 0]
-//dc = [ 0, 0, +1, -1]
+// DIRECTIONS
+const int MOVE_DIRECTIONS = 4; // North, South, East, West
+// North, south, east, west direction arrays
+int dr[MOVE_DIRECTIONS] = { -1, 1, 0, 0 };
+int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
 int solve();
+void explore_neighbors(int r, int c);
 
 int main() {
 
@@ -35,6 +38,10 @@ int main() {
 
     // TODO: init walls
     // walls/rocks will be '#'
+
+    int moves = solve();
+
+    cout << "It took " << moves << " moves to leave the dungeon." << endl;
 
     return 1;
 }
@@ -51,10 +58,18 @@ int solve() {
         int c = cq.front(); cq.pop();
 
         if(m[r][c] == 'E') {
-
+            reached_end = true;
+            break;
         }
 
+        explore_neighbors(r, c);
+        nodes_left_in_layer--;
 
+        if(nodes_left_in_layer == 0) {
+            nodes_left_in_layer = nodes_in_next_layer;
+            nodes_in_next_layer = 0;
+            move_count++;
+        }
     }
 
     if(reached_end) {
@@ -62,4 +77,26 @@ int solve() {
     }
 
     return -1;
+}
+
+void explore_neighbors(int r, int c) {
+    for(int i = 0; i < MOVE_DIRECTIONS; i++) {
+        // get new R & C coordinates for each potential 4 directions
+        int rr = r + dr[i];
+        int cc = c + dc[i];
+
+        // Skip out of bounds locations
+        if( rr < 0 || cc < 0) continue;
+        if( rr >= R || cc >= C) continue;
+
+        // Skip visited locations or blocked cells
+        if( visited[rr][cc]) continue;
+        if( m[rr][cc] == '#') continue;
+
+        rq.push(rr);
+        cq.push(cc);
+
+        visited[rr][cc] = true;
+        nodes_in_next_layer++;
+    }
 }
