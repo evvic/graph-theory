@@ -1,9 +1,10 @@
 #include <iostream>
 #include "dungeon_display.h"
+#include "2d_BFS.h"
 
 using namespace std;
 
-DungeonDisplay::DungeonDisplay(int r, int c) {
+DungeonDisplay::DungeonDisplay(int r, int c) : BFS(r, c) {
     setDungeonSize(r, c);
     setMatrix(vector<vector<char>>(d_cols, vector<char>(d_rows, ' ')));
 }
@@ -46,9 +47,7 @@ void DungeonDisplay::setDungeonStart(int r, int c) {
     matrix[r][c] = 'S';
 }
 
-void DungeonDisplay::setMatrix(vector<vector<char>> m) {
-    matrix = m;
-}
+
 
 pair<int, int> DungeonDisplay::getExit() {
     return exit;
@@ -96,6 +95,9 @@ void DungeonDisplay::printDisplay() {
         for(int j = 0; j < d_rows; j++) {
             cout << matrix[i][j];
         }
+        cout << '#';
     }
+    cout << endl;
     for(int i = 0; i < d_rows + 2; i++) cout << '#';
+    cout << endl;
 }

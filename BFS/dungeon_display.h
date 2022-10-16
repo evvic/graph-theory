@@ -1,23 +1,21 @@
 #include <iostream>
 #include <vector>
+#include "2d_BFS.h"
 
 using namespace std;
 
-class DungeonDisplay {
+class DungeonDisplay : public BFS {
 private:
-    int d_rows;
-    int d_cols;
+
     pair<int, int> exit;
     pair<int, int> start;
-    vector<vector<char>> matrix; // init empty char maatrix (map)
-
 
 public:
     DungeonDisplay(int r, int c);
     void setDungeonSize(int r, int c);
     void setDungeonExit(int r, int c);
     void setDungeonStart(int r, int c);
-    void setMatrix(vector<vector<char>> m);
+    //void setMatrix(vector<vector<char>> m);
 
     pair<int, int> getExit();
     pair<int, int> getStart();

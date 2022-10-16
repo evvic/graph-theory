@@ -10,8 +10,8 @@ struct node {
 };
 
 // GLOBAL VARIABLES
-int R = 5, C = 5;               // init Row & Column size
-vector<vector<char>> m(C, vector<char>(R, ' '));  // init empty char maatrix (map)
+
+
 int sr = 0, sc = 0;             // init start coordinates
 queue<int> rq = {}, cq = {};    // init Row & Column queues
 
@@ -23,8 +23,7 @@ int nodes_in_next_layer = 0;    // count amount of nodes for next layer
 // Var used to track if end cell 'E' is ever reached
 bool reached_end = false;
 
-// RxC matrix of false values to track if node has visited
-vector<vector<bool>> visited(C, vector<bool> (R, false));
+
 
 // DIRECTIONS
 const int MOVE_DIRECTIONS = 4; // North, South, East, West
@@ -44,6 +43,9 @@ void add_coord_to_matrix(pair<int, int> p, char c);
 void add_coord_to_matrix(int pr, int pc, char c);
 
 int main() {
+
+    int R = 5, C = 5;               // init Row & Column size
+    vector<vector<char>> m(C, vector<char>(R, ' '));  // init empty char maatrix (map)
 
     cout << "In BFS dungeon main" << endl;
 
@@ -92,7 +94,7 @@ int solve(DungeonDisplay display) {
         int r = rq.front(); rq.pop();
         int c = cq.front(); cq.pop();
 
-        if(m[r][c] == 'E') {
+        if(display.isExit(r, c)) {
             reached_end = true;
             cout << "actual E: " << r << ", " << c << endl;
             break;
@@ -115,7 +117,7 @@ int solve(DungeonDisplay display) {
         vector<pair<int, int>> path = reconstruct_path(display.getExit(), prev);
         // ADD PATH TO MATRIX m
 
-
+        display.printDisplay();
 
         return move_count;
     }
@@ -195,5 +197,5 @@ void add_coord_to_matrix(pair<int, int> p, char c) {
 }
 
 void add_coord_to_matrix(int pr, int pc, char c) {
-    m[pr][pc] = c;
+    //m[pr][pc] = c;
 }
