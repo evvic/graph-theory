@@ -3,6 +3,11 @@
 
 using namespace std;
 
+struct node {
+    node* parent;
+    pair<int, int> data;
+};
+
 // GLOBAL VARIABLES
 int R = 5, C = 5;               // init Row & Column size
 vector<vector<char>> m(C, vector<char>(R, ' '));  // init empty char maatrix (map)
@@ -26,8 +31,11 @@ const int MOVE_DIRECTIONS = 4; // North, South, East, West
 int dr[MOVE_DIRECTIONS] = { -1, 1, 0, 0 };
 int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
+
+
 int solve();
-void explore_neighbors(int r, int c);
+vector<node> explore_neighbors(int r, int c);
+void reconstruct_path(pair<int, int> s, pair<int, int> e, vector<node> prev);
 
 int main() {
 
@@ -60,8 +68,11 @@ int solve() {
 
     visited[sr][sc] = true;
 
+    // INIT NODE LIST
+    node head;
+    head.data = pair<int, int>(sr, sc);
     // tracks parent node to recreate path (R,C)
-    vector<pair<int, int>> prev;
+    vector<node> prev = {head};
 
     while(rq.size() > 0 || cq.size() > 0) {
         int r = rq.front(); rq.pop();
@@ -72,7 +83,7 @@ int solve() {
             break;
         }
 
-        explore_neighbors(r, c);
+        prev.push_back(explore_neighbors(r, c, prev.back()));
         nodes_left_in_layer--;
 
         if(nodes_left_in_layer == 0) {
@@ -89,7 +100,9 @@ int solve() {
     return -1;
 }
 
-void explore_neighbors(int r, int c) {
+vector<node> explore_neighbors(int r, int c, node parent) {
+    vector<node> ret;
+
     for(int i = 0; i < MOVE_DIRECTIONS; i++) {
         // get new R & C coordinates for each potential 4 directions
         int rr = r + dr[i];
@@ -106,7 +119,23 @@ void explore_neighbors(int r, int c) {
         rq.push(rr);
         cq.push(cc);
 
+        node child;
+
         visited[rr][cc] = true;
         nodes_in_next_layer++;
+    }
+
+    if(ret.size() == 0) {
+        return null;
+    }
+    else return ret;
+}
+
+void reconstruct_path(pair<int, int> s, pair<int, int> e, vector<node> prev) {
+    // Reconstruct path going backwards from E
+    vector<pair<int, int>> path;
+
+    for(pair<int, int> at = e; at != null; at = prev[at]) {
+
     }
 }
