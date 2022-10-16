@@ -34,7 +34,7 @@ int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
 
 
-int solve(DungeonDisplay display, int er, int ec);
+int solve(DungeonDisplay display);
 vector<node*> explore_neighbors(int r, int c, vector<node*> prev);
 vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev);
 //node find_node(pair<int, int> rc, vector<node> prev);
@@ -62,7 +62,7 @@ int main() {
 
     // pass prev by reference
 
-    int moves = solve(display, er, ec);
+    int moves = solve(display);
 
     if (moves >= 0) {
         cout << "It took " << moves << " moves to leave the dungeon." << endl;
@@ -74,7 +74,7 @@ int main() {
     return 1;
 }
 
-int solve(DungeonDisplay display, int er, int ec) {
+int solve(DungeonDisplay display) {
     // add star coordinates to the queues
     rq.push(sr);
     cq.push(sc);
@@ -112,7 +112,7 @@ int solve(DungeonDisplay display, int er, int ec) {
 
         cout << "E: " << prev.back()->data.first << ", " <<  prev.back()->data.second << endl;
         // RECONSTRUCT PATH
-        vector<pair<int, int>> path = reconstruct_path(pair<int, int>(er, ec), prev);
+        vector<pair<int, int>> path = reconstruct_path(display.getExit(), prev);
         // ADD PATH TO MATRIX m
 
 
