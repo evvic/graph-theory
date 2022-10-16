@@ -12,7 +12,7 @@ struct node {
 // GLOBAL VARIABLES
 
 
-int sr = 0, sc = 0;             // init start coordinates
+
 queue<int> rq = {}, cq = {};    // init Row & Column queues
 
 // Variables used to track the number of steps taken
@@ -32,9 +32,9 @@ int dr[MOVE_DIRECTIONS] = { -1, 1, 0, 0 };
 int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
 
-
+// functions
 int solve(DungeonDisplay display);
-vector<node*> explore_neighbors(int r, int c, vector<node*> prev);
+vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay display);
 vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev);
 //node find_node(pair<int, int> rc, vector<node> prev);
 int find_node(pair<int, int> coord, vector<node*> prev);
@@ -46,6 +46,7 @@ int main() {
 
     int R = 5, C = 5;               // init Row & Column size
     vector<vector<char>> m(C, vector<char>(R, ' '));  // init empty char maatrix (map)
+    int sr = 0, sc = 0;             // init start coordinates
 
     cout << "In BFS dungeon main" << endl;
 
@@ -56,6 +57,7 @@ int main() {
     DungeonDisplay display(R, C);
     //display.setDungeonSize(R, C);
     display.setDungeonExit(er, ec);
+    display.setDungeonStart(sr, sc);
 
 
 
@@ -78,14 +80,14 @@ int main() {
 
 int solve(DungeonDisplay display) {
     // add star coordinates to the queues
-    rq.push(sr);
-    cq.push(sc);
+    rq.push(display.getStart().first);
+    cq.push(display.getStart().second);
 
-    visited[sr][sc] = true;
+    display.setVisited(display.getStart());
 
     // INIT NODE LIST
     node* head = new node;
-    head->data = pair<int, int>(sr, sc);
+    head->data = display.getStart();
     head->parent = NULL;
     // tracks parent node to recreate path (R,C)
     vector<node*> prev = {head};
@@ -100,7 +102,7 @@ int solve(DungeonDisplay display) {
             break;
         }
 
-        prev = explore_neighbors(r, c, prev);
+        prev = explore_neighbors(r, c, prev, display);
         nodes_left_in_layer--;
 
         if(nodes_left_in_layer == 0) {
@@ -125,7 +127,7 @@ int solve(DungeonDisplay display) {
     return -1;
 }
 
-vector<node*> explore_neighbors(int r, int c, vector<node*> prev) {
+vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay display) {
 
     // do a math thing here to figure out parent node
     node* parent = prev.at(prev.size() - nodes_left_in_layer);
@@ -137,11 +139,11 @@ vector<node*> explore_neighbors(int r, int c, vector<node*> prev) {
 
         // Skip out of bounds locations
         if( rr < 0 || cc < 0) continue;
-        if( rr >= R || cc >= C) continue;
+        if( rr >= display.getRowLength() || cc >= display.getColLength()) continue;
 
         // Skip visited locations or blocked cells
-        if( visited[rr][cc]) continue;
-        if( m[rr][cc] == '#') continue;
+        if(display.visitedCell(rr, cc)) continue;
+        if(display.hasWall(rr, cc)) continue;
 
         rq.push(rr);
         cq.push(cc);
@@ -153,7 +155,7 @@ vector<node*> explore_neighbors(int r, int c, vector<node*> prev) {
 
         prev.push_back(child);
 
-        visited[rr][cc] = true;
+        display.setVisited(rr, cc);
         nodes_in_next_layer++;
     }
 

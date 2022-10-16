@@ -24,6 +24,7 @@ public:
     bool isExit(int r, int c);
 
     bool addWall(int r, int c);
+    bool hasWall(int r, int c);
 
     void printDisplay();
 };

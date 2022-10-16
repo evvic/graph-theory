@@ -17,7 +17,14 @@ public:
     void setMatrix(vector<vector<char>> m);
     void setArea(int r, int c);
     void initVisited();
-    void setVisited(vector<vector<bool>> v);
+    void copyVisited(vector<vector<bool>> v);
+    void setVisited(pair<int, int> coord);
+    void setVisited(int r, int c);
+
+    int getRowLength();
+    int getColLength();
+
+    bool visitedCell(int r, int c);
 
 
 };

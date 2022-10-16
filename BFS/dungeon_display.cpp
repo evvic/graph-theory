@@ -1,12 +1,11 @@
 #include <iostream>
 #include "dungeon_display.h"
-#include "2d_BFS.h"
 
 using namespace std;
 
 DungeonDisplay::DungeonDisplay(int r, int c) : BFS(r, c) {
-    setDungeonSize(r, c);
-    setMatrix(vector<vector<char>>(d_cols, vector<char>(d_rows, ' ')));
+    //setDungeonSize(r, c);
+    //setMatrix(vector<vector<char>>(d_cols, vector<char>(d_rows, ' ')));
 }
 
 void DungeonDisplay::setDungeonSize(int r, int c) {
@@ -81,6 +80,22 @@ bool DungeonDisplay::addWall(int r, int c) {
     // now add new start coord to matrix
     matrix[r][c] = '#';
     return true;
+}
+
+bool DungeonDisplay::hasWall(int r, int c) {
+    // do a bounds checking
+    // check wall is in bouds
+    if(r < 0 || r > d_rows) {
+        cout << "Wall row pos is out of bounds." << endl;
+        return true;
+    }
+    if(c < 0 || c > d_cols) {
+        cout << "Wall col pos is out of bounds." << endl;
+        return true;
+    }
+
+    if(matrix[r][c] == '#') return true;
+    else return false;
 }
 
 bool DungeonDisplay::isExit(int r, int c) {
