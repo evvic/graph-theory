@@ -39,9 +39,16 @@ int main() {
     // TODO: init walls
     // walls/rocks will be '#'
 
+    // pass prev by reference
+
     int moves = solve();
 
-    cout << "It took " << moves << " moves to leave the dungeon." << endl;
+    if (moves >= 0) {
+        cout << "It took " << moves << " moves to leave the dungeon." << endl;
+    }
+    else {
+        cout << "Could not find a path out of the dungeon." << endl;
+    }
 
     return 1;
 }
@@ -52,6 +59,9 @@ int solve() {
     cq.push(sc);
 
     visited[sr][sc] = true;
+
+    // tracks parent node to recreate path (R,C)
+    vector<pair<int, int>> prev;
 
     while(rq.size() > 0 || cq.size() > 0) {
         int r = rq.front(); rq.pop();
