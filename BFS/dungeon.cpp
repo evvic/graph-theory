@@ -28,9 +28,9 @@ void print_path(vector<pair<int, int>> p);
 
 int main() {
 
-    int R = 5, C = 5;               // init Row & Column size
+    int R = 7, C = 10;               // init Row & Column size
     int sr = 0, sc = 0;             // init start coordinates
-    int er = 3, ec = 3;             // init where the Exit spot is
+    int er = 4, ec = 5;             // init where the Exit spot is
 
     cout << "In BFS dungeon main" << endl;
 
@@ -39,6 +39,9 @@ int main() {
     //display.setDungeonSize(R, C);
     display.setDungeonExit(er, ec);
     display.setDungeonStart(sr, sc);
+
+    // percentage
+    display.generateWalls(50);
 
     // TODO: init walls
     // walls/rocks will be '#'

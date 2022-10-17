@@ -6,7 +6,7 @@ using namespace std;
 
 class DungeonDisplay : public BFS {
 private:
-    
+
 
 public:
     DungeonDisplay(int r, int c);
@@ -20,6 +20,7 @@ public:
     bool addStep(int r, int c);
     void addWall(pair<int, int> wall);
     bool addWall(int r, int c);
+    void generateWalls(int percent);
 
     // COMPUTATIONAL
     vector<pair<int, int>> reconstruct_path();

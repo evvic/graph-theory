@@ -151,3 +151,26 @@ vector<pair<int, int>> DungeonDisplay::reconstruct_path() {
 
     return path;
 }
+
+void DungeonDisplay::generateWalls(int percent) {
+    if(percent < 0 || percent > 100) {
+        cout << "Percent range must be between 0 to 100" << endl;
+        return;
+    }
+
+    int weight = 7; // out of 10
+
+    int num_walls = (int)(((d_cols * d_rows * percent * weight)/ 100) / 10);
+    cout << "Generating " << num_walls << " walls in the dungeon." << endl;
+
+    // figure out how to randomly generate the positions to add the walls
+
+    for(int i = 0; i < num_walls; i++) {
+        int rr = rand() % d_rows;
+        int cc = rand() % d_cols;
+
+        addWall(rr, cc);
+    }
+
+
+}
