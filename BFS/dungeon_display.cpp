@@ -119,9 +119,6 @@ bool DungeonDisplay::addWall(int r, int c) {
 }
 
 
-
-
-
 void DungeonDisplay::printDisplay() {
     for(int i = 0; i < d_rows + 2; i++) cout << '#';
     for(int i = 0; i < d_cols; i++) {
@@ -140,11 +137,14 @@ vector<pair<int, int>> DungeonDisplay::reconstruct_path() {
     // Reconstruct path going backwards from E
     vector<pair<int, int>> path;
 
-    int index = find_node(exit);
-    node* curr = prev.at(index);
+    cout << "Reconstructing path..." << endl;
+
+    node* curr = find_node(exit);
+
+    cout << "Exit node starting point: (" << curr->data.first << ',' << curr->data.second << ')' << endl;
 
     while (curr->parent != NULL) {
-        cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
+        //cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
         path.push_back(curr->data);
         curr = curr->parent;
     }

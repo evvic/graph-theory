@@ -24,6 +24,7 @@ int find_node(pair<int, int> coord, vector<node*> prev);
 void draw_map();
 void add_coord_to_matrix(pair<int, int> p, char c);
 void add_coord_to_matrix(int pr, int pc, char c);
+void print_path(vector<pair<int, int>> p);
 
 int main() {
 
@@ -47,6 +48,8 @@ int main() {
     int moves = display.solve();
     // RECONSTRUCT PATH
     vector<pair<int, int>> path = display.reconstruct_path();
+
+    print_path(path);
     //reconstruct_path(display.getExit(), prev);
     // ADD PATH TO MATRIX m
     display.addPath(path);
@@ -61,6 +64,14 @@ int main() {
     }
 
     return 1;
+}
+
+void print_path(vector<pair<int, int>> p) {
+    cout << "path: ";
+    for( auto step : p) {
+        cout << "(" << step.first << ',' << step.second << ") ";
+    }
+    cout << endl;
 }
 
 /*

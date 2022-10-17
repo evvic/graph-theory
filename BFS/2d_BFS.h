@@ -19,6 +19,7 @@ protected:
     vector<vector<bool>> visited;
     // save path of all nodes branching
     vector<node*> prev;
+    node* parent;
 
     queue<int> rq, cq;    // init Row & Column queues
 
@@ -56,7 +57,6 @@ public:
     int getColLength();
     bool hasWall(int r, int c);
 
-
     pair<int, int> getExit();
     pair<int, int> getStart();
 
@@ -66,6 +66,6 @@ public:
 
     //computational
     int solve();
-    int find_node(pair<int, int> coord);
+    node* find_node(pair<int, int> coord);
 
 };

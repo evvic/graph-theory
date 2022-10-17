@@ -96,13 +96,12 @@ int BFS::solve() {
     head->data = start;
     head->parent = NULL;
     // tracks parent node to recreate path (R,C)
-    prev = {head};
-
-    //cout << prev.size() << endl;
+    prev.push_back(head);
 
     cout << "HEAD NODE: " << prev.at(0)->data.first << ", " << prev.at(0)->data.second << endl;
 
     while(rq.size() > 0 || cq.size() > 0) {
+
         int r = rq.front(); rq.pop();
         int c = cq.front(); cq.pop();
 
@@ -112,9 +111,9 @@ int BFS::solve() {
             break;
         }
 
-        cout << " looping with " << r << ", " << c << endl;
+        ///cout << " looping with " << r << ", " << c << endl;
 
-        cout << "  prev size before neighbors: " << prev.size() << endl;
+        //cout << "  prev size before neighbors: " << prev.size() << endl;
         explore_neighbors(r, c);
         nodes_left_in_layer--;
 
@@ -135,8 +134,8 @@ int BFS::solve() {
 
 void BFS::explore_neighbors(int r, int c) {
     // do a math thing here to figure out parent node
-    cout << "  BFS::explore_neighbors. prev size: " << prev.size() << endl;
-    node* parent = prev.at(prev.size() - nodes_left_in_layer);
+    //cout << "  BFS::explore_neighbors. prev size: " << prev.size() << endl;
+    node* parent = find_node(pair<int, int>(r, c));
 
     for(int i = 0; i < MOVE_DIRECTIONS; i++) {
         // get new R & C coordinates for each potential 4 directions
@@ -166,17 +165,18 @@ void BFS::explore_neighbors(int r, int c) {
     }
 }
 
-int BFS::find_node(pair<int, int> coord) {
-    cout << "find node" <<endl;
+node* BFS::find_node(pair<int, int> coord) {
+    //cout << "find node" <<endl;
 
-    for(int i = prev.size() -1; prev.at(i)->parent != NULL && i > 0; --i) {
+    for(int i = prev.size() - 1; /* prev.at(i)->parent != NULL &&*/ i >= 0; i--) {
+        //cout << "   node: " << prev.at(i)->data.first << ", " << prev.at(i)->data.second << " at: " << i <<endl;
         if( prev.at(i)->data.first == coord.first && prev.at(i)->data.second == coord.second) {
-            cout << "found node: " << prev.at(i)->data.first << ", " << prev.at(i)->data.second << " at: " << i <<endl;
-            return i;
+            //cout << "found node: " << prev.at(i)->data.first << ", " << prev.at(i)->data.second << " at: " << i <<endl;
+            return prev.at(i);
         }
     }
 
-    cout << "find node done" <<endl;
+    cout << "not found node" <<endl;
 
-    return -1;
+    return NULL;
 }
