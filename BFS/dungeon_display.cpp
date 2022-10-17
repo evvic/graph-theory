@@ -48,13 +48,7 @@ void DungeonDisplay::setDungeonStart(int r, int c) {
 
 
 
-pair<int, int> DungeonDisplay::getExit() {
-    return exit;
-}
 
-pair<int, int> DungeonDisplay::getStart() {
-    return start;
-}
 
 void DungeonDisplay::addPath(vector<pair<int, int>> path) {
     for(auto step : path) {
@@ -124,26 +118,9 @@ bool DungeonDisplay::addWall(int r, int c) {
     return true;
 }
 
-bool DungeonDisplay::hasWall(int r, int c) {
-    // do a bounds checking
-    // check wall is in bouds
-    if(r < 0 || r > d_rows) {
-        cout << "Wall row pos is out of bounds." << endl;
-        return true;
-    }
-    if(c < 0 || c > d_cols) {
-        cout << "Wall col pos is out of bounds." << endl;
-        return true;
-    }
 
-    if(matrix[r][c] == '#') return true;
-    else return false;
-}
 
-bool DungeonDisplay::isExit(int r, int c) {
-    if(exit.first == r && exit.second == c) return true;
-    else return false;
-}
+
 
 void DungeonDisplay::printDisplay() {
     for(int i = 0; i < d_rows + 2; i++) cout << '#';
@@ -157,4 +134,20 @@ void DungeonDisplay::printDisplay() {
     cout << endl;
     for(int i = 0; i < d_rows + 2; i++) cout << '#';
     cout << endl;
+}
+
+vector<pair<int, int>> DungeonDisplay::reconstruct_path() {
+    // Reconstruct path going backwards from E
+    vector<pair<int, int>> path;
+
+    int index = find_node(exit);
+    node* curr = prev.at(index);
+
+    while (curr->parent != NULL) {
+        cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
+        path.push_back(curr->data);
+        curr = curr->parent;
+    }
+
+    return path;
 }

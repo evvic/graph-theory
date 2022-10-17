@@ -6,9 +6,7 @@ using namespace std;
 
 class DungeonDisplay : public BFS {
 private:
-
-    pair<int, int> exit;
-    pair<int, int> start;
+    
 
 public:
     DungeonDisplay(int r, int c);
@@ -17,18 +15,14 @@ public:
     void setDungeonStart(int r, int c);
     //void setMatrix(vector<vector<char>> m);
 
-    pair<int, int> getExit();
-    pair<int, int> getStart();
-
-
-    bool isExit(int r, int c);
-
     void addPath(vector<pair<int, int>>);
     void addStep(pair<int, int> wall);
     bool addStep(int r, int c);
     void addWall(pair<int, int> wall);
     bool addWall(int r, int c);
-    bool hasWall(int r, int c);
+
+    // COMPUTATIONAL
+    vector<pair<int, int>> reconstruct_path();
 
     void printDisplay();
 };

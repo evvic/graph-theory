@@ -4,10 +4,7 @@
 
 using namespace std;
 
-struct node {
-    node* parent = NULL;
-    pair<int, int> data;
-};
+
 
 /*********************
  * TO-DO
@@ -16,21 +13,6 @@ struct node {
 */
 
 // GLOBAL VARIABLES
-queue<int> rq = {}, cq = {};    // init Row & Column queues
-
-// Variables used to track the number of steps taken
-int move_count = 0;             // init
-int nodes_left_in_layer = 1;    // track curret amount of nodes left
-int nodes_in_next_layer = 0;    // count amount of nodes for next layer
-
-// Var used to track if end cell 'E' is ever reached
-bool reached_end = false;
-
-// DIRECTIONS
-const int MOVE_DIRECTIONS = 4; // North, South, East, West
-// North, south, east, west direction arrays
-int dr[MOVE_DIRECTIONS] = { -1, 1, 0, 0 };
-int dc[MOVE_DIRECTIONS] = { 0, 0, 1, -1 };
 
 
 // functions
@@ -46,28 +28,30 @@ void add_coord_to_matrix(int pr, int pc, char c);
 int main() {
 
     int R = 5, C = 5;               // init Row & Column size
-    vector<vector<char>> m(C, vector<char>(R, ' '));  // init empty char maatrix (map)
     int sr = 0, sc = 0;             // init start coordinates
+    int er = 3, ec = 3;             // init where the Exit spot is
 
     cout << "In BFS dungeon main" << endl;
 
-    // init where the Exit spot is
-    int er = 3, ec = 3;
-    m[er][ec] = 'E';
-
+    // create dungeon object: init with size of dungeon
     DungeonDisplay display(R, C);
     //display.setDungeonSize(R, C);
     display.setDungeonExit(er, ec);
     display.setDungeonStart(sr, sc);
 
-
-
     // TODO: init walls
     // walls/rocks will be '#'
 
-    // pass prev by reference
+    //int moves = solve(display);
 
-    int moves = solve(display);
+    int moves = display.solve();
+    // RECONSTRUCT PATH
+    vector<pair<int, int>> path = display.reconstruct_path();
+    //reconstruct_path(display.getExit(), prev);
+    // ADD PATH TO MATRIX m
+    display.addPath(path);
+
+    display.printDisplay();
 
     if (moves >= 0) {
         cout << "It took " << moves << " moves to leave the dungeon." << endl;
@@ -79,6 +63,7 @@ int main() {
     return 1;
 }
 
+/*
 int solve(DungeonDisplay display) {
     // add star coordinates to the queues
     rq.push(display.getStart().first);
@@ -92,6 +77,8 @@ int solve(DungeonDisplay display) {
     head->parent = NULL;
     // tracks parent node to recreate path (R,C)
     vector<node*> prev = {head};
+
+    cout << "HEAD NODE: " << prev.at(0)->data.first << ", " << prev.at(0)->data.second << endl;
 
     while(rq.size() > 0 || cq.size() > 0) {
         int r = rq.front(); rq.pop();
@@ -129,6 +116,7 @@ int solve(DungeonDisplay display) {
     return -1;
 }
 
+
 vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay display) {
 
     // do a math thing here to figure out parent node
@@ -164,6 +152,8 @@ vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay
     return prev;
 }
 
+
+
 vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev) {
     // Reconstruct path going backwards from E
     vector<pair<int, int>> path;
@@ -194,6 +184,7 @@ int find_node(pair<int, int> coord, vector<node*> prev) {
 
     return -1;
 }
+*/
 
 void add_coord_to_matrix(pair<int, int> p, char c) {
     // replace the char in matrix m with given char at position p
