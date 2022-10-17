@@ -4,29 +4,12 @@
 
 using namespace std;
 
-/*********************
- * TO-DO
- * FIX THE NODES AND MAKE THE PATH BACKWARDS ACTUALLY WORK
- * ALSO ADD PATH FROM START TO EXIT TO MATRIX WITH '#'
- */
-
-// GLOBAL VARIABLES
-
-// functions
-int solve(DungeonDisplay display);
-vector<node *> explore_neighbors(int r, int c, vector<node *> prev, DungeonDisplay display);
-vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node *> prev);
-// node find_node(pair<int, int> rc, vector<node> prev);
-int find_node(pair<int, int> coord, vector<node *> prev);
-void draw_map();
-void add_coord_to_matrix(pair<int, int> p, char c);
-void add_coord_to_matrix(int pr, int pc, char c);
 void print_path(vector<pair<int, int>> p);
 
 int main()
 {
-
-    int C = 30, R = 15;   // init Row & Column size
+    // INITIAL VARIABLES
+    int R = 15, C = 30;   // init Row & Column size
     int sr = 2, sc = 2;   // init start coordinates
     int er = 12, ec = 19; // init where the Exit spot is
 
@@ -38,19 +21,15 @@ int main()
     display.setDungeonExit(er, ec);
     display.setDungeonStart(sr, sc);
 
-    // percentage
+    // percentage (0-100)
     display.generateWalls(70);
 
     display.printDisplay();
-
-    // TODO: init walls
-    // walls/rocks will be '#'
 
     int moves = display.solve();
     // RECONSTRUCT PATH
     vector<pair<int, int>> path = display.reconstruct_path();
 
-    //print_path(path);
     // ADD PATH TO MATRIX m
     display.addPath(path);
     display.printDisplay();
