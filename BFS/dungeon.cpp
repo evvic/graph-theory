@@ -43,17 +43,15 @@ int main() {
     // TODO: init walls
     // walls/rocks will be '#'
 
-    //int moves = solve(display);
+
 
     int moves = display.solve();
     // RECONSTRUCT PATH
     vector<pair<int, int>> path = display.reconstruct_path();
 
     print_path(path);
-    //reconstruct_path(display.getExit(), prev);
     // ADD PATH TO MATRIX m
     display.addPath(path);
-
     display.printDisplay();
 
     if (moves >= 0) {
@@ -72,136 +70,4 @@ void print_path(vector<pair<int, int>> p) {
         cout << "(" << step.first << ',' << step.second << ") ";
     }
     cout << endl;
-}
-
-/*
-int solve(DungeonDisplay display) {
-    // add star coordinates to the queues
-    rq.push(display.getStart().first);
-    cq.push(display.getStart().second);
-
-    display.setVisited(display.getStart());
-
-    // INIT NODE LIST
-    node* head = new node;
-    head->data = display.getStart();
-    head->parent = NULL;
-    // tracks parent node to recreate path (R,C)
-    vector<node*> prev = {head};
-
-    cout << "HEAD NODE: " << prev.at(0)->data.first << ", " << prev.at(0)->data.second << endl;
-
-    while(rq.size() > 0 || cq.size() > 0) {
-        int r = rq.front(); rq.pop();
-        int c = cq.front(); cq.pop();
-
-        if(display.isExit(r, c)) {
-            reached_end = true;
-            cout << "actual E: " << r << ", " << c << endl;
-            break;
-        }
-
-        prev = explore_neighbors(r, c, prev, display);
-        nodes_left_in_layer--;
-
-        if(nodes_left_in_layer == 0) {
-            nodes_left_in_layer = nodes_in_next_layer;
-            nodes_in_next_layer = 0;
-            move_count++;
-        }
-    }
-
-    if(reached_end) {
-
-        cout << "E: " << prev.back()->data.first << ", " <<  prev.back()->data.second << endl;
-        // RECONSTRUCT PATH
-        vector<pair<int, int>> path = reconstruct_path(display.getExit(), prev);
-        // ADD PATH TO MATRIX m
-        display.addPath(path);
-
-        display.printDisplay();
-
-        return move_count;
-    }
-
-    return -1;
-}
-
-
-vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay display) {
-
-    // do a math thing here to figure out parent node
-    node* parent = prev.at(prev.size() - nodes_left_in_layer);
-
-    for(int i = 0; i < MOVE_DIRECTIONS; i++) {
-        // get new R & C coordinates for each potential 4 directions
-        int rr = r + dr[i];
-        int cc = c + dc[i];
-
-        // Skip out of bounds locations
-        if( rr < 0 || cc < 0) continue;
-        if( rr >= display.getRowLength() || cc >= display.getColLength()) continue;
-
-        // Skip visited locations or blocked cells
-        if(display.visitedCell(rr, cc)) continue;
-        if(display.hasWall(rr, cc)) continue;
-
-        rq.push(rr);
-        cq.push(cc);
-
-        // Create child node
-        node* child = new node;
-        child->data = pair<int, int>(rr, cc);
-        child->parent = parent;
-
-        prev.push_back(child);
-
-        display.setVisited(rr, cc);
-        nodes_in_next_layer++;
-    }
-
-    return prev;
-}
-
-
-
-vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev) {
-    // Reconstruct path going backwards from E
-    vector<pair<int, int>> path;
-
-    int index = find_node(e, prev);
-    node* curr = prev.at(index);
-
-
-    while (curr->parent != NULL) {
-        cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
-        path.push_back(curr->data);
-        curr = curr->parent;
-    }
-
-    return path;
-}
-
-int find_node(pair<int, int> coord, vector<node*> prev) {
-    cout << "find node" <<endl;
-    for(int i = prev.size() -1; prev.at(i)->parent != NULL && i > 0; --i) {
-        if( prev.at(i)->data.first == coord.first && prev.at(i)->data.second == coord.second) {
-            cout << "found node: " << prev.at(i)->data.first << ", " << prev.at(i)->data.second << " at: " << i <<endl;
-            return i;
-        }
-    }
-
-    cout << "find node done" <<endl;
-
-    return -1;
-}
-*/
-
-void add_coord_to_matrix(pair<int, int> p, char c) {
-    // replace the char in matrix m with given char at position p
-    add_coord_to_matrix(p.first, p.second, c);
-}
-
-void add_coord_to_matrix(int pr, int pc, char c) {
-    //m[pr][pc] = c;
 }
