@@ -5,15 +5,11 @@
 using namespace std;
 
 class DungeonDisplay : public BFS {
-private:
-
-
 public:
     DungeonDisplay(int r, int c);
     void setDungeonSize(int r, int c);
     void setDungeonExit(int r, int c);
     void setDungeonStart(int r, int c);
-    //void setMatrix(vector<vector<char>> m);
 
     void addPath(vector<pair<int, int>>);
     void addStep(pair<int, int> wall);

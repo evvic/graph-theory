@@ -12,24 +12,24 @@ struct node {
 class BFS {
 protected:
     // vars mst be protected so it is easier to inherit
-    int d_rows;
-    int d_cols;
-    vector<vector<char>> matrix; // init empty char maatrix (map)
-    // RxC matrix of false values to track if node has visited
-    vector<vector<bool>> visited;
-    // save path of all nodes branching
-    vector<node*> prev;
-    node* parent;
+    int d_rows;     // num rows
+    int d_cols;     // num columns
 
-    queue<int> rq, cq;    // init Row & Column queues
+    vector<vector<char>> matrix;  // init empty char matrix (map)
+    vector<vector<bool>> visited; // RxC matrix of false values to track if node has visited
 
-    pair<int, int> start;
-    pair<int, int> exit;
+    vector<node*> prev;           // save path of all nodes branching
+    node* parent;                 // save current parent node to keep linked list
+
+    queue<int> rq, cq;            // init Row & Column queues
+
+    pair<int, int> start;         // start cell coordinates
+    pair<int, int> exit;          // exit cell coordinates
 
     // Variables used to track the number of steps taken
-    int move_count = 0;             // init
-    int nodes_left_in_layer = 1;    // track curret amount of nodes left
-    int nodes_in_next_layer = 0;    // count amount of nodes for next layer
+    int move_count = 0;           // init
+    int nodes_left_in_layer = 1;  // track curret amount of nodes left
+    int nodes_in_next_layer = 0;  // count amount of nodes for next layer
 
     // Var used to track if end cell 'E' is ever reached
     bool reached_end = false;
@@ -42,7 +42,6 @@ protected:
 
     // FUNCTIONS
     void explore_neighbors(int r, int c);
-
 
 public:
     BFS(int r, int c);
