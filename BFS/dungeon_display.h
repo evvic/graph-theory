@@ -23,6 +23,10 @@ public:
 
     bool isExit(int r, int c);
 
+    void addPath(vector<pair<int, int>>);
+    void addStep(pair<int, int> wall);
+    bool addStep(int r, int c);
+    void addWall(pair<int, int> wall);
     bool addWall(int r, int c);
     bool hasWall(int r, int c);
 

@@ -56,6 +56,48 @@ pair<int, int> DungeonDisplay::getStart() {
     return start;
 }
 
+void DungeonDisplay::addPath(vector<pair<int, int>> path) {
+    for(auto step : path) {
+        if (step == exit) continue;
+        if (step == start) continue;
+        addStep(step);
+    }
+}
+
+void DungeonDisplay::addStep(pair<int, int> wall) {
+    addStep(wall.first, wall.second);
+}
+
+bool DungeonDisplay::addStep(int r, int c) {
+    // check wall is in bouds
+    if(r < 0 || r > d_rows) {
+        cout << "Step row pos is out of bounds." << endl;
+        return false;
+    }
+    if(c < 0 || c > d_cols) {
+        cout << "Step col pos is out of bounds." << endl;
+        return false;
+    }
+    // check if it covers start tile
+    if(r == start.first && c == start.second) {
+        cout << "Placing step covers Start." << endl;
+        return false;
+    }
+    // check if it covers start tile
+    if(isExit(r, c)) {
+        cout << "Placing step covers Exit." << endl;
+        return false;
+    }
+
+    // now add new start coord to matrix
+    matrix[r][c] = '*';
+    return true;
+}
+
+void DungeonDisplay::addWall(pair<int, int> wall) {
+    addWall(wall.first, wall.second);
+}
+
 bool DungeonDisplay::addWall(int r, int c) {
     // check wall is in bouds
     if(r < 0 || r > d_rows) {

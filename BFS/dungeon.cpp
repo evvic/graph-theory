@@ -9,10 +9,13 @@ struct node {
     pair<int, int> data;
 };
 
+/*********************
+ * TO-DO
+ * FIX THE NODES AND MAKE THE PATH BACKWARDS ACTUALLY WORK
+ * ALSO ADD PATH FROM START TO EXIT TO MATRIX WITH '#'
+*/
+
 // GLOBAL VARIABLES
-
-
-
 queue<int> rq = {}, cq = {};    // init Row & Column queues
 
 // Variables used to track the number of steps taken
@@ -22,8 +25,6 @@ int nodes_in_next_layer = 0;    // count amount of nodes for next layer
 
 // Var used to track if end cell 'E' is ever reached
 bool reached_end = false;
-
-
 
 // DIRECTIONS
 const int MOVE_DIRECTIONS = 4; // North, South, East, West
@@ -118,6 +119,7 @@ int solve(DungeonDisplay display) {
         // RECONSTRUCT PATH
         vector<pair<int, int>> path = reconstruct_path(display.getExit(), prev);
         // ADD PATH TO MATRIX m
+        display.addPath(path);
 
         display.printDisplay();
 
