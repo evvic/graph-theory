@@ -6,7 +6,7 @@ using namespace std;
 BFS::BFS(int r, int c) {
     setArea(r, c);
     // init matrix with all ' '
-    setMatrix(vector<vector<char>>(d_cols, vector<char>(d_rows, ' ')));
+    setMatrix(vector<vector<char>>(d_rows, vector<char>(d_cols, ' ')));
     // init have visited matrix all false
     initVisited();
 
@@ -31,7 +31,7 @@ void BFS::setMatrix(vector<vector<char>> m) {
 }
 
 void BFS::initVisited() {
-    copyVisited(vector<vector<bool>>(d_cols, vector<bool> (d_rows, false)));
+    copyVisited(vector<vector<bool>>(d_rows, vector<bool> (d_cols, false)));
 }
 
 void BFS::copyVisited(vector<vector<bool>> v) {
@@ -107,7 +107,7 @@ int BFS::solve() {
 
         if(isExit(r, c)) {
             reached_end = true;
-            cout << "actual E: " << r << ", " << c << endl;
+            //cout << "actual E: " << r << ", " << c << endl;
             break;
         }
 
@@ -125,7 +125,7 @@ int BFS::solve() {
     }
 
     if(reached_end) {
-        cout << "E: " << prev.back()->data.first << ", " <<  prev.back()->data.second << endl;
+        //cout << "E: " << prev.back()->data.first << ", " <<  prev.back()->data.second << endl;
         return move_count;
     }
 

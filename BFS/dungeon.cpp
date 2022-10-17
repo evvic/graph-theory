@@ -4,72 +4,74 @@
 
 using namespace std;
 
-
-
 /*********************
  * TO-DO
  * FIX THE NODES AND MAKE THE PATH BACKWARDS ACTUALLY WORK
  * ALSO ADD PATH FROM START TO EXIT TO MATRIX WITH '#'
-*/
+ */
 
 // GLOBAL VARIABLES
 
-
 // functions
 int solve(DungeonDisplay display);
-vector<node*> explore_neighbors(int r, int c, vector<node*> prev, DungeonDisplay display);
-vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node*> prev);
-//node find_node(pair<int, int> rc, vector<node> prev);
-int find_node(pair<int, int> coord, vector<node*> prev);
+vector<node *> explore_neighbors(int r, int c, vector<node *> prev, DungeonDisplay display);
+vector<pair<int, int>> reconstruct_path(pair<int, int> e, vector<node *> prev);
+// node find_node(pair<int, int> rc, vector<node> prev);
+int find_node(pair<int, int> coord, vector<node *> prev);
 void draw_map();
 void add_coord_to_matrix(pair<int, int> p, char c);
 void add_coord_to_matrix(int pr, int pc, char c);
 void print_path(vector<pair<int, int>> p);
 
-int main() {
+int main()
+{
 
-    int R = 7, C = 10;               // init Row & Column size
-    int sr = 0, sc = 0;             // init start coordinates
-    int er = 4, ec = 5;             // init where the Exit spot is
+    int C = 30, R = 15;   // init Row & Column size
+    int sr = 2, sc = 2;   // init start coordinates
+    int er = 12, ec = 19; // init where the Exit spot is
 
     cout << "In BFS dungeon main" << endl;
 
     // create dungeon object: init with size of dungeon
     DungeonDisplay display(R, C);
-    //display.setDungeonSize(R, C);
+    // display.setDungeonSize(R, C);
     display.setDungeonExit(er, ec);
     display.setDungeonStart(sr, sc);
 
     // percentage
-    display.generateWalls(50);
+    display.generateWalls(70);
+
+    display.printDisplay();
 
     // TODO: init walls
     // walls/rocks will be '#'
-
-
 
     int moves = display.solve();
     // RECONSTRUCT PATH
     vector<pair<int, int>> path = display.reconstruct_path();
 
-    print_path(path);
+    //print_path(path);
     // ADD PATH TO MATRIX m
     display.addPath(path);
     display.printDisplay();
 
-    if (moves >= 0) {
+    if (moves >= 0)
+    {
         cout << "It took " << moves << " moves to leave the dungeon." << endl;
     }
-    else {
+    else
+    {
         cout << "Could not find a path out of the dungeon." << endl;
     }
 
     return 1;
 }
 
-void print_path(vector<pair<int, int>> p) {
+void print_path(vector<pair<int, int>> p)
+{
     cout << "path: ";
-    for( auto step : p) {
+    for (auto step : p)
+    {
         cout << "(" << step.first << ',' << step.second << ") ";
     }
     cout << endl;

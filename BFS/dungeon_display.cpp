@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include "dungeon_display.h"
 
 using namespace std;
@@ -120,16 +121,16 @@ bool DungeonDisplay::addWall(int r, int c) {
 
 
 void DungeonDisplay::printDisplay() {
-    for(int i = 0; i < d_rows + 2; i++) cout << '#';
-    for(int i = 0; i < d_cols; i++) {
+    for(int i = 0; i < d_cols + 2; i++) cout << '#';
+    for(int i = 0; i < d_rows; i++) {
         cout << endl << '#';
-        for(int j = 0; j < d_rows; j++) {
+        for(int j = 0; j < d_cols; j++) {
             cout << matrix[i][j];
         }
         cout << '#';
     }
     cout << endl;
-    for(int i = 0; i < d_rows + 2; i++) cout << '#';
+    for(int i = 0; i < d_cols + 2; i++) cout << '#';
     cout << endl;
 }
 
@@ -139,9 +140,15 @@ vector<pair<int, int>> DungeonDisplay::reconstruct_path() {
 
     cout << "Reconstructing path..." << endl;
 
-    node* curr = find_node(exit);
+    // init curr node to last vector element
+    node* curr = find_node(prev.back()->data);
+    // if reached end, init to exit node
+    if(reached_end) {
+        curr = find_node(exit);
+    }
 
-    cout << "Exit node starting point: (" << curr->data.first << ',' << curr->data.second << ')' << endl;
+
+    //cout << "Exit node starting point: (" << curr->data.first << ',' << curr->data.second << ')' << endl;
 
     while (curr->parent != NULL) {
         //cout << "curr node: " << curr->data.first << ", " << curr->data.second << endl;
@@ -164,6 +171,8 @@ void DungeonDisplay::generateWalls(int percent) {
     cout << "Generating " << num_walls << " walls in the dungeon." << endl;
 
     // figure out how to randomly generate the positions to add the walls
+
+    srand (time(NULL));
 
     for(int i = 0; i < num_walls; i++) {
         int rr = rand() % d_rows;
