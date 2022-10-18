@@ -1,6 +1,10 @@
 # Dijkstra's Algorithm
 
-### Single Source Shortest Path (SSSP) algorithm for graphs with **non-negative edge weights**.
+#### Single Source Shortest Path (SSSP) algorithm for graphs with **non-negative edge weights**.
+
+## Constraint
+
+- The (non-negative edge weight) contraint ensures that once a node has been visited, its optimal distance can not be improved (it only grows).
 
 ## Time Complexity
 
