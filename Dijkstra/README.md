@@ -5,6 +5,7 @@
 ## Constraint
 
 - The (non-negative edge weight) contraint ensures that once a node has been visited, its optimal distance can not be improved (it only grows).
+  - Allows Dijkstra's Algorithm to try selecting the next most promising node.
 
 ## Time Complexity
 
