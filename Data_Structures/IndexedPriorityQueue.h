@@ -177,6 +177,7 @@ public:
 
     // Check if given key exists in the queue already
     bool contains(T1 key) {
+        if (m[key] == 0)
             return false;
         else
             return true;
