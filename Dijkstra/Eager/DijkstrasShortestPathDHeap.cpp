@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <limits> // for initializing to positive infinity
 #include "DijkstrasShortestPathDHeap.h"
 // Graph_Theory/Data_Structures/IndexedPriorityQueue.h
 //#include "../../Data_Structures/IndexedPriorityQueue.h"
@@ -42,7 +43,7 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
     ipq.push(start, 0.0);
 
     // Maintain an array of min distance to each node
-    double dist[n] = { 100.0 }; //CHANGE TO INFINITY / DOUBLE MAX
+    double dist[n] = { std::numeric_limits<double>::max() }; //CHANGE TO INFINITY / DOUBLE MAX
     dist[start] = 0.0;
 
     // Maintain array of nodes if visited
@@ -72,14 +73,26 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
                 prev[edge.to] = nodeID;
                 dist[edge.to] = newDist;
 
-                // Insert cost of node traversal or add new node to queue
-                // FIND METHOD OF CHECKING IF NODE ALREADY EXISTS IN QUEUE
-                // if (!ipq.) {
-
-                // }
+                //  Add new node to queue if not there already
+                if(ipq.contains(edge.to)) {
+                    ipq.push(edge.to, newDist);
+                }
+                // ELSE Update cost of node traversal to existing node
+                else {
+                    ipq.changeAtKey(edge.to, newDist);
+                }
             }
 
+            // If the end node has been processed then it can return early.
+            // No need to visit the whole graph because Dijkstra's algorithm
+            // is greedy and there are no negative edge weights.
+            if (nodeID == end) return dist[end];
+
         }
+
+        // End node is unreachable
+        return std::numeric_limits<double>::max();
+;
     }
 
 
