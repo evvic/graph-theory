@@ -40,6 +40,10 @@ public:
     // If no path, returns "INFINITY" for double data type
     double dijkstra(int start, int end);
 
+    // Reconstructs the shortest path from start to end (inclusive)
+    // Returns an empty array if start and end are not connected
+    vector<int> reconstructPath(int start, int end);
+
 };
 
 #endif

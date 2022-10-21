@@ -82,25 +82,37 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
                     ipq.changeAtKey(edge.to, newDist);
                 }
             }
-
-            // If the end node has been processed then it can return early.
-            // No need to visit the whole graph because Dijkstra's algorithm
-            // is greedy and there are no negative edge weights.
-            if (nodeID == end) return dist[end];
-
         }
-
-        // End node is unreachable
-        return std::numeric_limits<double>::max();
-;
+        // If the end node has been processed then it can return early.
+        // No need to visit the whole graph because Dijkstra's algorithm
+        // is greedy and there are no negative edge weights.
+        if (nodeID == end) return dist[end];
     }
 
+    // End node is unreachable
+    return std::numeric_limits<double>::max();
+}
 
+//
+vector<int> DijkstrasShortestPathDHeap::reconstructPath(int start, int end) {
+    vector<int> path;
 
+    if (end < 0 || end >= n) {
+        throw std::invalid_argument("Invalid end node index");
+    }
+    if (start < 0 || start >= n) {
+        throw std::invalid_argument("Invalid start node index");
+    }
 
+    double dist = dijkstra(start, end);
 
+    // If dist == positive infinity, return empty path.
+    if (dist == std::numeric_limits<double>::max()) return path;
 
+    for (int at = end; at != NULL; at = prev[at]) {
+        path.push_back(at);
+    }
 
-    // temp
-    return 0.0;
+    // Path is in reversed direction (end -> start)
+    return path;
 }
