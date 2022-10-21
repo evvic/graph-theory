@@ -4,30 +4,29 @@
  * Used for testing created algorthims
  * (such as Dijkstra's Algorithm (Eager)
 */
-#ifndef INDEXED_PRIORITY_QUEUE
+
 #include <bits/stdc++.h>
-using namespace std;
+#include "IndexedPriorityQueue.h"
+
+//using namespace std;
 
 template <class T1, class T2,
           class Comparator = less<T2>,
           class Hash = hash<T1> >
+long long int indexed_priority_queue::getValueIndex(T1 key) {
+    if (m[key] == 0) {
+            cout << "No Such Key Exist";
+            return -1;
+        }
+        return v[m[key] - 1];
+}
+
+
+/*
 
 class indexed_priority_queue {
 
-    // Storing indices of values using key
-    unordered_map<T1, long long int, Hash> m;
 
-    // Container
-    vector<pair<T1, T2> > v;
-
-    // Size
-    long long numberOfElement;
-
-    // Creating a instance of Comparator class
-    Comparator comp;
-
-    // Max Capacity
-    long long capacity = LLONG_MAX;
 
     // Obtaining the index value from hash map
     long long int getValueIndex(T1 key)
@@ -189,4 +188,4 @@ void display(indexed_priority_queue<int, int> IPQ)
     cout << '\n';
 }
 
-#endif
+*/
