@@ -10,10 +10,9 @@ protected:
     // Edge class to represent a directed edge
     // between 2 nodes with a weighted cost
     class Edge {
-    private:
+    public:
         int to;
         double cost;
-    public:
         // Using constructor initializer list
         //Edge(int to, double cost) : to(to), cost(cost) {}
         Edge(int to, double cost);

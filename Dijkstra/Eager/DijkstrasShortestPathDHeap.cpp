@@ -38,7 +38,55 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
     // and it should be hashable
     // Second parameter is value datatype comparator
     // function (by default it implements maxheap)
-    indexed_priority_queue<int, int> IPQ;
+    indexed_priority_queue<int, double> ipq;
+    ipq.push(start, 0.0);
+
+    // Maintain an array of min distance to each node
+    double dist[n] = { 100.0 }; //CHANGE TO INFINITY / DOUBLE MAX
+    dist[start] = 0.0;
+
+    // Maintain array of nodes if visited
+    bool visited[n] = { false };
+
+    //prev = new Integer[n]
+
+    while(!ipq.empty()) {
+        int nodeID = ipq.top().first;
+
+        visited[nodeID] = true;
+        double minVal = ipq.top().second;
+        ipq.pop();
+
+        // Ignore if already found a better path
+        if (minVal > dist[nodeID]) continue;
+
+        for(Edge edge : graph.at(nodeID)) {
+
+            // Cannot get a shorter path from a previosuly visited node
+            if (visited[edge.to]) continue;
+
+            // Relax edge through updating min cost
+            double newDist = dist[nodeID] + edge.cost;
+
+            if (newDist < dist[edge.to]) {
+                prev[edge.to] = nodeID;
+                dist[edge.to] = newDist;
+
+                // Insert cost of node traversal or add new node to queue
+                // FIND METHOD OF CHECKING IF NODE ALREADY EXISTS IN QUEUE
+                // if (!ipq.) {
+
+                // }
+            }
+
+        }
+    }
+
+
+
+
+
+
 
     // temp
     return 0.0;

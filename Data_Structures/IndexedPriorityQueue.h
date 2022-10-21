@@ -174,6 +174,13 @@ public:
             index = (index - 1) / 2;
         }
     }
+
+    // Check if given key exists in the queue already
+    bool contains(T1 key) {
+            return false;
+        else
+            return true;
+    }
 };
 
 void display(indexed_priority_queue<int, int> IPQ)
