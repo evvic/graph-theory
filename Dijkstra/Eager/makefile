@@ -1,3 +1,6 @@
+# include directory for Indexed Priority Queue data stucture
+INC=-I/../../Data_Structures
+
 dijkstra: DijkstraMain.o DijkstrasShortestPathDHeap.o
 	g++ DijkstraMain.o DijkstrasShortestPathDHeap.o -o dijkstra
 

@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-// Graph_Theory/Data_Structures/IndexedPriorityQueue.h
 #include "DijkstrasShortestPathDHeap.h"
+// Graph_Theory/Data_Structures/IndexedPriorityQueue.h
+//#include "../../Data_Structures/IndexedPriorityQueue.h"
 
 using namespace std;
 
@@ -32,6 +33,12 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
 
     // Keep an Indexed Priority Queue (ipq) of best node to visit
     int degree = edgeCount / n;
+
+    // First parameter is key datatype
+    // and it should be hashable
+    // Second parameter is value datatype comparator
+    // function (by default it implements maxheap)
+    indexed_priority_queue<int, int> IPQ;
 
     // temp
     return 0.0;

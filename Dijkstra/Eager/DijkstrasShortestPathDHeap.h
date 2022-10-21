@@ -3,7 +3,7 @@
 
 #include <vector>
 // Graph_Theory/Data_Structures/IndexedPriorityQueue.h
-//#include "../../Data_Structures/IndexedPriorityQueue.h"
+#include "../../Data_Structures/IndexedPriorityQueue.h"
 
 class DijkstrasShortestPathDHeap {
 protected:
