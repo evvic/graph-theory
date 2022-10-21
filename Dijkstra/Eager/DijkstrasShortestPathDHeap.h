@@ -1,8 +1,9 @@
-#include <iostream>
-#include <vector>
-#include "IndexedPriorityQueue.h"
+#ifndef DIJKSTRAS_SHORTEST_PATH_D_HEAP
+#define DIJKSTRAS_SHORTEST_PATH_D_HEAP
 
-using namespace std;
+#include <vector>
+// Graph_Theory/Data_Structures/IndexedPriorityQueue.h
+//#include "../../Data_Structures/IndexedPriorityQueue.h"
 
 class DijkstrasShortestPathDHeap {
 protected:
@@ -15,10 +16,8 @@ protected:
     public:
         // Using constructor initializer list
         //Edge(int to, double cost) : to(to), cost(cost) {}
-        Edge(int to, double cost) {
-            this->to = to;
-            this->cost = cost;
-        }
+        Edge(int to, double cost);
+        Edge();
     };
 
 private:
@@ -28,32 +27,20 @@ private:
     std::vector<int> prev;
     std::vector<std::vector<Edge>> graph;
 
-    void createEmptyGraph() {
-        graph = vector<vector<Edge>>(n, vector<Edge>(n));
-    }
+    void createEmptyGraph();
 
 public:
     // Init solver with graph size & starting node
     // Use addEdge() to add edges to graph
-    DijkstrasShortestPathDHeap(int n) {
-        this->n = n;
-        createEmptyGraph();
-    }
+    DijkstrasShortestPathDHeap(int n);
 
-    void addEdge(int from, int to, double cost) {
-        edgeCount++;
-        graph.at(from).push_back(Edge(to, cost));
-    }
+    void addEdge(int from, int to, double cost);
 
     // Run the solver on a directed graph to find shortest path
     // Returns cost (shortest amount) to travel from start to end
     // If no path, returns "INFINITY" for double data type
-    double dijkstra(int start, int end) {
-
-        // Keep an Indexed Priority Queue (ipq) of best node to visit
-        int degree = edgeCount / n;
-
-
-    }
+    double dijkstra(int start, int end);
 
 };
+
+#endif
