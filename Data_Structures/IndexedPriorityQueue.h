@@ -184,17 +184,4 @@ public:
     }
 };
 
-void display(indexed_priority_queue<int, int> IPQ)
-{
-    indexed_priority_queue<int, int> temp = IPQ;
-    while (!IPQ.empty()) {
-        pair<int, int> tmp;
-        tmp = IPQ.top();
-        IPQ.pop();
-        cout << "( " << tmp.first << ", "
-             << tmp.second << " ) ";
-    }
-    cout << '\n';
-}
-
 #endif
