@@ -57,7 +57,7 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
     while(!ipq.empty()) {
         cout << " queue: ";
         display(ipq);
-        int nodeID = ipq.bottom().first;
+        int nodeID = ipq.top().first;
 
         visited.at(nodeID)= true;
         double minVal = ipq.top().second;
@@ -102,7 +102,7 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
         // If the end node has been processed then it can return early.
         // No need to visit the whole graph because Dijkstra's algorithm
         // is greedy and there are no negative edge weights.
-        //if (nodeID == end) return dist.at(end);
+        if (nodeID == end) return dist.at(end);
     }
 
     // End node is unreachable
