@@ -9,7 +9,7 @@
 using namespace std;
 
 template <class T1, class T2,
-          class Comparator = less<T2>,
+          class Comparator = greater<T2>,
           class Hash = hash<T1> >
 
 class indexed_priority_queue {
