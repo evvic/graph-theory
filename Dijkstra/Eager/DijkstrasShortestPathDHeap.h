@@ -44,7 +44,7 @@ public:
     // Returns an empty array if start and end are not connected
     vector<int> reconstructPath(int start, int end);
 
-    void display(indexed_priority_queue<int, double> IPQ);
+    void display(indexed_priority_queue<int, double, greater<double>> IPQ);
 
 };
 

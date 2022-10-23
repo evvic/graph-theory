@@ -41,7 +41,7 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
     // and it should be hashable
     // Second parameter is value datatype comparator
     // function (by default it implements maxheap)
-    indexed_priority_queue<int, double> ipq;
+    indexed_priority_queue<int, double, greater<double>> ipq;
     ipq.push(start, 0.0);
 
     // Maintain an array of min distance to each node
