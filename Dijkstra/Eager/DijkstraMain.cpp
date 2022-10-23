@@ -18,12 +18,14 @@ int main() {
     // Adjecancy List:
     vector<vector<pair<int, double>>> al;
 
+    // Structure of AL:
     vector<pair<int, double>> zero = {{ 1, 5.0 }, { 2, 1.0 }};
     vector<pair<int, double>> one = {{ 2, 2.0 }, { 3, 3.0 }, { 4, 20.0 }};
     vector<pair<int, double>> two = {{ 1, 3.0 }, { 4, 12.0 }};
     vector<pair<int, double>> three = {{ 2, 3.0 }, { 4, 2.0 }, { 5, 6.0 }};
     vector<pair<int, double>> four = {{ 5, 1.0 }};
 
+    // Add all edges to list
     al.push_back({{ 1, 5.0 }, { 2, 1.0 }});
     al.push_back({{ 4, 20.0 }, { 3, 3.0 }, { 2, 2.0 }});
     al.push_back({{ 1, 3.0 }, { 4, 12.0 }});
