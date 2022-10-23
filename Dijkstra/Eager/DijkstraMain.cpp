@@ -9,12 +9,6 @@ using namespace std;
 int main() {
     cout << "Dijstra's Algorithm implemented with Indexed Priority Queue" << endl;
 
-    /*
-     * TODO: test DijkstrasShortestPathDHeap (algorithm)
-     *      - create test nodes
-     *      - Run IT!
-    */
-
     // Adjecancy List:
     vector<vector<pair<int, double>>> al;
 
