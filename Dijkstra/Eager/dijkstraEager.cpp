@@ -2,6 +2,7 @@
 // figure out makefile for incuding class & IndexedPriorityQueue
 
 #include "DijkstrasShortestPathDHeap.h"
+#include "../../Utilities/graphviz.h"
 #include <iostream>
 
 using namespace std;
@@ -9,7 +10,7 @@ using namespace std;
 int main() {
     cout << "Dijstra's Algorithm implemented with Indexed Priority Queue" << endl;
 
-    // Adjecancy List:
+    // Adjacency List:
     vector<vector<pair<int, double>>> al;
 
     // Structure of AL:
@@ -29,6 +30,11 @@ int main() {
 
     // Init DijkstrasShortestPathDHeap with num of nodes
     DijkstrasShortestPathDHeap alg(al.size());
+
+    Graphviz gviz{};
+
+    //gviz.setAdjacencyList(al);
+    //gviz.write("gtest");
 
     // Iterate through adjacency list to add all edges to class
     for (int i = 0; i < al.size(); i++) {
