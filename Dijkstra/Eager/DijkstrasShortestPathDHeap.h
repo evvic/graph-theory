@@ -22,7 +22,7 @@ protected:
 private:
     int n;
     int edgeCount;
-    std::vector<double> dist;
+    //std::vector<double> dist;
     std::vector<int> prev;
     std::vector<std::vector<Edge>> graph;
 
@@ -43,6 +43,8 @@ public:
     // Reconstructs the shortest path from start to end (inclusive)
     // Returns an empty array if start and end are not connected
     vector<int> reconstructPath(int start, int end);
+
+    void display(indexed_priority_queue<int, double> IPQ);
 
 };
 
