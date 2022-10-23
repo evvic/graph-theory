@@ -31,10 +31,12 @@ int main() {
     // Init DijkstrasShortestPathDHeap with num of nodes
     DijkstrasShortestPathDHeap alg(al.size());
 
+    // Init Graphviz class (for making .gv of AL's)
     Graphviz gviz{};
 
-    //gviz.setAdjacencyList(al);
-    //gviz.write("gtest");
+    // Set AL and write it to gtest.gv
+    gviz.setAdjacencyList(al);
+    gviz.write("gtest");
 
     // Iterate through adjacency list to add all edges to class
     for (int i = 0; i < al.size(); i++) {
