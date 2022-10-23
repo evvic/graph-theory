@@ -11,3 +11,14 @@
 
 Typically the time complexity when implementing this algortihm is `O(E*log(V))`
 - Competitive amongst other shortest path algorithms.
+
+# Visualization
+
+- For creating graphs of these nodes in a machine-readable manner this project will be using **graphviz**.
+  - [Documentation](https://graphviz.org/)
+  - For installing onto Linux: `sudo apt install graphviz`
+## Graphviz
+- Rendering a `.gv` (graphviz) file into an image (i.e. png) is very simple
+  - Example: `dot -Tpng test.gv -o test.png`
+    - Where the `dot` command is rendering the `test.gv` into a png through the ` -Tpng` option
+    - The output ` -o` option is allowing to pass the name of the outputted png file, `test.png`
