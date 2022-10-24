@@ -15,6 +15,19 @@ Graphviz::Graphviz() {
     cout << "~GRAPHVIZ~" << endl;
 }
 
+void Graphviz::setPath(vector<int> p) {
+    // Path must include start & end node
+    path = p;
+    mapPath();
+}
+
+void Graphviz::mapPath() {
+    //first = init node, second = destination node
+    for (int i = path.size() - 1; i > 0; i--) {
+        path_map.insert(std::make_pair(path.at(i - 1), path.at(i)));
+    }
+}
+
 void Graphviz::setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a) {
     al = a;
 }
@@ -50,6 +63,13 @@ void Graphviz::writeDigraph(ofstream& ofile) {
         ofile << endl << "    // node " << i << endl;
 
         for (auto node : al.at(i)) {
+
+            // CHECK WITH IF STATEMENT USING MAP_PATH
+            // IF  map.contains(i) && map.at(i) == node.first:
+            //     THEN MAKE STYLE RED
+            // Path is in ordewr (reversed)
+
+            //if();
             ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << ']' << endl;
         }
     }

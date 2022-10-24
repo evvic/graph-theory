@@ -2,6 +2,7 @@
 #define GRAPHVIZ
 
 #include <vector>
+#include <map>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -15,6 +16,8 @@ private:
 
     // Path of nodes from start to end (optional)
     std::vector<int> path;
+    // Map of path: first = init node, second = destination node
+    std::map<int, int> path_map;
 
     // Adjacency list
     std::vector<std::vector<std::pair<int, double>>> al;
@@ -22,9 +25,17 @@ private:
     // Writing member function for a
     void writeDigraph(std::ofstream& ofile);
 
+    // Take path and mappify it
+    void mapPath();
+
 public:
     Graphviz(std::vector<std::vector<std::pair<int, double>>> a);
     Graphviz();
+
+    // Start & End node inclusive
+    void setPath(std::vector<int> p);
+
+
 
     void setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a);
 
