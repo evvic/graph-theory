@@ -36,7 +36,7 @@ int main() {
 
     // Set AL and write it to gtest.gv
     gviz.setAdjacencyList(al);
-    gviz.write("gtest");
+    //gviz.write("gtest");
 
     // Iterate through adjacency list to add all edges to class
     for (int i = 0; i < al.size(); i++) {
@@ -50,11 +50,15 @@ int main() {
     cout << "Running Dijkstra's Algorithm..." << endl;
     vector<int> path = alg.reconstructPath(0, 5);
 
+    // Give path
+    gviz.setPath(path);
+    gviz.write("gtest");
+
+
     cout << "Path length: " << path.size() << endl;
     for ( auto node : path) {
-        cout << node << "->";
+        cout << node << " ";
     }
-    cout << '0' << endl;
 
     return 1;
 }

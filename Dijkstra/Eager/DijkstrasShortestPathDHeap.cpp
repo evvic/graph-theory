@@ -109,7 +109,7 @@ double DijkstrasShortestPathDHeap::dijkstra(int start, int end) {
     return std::numeric_limits<double>::max();
 }
 
-//
+// Reconstruct path from start to end node (inclusive)
 vector<int> DijkstrasShortestPathDHeap::reconstructPath(int start, int end) {
     vector<int> path;
 
@@ -128,6 +128,9 @@ vector<int> DijkstrasShortestPathDHeap::reconstructPath(int start, int end) {
     for (int at = end; at != NULL; at = prev[at]) {
         path.push_back(at);
     }
+
+    // Must manually include start node (to be inclusive)
+    path.push_back(start);
 
     // Path is in reversed direction (end -> start)
     return path;
