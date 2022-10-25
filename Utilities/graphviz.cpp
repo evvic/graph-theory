@@ -41,12 +41,17 @@ void Graphviz::write(std::string fname) {
         fname = fname.substr(0, fname.length() - 4);
     }
 
+    // Extract just the name of file from file path
+    //int found = fname.find_last_of('/');
+    //cout << " found: " << found << endl;
+    string file_name = fname.substr(fname.find_last_of('/')+1);
+
     // Include file path directory
     // !!!! ^
     ofile.open (fname + ".gv");
 
     // Write initial bracket opener
-    ofile << "digraph " << fname << " {\n";
+    ofile << "digraph " << file_name << " {\n";
 
     // Write the whole Adjacency List to the file
     writeDigraph(ofile);
@@ -55,6 +60,8 @@ void Graphviz::write(std::string fname) {
     ofile << endl << "}";
 
     ofile.close();
+
+    cout << "Created digraph " << file_name << " in " << (fname + ".gv") << endl;
 }
 
 void Graphviz::writeDigraph(ofstream& ofile) {
@@ -70,13 +77,6 @@ void Graphviz::writeDigraph(ofstream& ofile) {
             //     THEN MAKE STYLE RED
             // Path is in ordewr (reversed)
 
-
-            //if (path_map.find(i) != path_map.end())
-            //if (path_map.count(i) > 0)
-                //cout << "    conditions" << i << ": " << (path_map.count(i) > 0) << " && " << path_map.at(i) << " == " << node.first << endl;
-
-            //    cout << "    path_map.count(i): " << path_map.count(i) << ", path_map.at(i): " << path_map.at(i) << ", i: " << i << ", node.first: " << node.first << endl;
-
             // If conditions met: this edge is part of the shortest path (color it)
             if(path_map.count(i) > 0 && path_map.at(i) == node.first) {
                 ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << "\" color=blue]" << endl;
@@ -85,7 +85,16 @@ void Graphviz::writeDigraph(ofstream& ofile) {
             else {
                 ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << ']' << endl;
             }
-
         }
     }
+}
+
+// Render a created .gv file given file name
+// Include path-directory from to pwd to /graphs in fname
+void Graphviz::render(std::string fname) {
+    string cmd = "dot -Tpng " +  fname + ".gv -o " + fname + ".png";
+
+    pclose(popen(cmd.c_str(), "w"));
+
+    cout << "Rendered graph to " << fname << ".png" << endl;
 }

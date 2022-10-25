@@ -38,12 +38,11 @@ public:
     void setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a);
 
     // Write the Adjacency List to a .gv file properly formatted
-    // Include path-directory from to pwd to /graphs
+    // Include path-directory from to pwd to /graphs in fname
     void write(std::string fname);
     // Render a created .gv file given file name
-    // Include path-directory from to pwd to /graphs
+    // Include path-directory from to pwd to /graphs in fname
     void render(std::string fname);
-
 };
 
 #endif
