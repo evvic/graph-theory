@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ void Graphviz::setPath(vector<int> p) {
 void Graphviz::mapPath() {
     //first = init node, second = destination node
     for (int i = path.size() - 1; i > 0; i--) {
-        path_map.insert(std::make_pair(path.at(i - 1), path.at(i)));
+        path_map.insert(std::make_pair(path.at(i), path.at(i - 1)));
     }
 }
 
@@ -69,8 +70,22 @@ void Graphviz::writeDigraph(ofstream& ofile) {
             //     THEN MAKE STYLE RED
             // Path is in ordewr (reversed)
 
-            //if();
-            ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << ']' << endl;
+
+            //if (path_map.find(i) != path_map.end())
+            //if (path_map.count(i) > 0)
+                //cout << "    conditions" << i << ": " << (path_map.count(i) > 0) << " && " << path_map.at(i) << " == " << node.first << endl;
+
+            //    cout << "    path_map.count(i): " << path_map.count(i) << ", path_map.at(i): " << path_map.at(i) << ", i: " << i << ", node.first: " << node.first << endl;
+
+            // If conditions met: this edge is part of the shortest path (color it)
+            if(path_map.count(i) > 0 && path_map.at(i) == node.first) {
+                ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << "\" color=blue]" << endl;
+            }
+            // Else it is a regular edge
+            else {
+                ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << ']' << endl;
+            }
+
         }
     }
 }

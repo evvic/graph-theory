@@ -34,14 +34,15 @@ public:
 
     // Start & End node inclusive
     void setPath(std::vector<int> p);
-
-
-
+    // Pass AL to set it locally in class
     void setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a);
 
     // Write the Adjacency List to a .gv file properly formatted
+    // Include path-directory from to pwd to /graphs
     void write(std::string fname);
-
+    // Render a created .gv file given file name
+    // Include path-directory from to pwd to /graphs
+    void render(std::string fname);
 
 };
 
