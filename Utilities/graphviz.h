@@ -29,7 +29,6 @@ private:
     void mapPath();
 
 public:
-    Graphviz(std::vector<std::vector<std::pair<int, double>>> a);
     Graphviz();
 
     // Start & End node inclusive

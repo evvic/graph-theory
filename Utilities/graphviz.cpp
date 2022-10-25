@@ -7,13 +7,11 @@
 using namespace std;
 
 // Constructor
-Graphviz::Graphviz(std::vector<std::vector<std::pair<int, double>>> a) {
-    cout << "Graphviz constructor" << endl;
-    setAdjacencyList(a);
-}
 
 Graphviz::Graphviz() {
     cout << "~GRAPHVIZ~" << endl;
+    path = {};
+    path_map = {};
 }
 
 void Graphviz::setPath(vector<int> p) {
