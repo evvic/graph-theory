@@ -43,7 +43,7 @@ public:
     // Run the solver on a directed graph to find shortest path
     // Returns cost (shortest amount) to travel from start to end
     // If no path, returns "INFINITY" for double data type
-    double bellmanford(int start, int end);
+    std::vector<double> bellmanford(int start);
 
     // Reconstructs the shortest path from start to end (inclusive)
     // Returns an empty array if start and end are not connected

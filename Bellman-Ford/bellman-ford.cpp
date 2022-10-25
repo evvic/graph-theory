@@ -35,7 +35,7 @@ void BellmanFord::addEdge(int from, int to, double cost) {
 //     init every element in D to positive infinity
 //     D[S] = 0
 // CURRENTLY ONLY WORKS IF START NODE IS ZER0
-double BellmanFord::bellmanford(int start, int end) {
+vector<double> BellmanFord::bellmanford(int start) {
 
     // Maintain an array of min distance to each node
     vector<double> dist(n, numeric_limits<double>::max());
@@ -73,5 +73,5 @@ double BellmanFord::bellmanford(int start, int end) {
     }
 
     // check bounds, if not having end node return infinity
-    return dist.at(end);
+    return dist;
 }
