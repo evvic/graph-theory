@@ -34,6 +34,7 @@ void BellmanFord::addEdge(int from, int to, double cost) {
 // D = array of size V tracking best distance from S to each node
 //     init every element in D to positive infinity
 //     D[S] = 0
+// CURRENTLY ONLY WORKS IF START NODE IS ZER0
 double BellmanFord::bellmanford(int start, int end) {
 
     // Maintain an array of min distance to each node

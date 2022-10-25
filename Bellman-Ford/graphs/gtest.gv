@@ -1,0 +1,36 @@
+digraph gtest {
+
+    // node 0
+    0 -> 1[label="5"]
+
+    // node 1
+    1 -> 2[label="20"]
+    1 -> 6[label="60"]
+    1 -> 5[label="30"]
+
+    // node 2
+    2 -> 3[label="10"]
+    2 -> 4[label="75"]
+
+    // node 3
+    3 -> 2[label="-15"]
+
+    // node 4
+    4 -> 9[label="100"]
+
+    // node 5
+    5 -> 6[label="5"]
+    5 -> 8[label="50"]
+    5 -> 4[label="25"]
+
+    // node 6
+    6 -> 7[label="-50"]
+
+    // node 7
+    7 -> 8[label="-10"]
+
+    // node 8
+
+    // node 9
+
+}
