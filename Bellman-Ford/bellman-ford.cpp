@@ -1,6 +1,7 @@
 #include "bellman-ford.h"
 #include <vector>
 #include <limits> // for initializing to positive infinity
+#include <iostream>
 
 using namespace std;
 
@@ -53,5 +54,23 @@ double BellmanFord::bellmanford(int start, int end) {
     }
 
     // Repeat to find nodes caught in negative cycle
-    
+    for (int i = 0; i < n - 1; i++) {
+        // Compare ALL edges in 2D graph
+        for (int j = 0; j < graph.size(); j++) {
+            for ( auto edge : graph.at(j)) {
+                // Catch any negative cycles
+                if (dist.at(j) + edge.cost < dist.at(edge.to)) {
+                    dist.at(edge.to) = numeric_limits<double>::min();
+                }
+            }
+        }
+    }
+
+    cout << "Cheapest distances from start node " << start << endl;
+    for (auto num : dist) {
+        cout << num << endl;
+    }
+
+    // check bounds, if not having end node return infinity
+    return dist.at(end);
 }
