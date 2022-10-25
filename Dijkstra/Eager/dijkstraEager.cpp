@@ -4,6 +4,8 @@
 #include "DijkstrasShortestPathDHeap.h"
 #include "../../Utilities/graphviz.h"
 #include <iostream>
+// system()
+#include <cstdlib>
 
 using namespace std;
 
@@ -36,7 +38,6 @@ int main() {
 
     // Set AL and write it to gtest.gv
     gviz.setAdjacencyList(al);
-    //gviz.write("gtest");
 
     // Iterate through adjacency list to add all edges to class
     for (int i = 0; i < al.size(); i++) {
@@ -52,8 +53,9 @@ int main() {
 
     // Give path
     gviz.setPath(path);
-    gviz.write("gtest");
-
+    // Pass file name + directory
+    gviz.write("../graphs/gtest");
+    gviz.render("../graphs/gtest");
 
     cout << "Path length: " << path.size() << endl;
     for ( auto node : path) {
