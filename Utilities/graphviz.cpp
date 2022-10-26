@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <limits>   // for positive/negative infinity
 
 using namespace std;
 
@@ -12,6 +13,7 @@ Graphviz::Graphviz() {
     cout << "~GRAPHVIZ~" << endl;
     path = {};
     path_map = {};
+    dist = {};
 }
 
 void Graphviz::setPath(vector<int> p) {
@@ -25,6 +27,15 @@ void Graphviz::mapPath() {
     for (int i = path.size() - 1; i > 0; i--) {
         path_map.insert(std::make_pair(path.at(i), path.at(i - 1)));
     }
+}
+
+void Graphviz::mapDistFromStart() {
+    //
+}
+
+// Any "node" set to negative infinity is in a negative cycle
+void Graphviz::setDistFromStart(std::vector<double> d) {
+    dist = d;
 }
 
 void Graphviz::setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a) {
@@ -51,6 +62,9 @@ void Graphviz::write(std::string fname) {
     // Write initial bracket opener
     ofile << "digraph " << file_name << " {\n";
 
+    // Prestyle any individual nodes
+    nodePreStyling(ofile);
+
     // Write the whole Adjacency List to the file
     writeDigraph(ofile);
 
@@ -62,6 +76,24 @@ void Graphviz::write(std::string fname) {
     cout << "Created digraph " << file_name << " in " << (fname + ".gv") << endl;
 }
 
+void Graphviz::nodePreStyling(std::ofstream& ofile) {
+
+    ofile << "\n    // Prestyling of nodes";
+    ofile << "\n    //   Red = node in negative cycle" << endl;
+
+    // loop through each node and compare
+    for (int i = 0; i < al.size(); i++) {
+
+        // Check for NEGATIVE INFINITY (represents negative cycle)
+        if (dist.size() > i && dist.at(i) == numeric_limits<double>::min()) {
+            // Make node red
+            ofile << "\n    " << i << " [style=filled, color=red]";
+        }
+    }
+
+    ofile << endl;
+}
+
 void Graphviz::writeDigraph(ofstream& ofile) {
 
     for (int i = 0; i < al.size(); i++) {
@@ -70,6 +102,9 @@ void Graphviz::writeDigraph(ofstream& ofile) {
 
         for (auto node : al.at(i)) {
 
+            // String for appending additional styling when necessary
+            string extras = "";
+
             // CHECK WITH IF STATEMENT USING MAP_PATH
             // IF  map.contains(i) && map.at(i) == node.first:
             //     THEN MAKE STYLE RED
@@ -77,12 +112,18 @@ void Graphviz::writeDigraph(ofstream& ofile) {
 
             // If conditions met: this edge is part of the shortest path (color it)
             if(path_map.count(i) > 0 && path_map.at(i) == node.first) {
-                ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << "\" color=blue]" << endl;
+                extras += " color=blue";
             }
-            // Else it is a regular edge
-            else {
-                ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << ']' << endl;
+
+            // If this edge is in an infinite cycle (both connecting nodes are neg inf), color it
+            if (dist.size() > i && dist.at(i) == numeric_limits<double>::min() ) {
+                if(dist.size() > node.first && dist.at(node.first) == numeric_limits<double>::min())
+                    extras += " color=red";
             }
+
+            // Write line for edge to file
+            ofile << "    " << i << " -> " << node.first << "[label=\"" << node.second << '"' << extras << ']' << endl;
+
         }
     }
 }
