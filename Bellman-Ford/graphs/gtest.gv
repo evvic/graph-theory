@@ -1,5 +1,12 @@
 digraph gtest {
 
+    // Prestyling of nodes
+    //   Red = node in negative cycle
+
+    3 [style=filled, color=red]
+    4 [style=filled, color=red]
+    9 [style=filled, color=red]
+
     // node 0
     0 -> 1[label="5"]
 

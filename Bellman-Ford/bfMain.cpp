@@ -49,7 +49,11 @@ int main() {
         cout << endl;
     }
 
-    alg.bellmanford(0, 9);
+    vector<double> distances = alg.bellmanford(0);
+
+    //alg.bellmanford(0);
+
+    gviz.setDistFromStart(distances);
 
     // Pass file name + directory
     gviz.write("graphs/gtest");
