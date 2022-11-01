@@ -2,6 +2,7 @@
 #define FLOYD_WORSHALL
 
 #include <vector>
+#include <limits>
 
 // APSP = All Pairs Shortest Path
 
@@ -10,32 +11,24 @@
 // next = matrix used to reeconstruct shortest path
 
 class FloydWorshall {
-protected:
-    // Edge class to represent a directed edge
-    // between 2 nodes with a weighted cost
-    class Edge {
-    public:
-        int to;
-        double cost;
-        // Using constructor initializer list
-        //Edge(int to, double cost) : to(to), cost(cost) {}
-        Edge(int to, double cost);
-    };
 
 private:
-    // number of nodes (vertices)
-    int n;
-    int edgeCount;
+    int n;          // number of nodes (vertices)
     bool solved;    // track if it has been solved
 
-    std::vector<std::vector<double>> dp;    // matrix
+    std::vector<std::vector<double>> dp;    // adjacency matrix
     std::vector<std::vector<int>> next;     // matrix to reconstruct the path
 
-    const static int REACHES_NEGATIVE_CYCLE = -1; // used to determine when reached neg cycles
+    // Constants
+    static constexpr int REACHES_NEGATIVE_CYCLE = -1; // used to determine when reached neg cycles
 
+    static constexpr double POSITIVE_INFINITY = std::numeric_limits<double>::max();
+    static constexpr double NEGATIVE_INFINITY = std::numeric_limits<double>::min();
+
+    /// PRIVATE FUNCTIONS
     void createEmptyGraph();
-    // allocate memory for tables
-    void setup();
+
+    void setup();       // allocate memory for tables
 
 public:
     // Init constructor with adjacency matrix
@@ -47,11 +40,17 @@ public:
     // Run the solver on a directed graph to find shortest path
     // Returns cost (shortest amount) to travel from start to end
     // If no path, returns "INFINITY" for double data type
-    std::vector<double> floydworshall();
+    //std::vector<double> floydworshall();
+
+    // Runs the APSP and calls solve()
+    std::vector<std::vector<double>> getApspMatrix();
+
+    void solve();
 
     // Reconstructs the shortest path from start to end (inclusive)
     // Returns an empty array if start and end are not connected
-    //std::vector<int> reconstructPath(int start, int end);
+    // Returns null if start & end are connected but in a negative cycle
+    std::vector<int> reconstructPath(int start, int end);
 };
 
 #endif
