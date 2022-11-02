@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <limits>
-//#include "floyd-worshall.h"
+#include "floyd-worshall.h"
 //#include "../Utilities/graphviz.h"
 
 using namespace std;
@@ -29,7 +29,11 @@ int main() {
     m[5][4] = -2;
 
 
-    
+    // FLOYD WORSHALL CLASS SHOULD BE COMPLETE
+    // FINISH MAIN FUNCTION AND OTHER FUNCTIONS USED HERE
+
+
+
 }
 
 /// @brief Inits a matrix of size nxn
@@ -37,7 +41,7 @@ int main() {
 /// @return initialized adjacency matrix
 vector<vector<double>> createGraph(int n) {
     // Init all matrix member to positive infinity
-    vector<vector<double>> matrix = {n, vector<double> (n, numeric_limits<double>::max())};
+    vector<vector<double>> matrix = {(n, vector<double> (n, numeric_limits<double>::max()))};
 
     // Init all diagnal nodes to 0
     for (int i = 0; i < n; i++) {
