@@ -31,7 +31,15 @@ int main() {
 
     // FLOYD WORSHALL CLASS SHOULD BE COMPLETE
     // FINISH MAIN FUNCTION AND OTHER FUNCTIONS USED HERE
+    FloydWorshall solver(m);
+    vector<vector<double>> dist = solver.getApspMatrix();
 
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << "The shortest path from node " << i << " to node " << j << " is " << dist[i][j] << endl;
+        }
+    }
 
 
 }
@@ -41,12 +49,17 @@ int main() {
 /// @return initialized adjacency matrix
 vector<vector<double>> createGraph(int n) {
     // Init all matrix member to positive infinity
-    vector<vector<double>> matrix = {(n, vector<double> (n, numeric_limits<double>::max()))};
+    cout << "createGraph" << endl;
+    vector<vector<double>> matrix(n, vector<double> (n, numeric_limits<double>::max()));
+
+    cout << "    createGraph matrix size " << matrix.size() << endl;
 
     // Init all diagnal nodes to 0
     for (int i = 0; i < n; i++) {
         matrix.at(i).at(i) == 0;
     }
+
+    cout << "createGraph end" << endl;
 
     return matrix;
 }

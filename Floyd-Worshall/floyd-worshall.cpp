@@ -13,10 +13,12 @@ using namespace std;
 // next = matrix used to reeconstruct shortest path
 
 FloydWorshall::FloydWorshall(vector<vector<double>> matrix) {
+    cout << "FloydWorshall Constructor." << endl;
     n = matrix.size();
     dp = vector<vector<double>>(n, vector<double>(n));
     next = vector<vector<int>>(n, vector<int>(n));
 
+    cout << "FloydWorshall Constructor beginning for loop." << endl;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (matrix.at(i).at(j) != POSITIVE_INFINITY) {
