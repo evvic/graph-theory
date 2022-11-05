@@ -2,7 +2,7 @@
 #include <vector>
 #include <limits>
 #include "floyd-worshall.h"
-//#include "../Utilities/graphviz.h"
+#include "../Utilities/graphviz.h"
 
 using namespace std;
 
@@ -18,15 +18,15 @@ int main() {
     vector<vector<double>> m = createGraph(n);
 
     // Add some edge values
-    m[0][1] = 2;
-    m[0][2] = 5;
-    m[0][6] = 10;
-    m[1][2] = 2;
-    m[1][4] = 11;
-    m[2][6] = 2;
-    m[6][5] = 11;
-    m[4][5] = 1;
-    m[5][4] = -2;
+    m[0][1] = 2.0;
+    m[0][2] = 5.0;
+    m[0][6] = 10.0;
+    m[1][2] = 2.0;
+    m[1][4] = 11.0;
+    m[2][6] = 2.0;
+    m[6][5] = 11.0;
+    m[4][5] = 1.0;
+    m[5][4] = -2.0;
 
 
     // FLOYD WORSHALL CLASS SHOULD BE COMPLETE
@@ -34,12 +34,20 @@ int main() {
     FloydWorshall solver(m);
     vector<vector<double>> dist = solver.getApspMatrix();
 
+    // Init Graphviz class (for making .gv of AL's)
+    Graphviz gviz{};
+
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << "The shortest path from node " << i << " to node " << j << " is " << dist[i][j] << endl;
         }
     }
+
+    gviz.setAdjacencyList(gviz.convertMatrixToList(m));
+    // Pass file name + directory
+    gviz.write("graphs/fwtest");
+    gviz.render("graphs/fwtest");
 
 
 }

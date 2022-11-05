@@ -176,12 +176,6 @@ vector<vector<pair<int, double>>> Graphviz::convertMatrixToList(vector<vector<do
         }
     }
 
-    for (int i = 0; i < al.size(); i++) {
-        for (auto el : al.at(i)) {
-            cout << i << " -> " << el.first <<  ": " << el.second << endl;
-        }
-    }
-
     return al;
 }
 
