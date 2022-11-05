@@ -77,22 +77,41 @@ void Graphviz::write(std::string fname) {
 
 void Graphviz::nodePreStyling(std::ofstream& ofile) {
 
-    ofile << "\n    // Prestyling of nodes";
-    ofile << "\n    //   Red = node in negative cycle" << endl;
+    ofile << "\n    layout=\"neato\";";
+    ofile << "\n    overlap=\"false\";";
+    ofile << "\n    sep=\"+15\";";
+    ofile << "\n    splines=true;" << endl;
 
-    // loop through each node and compare
+    ofile << "\n    // Prestyling of nodes";
+    ofile << "\n    //// Red = node in negative cycle" << endl;
+
+    // Loop through each node and compare
+    // Add any special stylings when necessary
     for (int i = 0; i < al.size(); i++) {
+        string extras = "";
+
+        // If start/end node of path, add outline
+        if (i == start_node || i == end_node) {
+            ofile << "\n    " << i << " [color=orange]";
+        }
 
         // Check for NEGATIVE INFINITY (represents negative cycle)
         if (dist.size() > i && dist.at(i) == NEGATIVE_INFINITY) {
             // Make node red
             ofile << "\n    " << i << " [style=filled, color=red]";
         }
+
+        // Apply stylings to node when necessary
+        if (extras.length() > 0) {
+            ofile << "\n    " << i << (" [" + extras + "]");
+        }
+
     }
 
     ofile << endl;
 }
 
+// Directional graph
 void Graphviz::writeDigraph(ofstream& ofile) {
 
     for (int i = 0; i < al.size(); i++) {
@@ -103,6 +122,9 @@ void Graphviz::writeDigraph(ofstream& ofile) {
 
             // String for appending additional styling when necessary
             string extras = "";
+
+            // Include a min length for the edge (arrow)
+            extras += " minlen=2";
 
             // CHECK WITH IF STATEMENT USING MAP_PATH
             // IF  map.contains(i) && map.at(i) == node.first:
