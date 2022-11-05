@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-#include <limits>   // for positive/negative infinity
 
 using namespace std;
 
@@ -85,7 +84,7 @@ void Graphviz::nodePreStyling(std::ofstream& ofile) {
     for (int i = 0; i < al.size(); i++) {
 
         // Check for NEGATIVE INFINITY (represents negative cycle)
-        if (dist.size() > i && dist.at(i) == numeric_limits<double>::min()) {
+        if (dist.size() > i && dist.at(i) == NEGATIVE_INFINITY) {
             // Make node red
             ofile << "\n    " << i << " [style=filled, color=red]";
         }
@@ -116,8 +115,8 @@ void Graphviz::writeDigraph(ofstream& ofile) {
             }
 
             // If this edge is in an infinite cycle (both connecting nodes are neg inf), color it
-            if (dist.size() > i && dist.at(i) == numeric_limits<double>::min() ) {
-                if(dist.size() > node.first && dist.at(node.first) == numeric_limits<double>::min())
+            if (dist.size() > i && dist.at(i) == NEGATIVE_INFINITY ) {
+                if(dist.size() > node.first && dist.at(node.first) == NEGATIVE_INFINITY)
                     extras += " color=red";
             }
 
@@ -136,4 +135,48 @@ void Graphviz::render(std::string fname) {
     pclose(popen(cmd.c_str(), "w"));
 
     cout << "Rendered graph to " << fname << ".png" << endl;
+}
+
+vector<vector<pair<int, double>>> Graphviz::convertMatrixToList(vector<vector<double>> m) {
+    // adjList[i][j].second is the distance from i to j
+    // adjMatrix[i][j] is the distance frim i to j
+
+    // Init 1st dimension of list to num of nodes
+    vector<vector<pair<int, double>>> al(m.size(), vector<pair<int, double>>());
+
+    for (int i = 0; i < m.size(); i++) {
+        for (int j = 0; j < m.at(i).size(); j++) {
+            // If value [i][j] == NEGATIVE_INFINITY: EDGE IN NEGATIVE CYCLE
+            // If value [i][j] == POSITIVE_INFINITY: nodes do not connect
+            if (m.at(i).at(j) == POSITIVE_INFINITY) continue;
+
+            al.at(i).push_back(make_pair(j, m.at(i).at(j)));
+        }
+    }
+
+    for (int i = 0; i < al.size(); i++) {
+        for (auto el : al.at(i)) {
+            cout << i << " -> " << el.first <<  ": " << el.second << endl;
+        }
+    }
+
+    return al;
+}
+
+vector<vector<double>> Graphviz::convertListToMatrix(vector<vector<pair<int, double>>> al) {
+    // adjList[i][j].second is the distance from i to j
+    // adjMatrix[i][j] is the distance frim i to j
+
+    // Init both dimensions of matrix size to num of nodes (POSITIVE_INFIITY default)
+    vector<vector<double>> m(al.size(), vector<double> (al.size(), numeric_limits<double>::max()));
+
+    for (int i = 0; i < al.size(); i++) {
+        for (auto element : al.at(i)) {
+            // If value [i][j] == NEGATIVE_INFINITY: EDGE IN NEGATIVE CYCLE
+
+            m.at(i).at(element.first) = element.second;
+        }
+    }
+
+    return m;
 }

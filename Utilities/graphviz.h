@@ -6,7 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-
+#include <limits>
 
 //template <class T1>
 class Graphviz {
@@ -32,7 +32,7 @@ private:
     // Adjacency list
     std::vector<std::vector<std::pair<int, double>>> al;
 
-    // Writing member function for a
+    // Writing member function for a driected weighted graph
     void writeDigraph(std::ofstream& ofile);
     // Writing member function for prestyling nodes
     void nodePreStyling(std::ofstream& ofile);
@@ -43,8 +43,17 @@ private:
     // Take negCycle path and mappify
     void mapDistFromStart();
 
+    // Constants
+    static constexpr double POSITIVE_INFINITY = std::numeric_limits<double>::max();
+    static constexpr double NEGATIVE_INFINITY = std::numeric_limits<double>::min();
+
 public:
     Graphviz();
+
+    // Converts passed adjacency matrix into an adjacency list
+    // Conversion into an adjacency list needed for using Graphviz class
+    std::vector<std::vector<std::pair<int, double>>> convertMatrixToList(std::vector<std::vector<double>> m);
+    std::vector<std::vector<double>> convertListToMatrix(std::vector<std::vector<std::pair<int, double>>> al);
 
     // Pass AL to set it locally in class
     void setAdjacencyList(std::vector<std::vector<std::pair<int, double>>> a);
