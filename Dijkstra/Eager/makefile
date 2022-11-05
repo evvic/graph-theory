@@ -1,5 +1,5 @@
 # include directory for Indexed Priority Queue data stucture
-INC=-I/../../Data_Structures
+# INC=-I/../../Data_Structures
 INC=-I/../../Utilities
 
 dijkstra: dijkstraEager.o DijkstrasShortestPathDHeap.o graphviz.o
