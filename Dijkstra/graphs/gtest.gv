@@ -1,25 +1,35 @@
 digraph gtest {
 
+    layout="neato";
+    overlap=false;
+    sep="+15";
+    splines=true;
+
+    // Prestyling of nodes
+    //// Red = node in negative cycle
+
+    0 [color=green]
+
     // node 0
-    0 -> 1[label="5"]
-    0 -> 2[label="1" color=blue]
+    0 -> 1[label="5" minlen=2]
+    0 -> 2[label="1" minlen=2 color=blue]
 
     // node 1
-    1 -> 4[label="20"]
-    1 -> 3[label="3" color=blue]
-    1 -> 2[label="2"]
+    1 -> 4[label="20" minlen=2]
+    1 -> 3[label="3" minlen=2 color=blue]
+    1 -> 2[label="2" minlen=2]
 
     // node 2
-    2 -> 1[label="3" color=blue]
-    2 -> 4[label="12"]
+    2 -> 1[label="3" minlen=2 color=blue]
+    2 -> 4[label="12" minlen=2]
 
     // node 3
-    3 -> 2[label="3"]
-    3 -> 4[label="2" color=blue]
-    3 -> 5[label="6"]
+    3 -> 2[label="3" minlen=2]
+    3 -> 4[label="2" minlen=2 color=blue]
+    3 -> 5[label="6" minlen=2]
 
     // node 4
-    4 -> 5[label="1" color=blue]
+    4 -> 5[label="1" minlen=2 color=blue]
 
     // node 5
 
