@@ -1,7 +1,7 @@
 // main file to start Dijkstras Class
 
 #include "DijkstrasShortestPathDHeap.h"
-#include "../../Utilities/graphviz.h"
+#include "../../utilities/graphviz.h"
 #include <iostream>
 // system()
 #include <cstdlib>

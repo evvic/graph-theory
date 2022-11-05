@@ -7,8 +7,8 @@ floydworshall: fwMain.o floyd-worshall.o graphviz.o
 fwMain.o: fwMain.cpp
 	g++ -c fwMain.cpp
 
-graphviz.o: ../Utilities/graphviz.cpp
-	g++ -c ../Utilities/graphviz.cpp
+graphviz.o: ../utilities/graphviz.cpp
+	g++ -c ../utilities/graphviz.cpp
 
 floyd-worshall.o: floyd-worshall.cpp
 	g++ -c floyd-worshall.cpp

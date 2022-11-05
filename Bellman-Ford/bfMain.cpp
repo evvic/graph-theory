@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "bellman-ford.h"
-#include "../Utilities/graphviz.h"
+#include "../utilities/graphviz.h"
 
 using namespace std;
 

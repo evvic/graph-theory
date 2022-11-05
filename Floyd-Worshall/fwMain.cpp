@@ -2,7 +2,7 @@
 #include <vector>
 #include <limits>
 #include "floyd-worshall.h"
-#include "../Utilities/graphviz.h"
+#include "../utilities/graphviz.h"
 
 using namespace std;
 
