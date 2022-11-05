@@ -68,7 +68,6 @@ public:
     // Include path-directory from to pwd to /graphs in fname
     void render(std::string fname);
 
-
     // Converts passed adjacency matrix into an adjacency list
     // Conversion into an adjacency list needed for using Graphviz class
     std::vector<std::vector<std::pair<int, double>>> convertMatrixToList(std::vector<std::vector<double>> m);

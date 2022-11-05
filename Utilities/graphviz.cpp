@@ -79,7 +79,7 @@ void Graphviz::nodePreStyling(std::ofstream& ofile) {
 
     ofile << "\n    layout=\"neato\";";
     ofile << "\n    overlap=\"false\";";
-    ofile << "\n    sep=\"+15\";";
+    ofile << "\n    sep=\"+20\";";
     ofile << "\n    splines=true;" << endl;
 
     ofile << "\n    // Prestyling of nodes";
@@ -92,13 +92,13 @@ void Graphviz::nodePreStyling(std::ofstream& ofile) {
 
         // If start/end node of path, add outline
         if (i == start_node || i == end_node) {
-            ofile << "\n    " << i << " [color=orange]";
+            extras += "color=orange ";
         }
 
         // Check for NEGATIVE INFINITY (represents negative cycle)
         if (dist.size() > i && dist.at(i) == NEGATIVE_INFINITY) {
             // Make node red
-            ofile << "\n    " << i << " [style=filled, color=red]";
+            extras += "style=filled, fillcolor=red ";
         }
 
         // Apply stylings to node when necessary
