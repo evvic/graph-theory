@@ -1,14 +1,14 @@
 digraph gtest {
 
     layout="neato";
-    overlap=false;
-    sep="+15";
+    overlap="false";
+    sep="+20";
     splines=true;
 
     // Prestyling of nodes
     //// Red = node in negative cycle
 
-    0 [color=green]
+    0 [color=orange ]
 
     // node 0
     0 -> 1[label="5" minlen=2]
