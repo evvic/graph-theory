@@ -7,12 +7,11 @@ using namespace std;
 DFS::DFS(int size, vector<vector<pair<int, double>>> al) {
     // Set all private variables
     setAdacencyList(al);
-    setNumNodes(n);
+    setNumNodes(size);
 
     // Init visited vect to all false values
-    visited = vector<bool> (n, false);
+    visited.assign(size, false);
 }
-
 
 void DFS::dfs(int at) {
     // If already visited, return
@@ -26,7 +25,6 @@ void DFS::dfs(int at) {
     }
 
 }
-
 
 // SETTERS
 
