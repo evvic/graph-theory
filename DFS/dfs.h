@@ -7,7 +7,7 @@
 //
 
 class DFS {
-private:
+protected:
 
     // Variables
     int n;                      // Number of nodes in adjacency list
