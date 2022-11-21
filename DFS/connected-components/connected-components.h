@@ -14,6 +14,8 @@ private:
     void dfs(int at);
 
 public:
+    // Constructor extends DFS
+    ConnectedComponents(int s, std::vector<std::vector<std::pair<int, double>>> al);
 
     // Returns the vect of node's IDs
     std::vector<int> findComponents();

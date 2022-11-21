@@ -1,12 +1,22 @@
 #include "connected-components.h"
 #include <vector>
 
+// Constructor
+ConnectedComponents::ConnectedComponents(int s, std::vector<std::vector<std::pair<int, double>>> al) : DFS(s, al){
+    // init count to 0
+    count = 0;
+
+    // Init vect
+    components = std::vector<int> (s);
+
+}
+
 // Method for calculating components making up a graph
 std::vector<int> ConnectedComponents::findComponents() {
     for (int i = 0; i < n; i++) {
         if (!visited.at(i)) {
             count++;
-            dfs(i);
+            ConnectedComponents::dfs(i);
         }
     }
     return components;
@@ -24,7 +34,7 @@ void ConnectedComponents::dfs(int at) {
     for (auto neighbor : al.at(at)) {
         // If not visited, continue into depth
         if (!visited.at(neighbor.first)) {
-            dfs(neighbor.first);
+            ConnectedComponents::dfs(neighbor.first);
         }
 
     }
