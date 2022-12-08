@@ -2,6 +2,7 @@
 #include "c2c-edge.h"
 #include <string>
 #include <vector>
+#include <iostream> //test
 
 using namespace std;
 
@@ -14,20 +15,31 @@ void ParseC2C::readPairsToEdge(std::vector<C2CEdge>& edges) {
 
     if (FILE *fp = fopen(fname.c_str(), "r")) {
 
+
+    const unsigned short header_cnt = 6;
+    string header_names[6];
+
+    // GIVING WARNINGS, CHANGE TO C STRINGS
     // Read past the header in the first row
-    fscanf(fp, ",%s,%s,%s,%s,%s,%s");
+    fscanf(fp, ",%s,%s,%s,%s,%s,%s", header_names[0], header_names[1], header_names[2], header_names[3],
+        header_names[4], header_names[5]);
 
     // values for scanning row of csv
-    C2CEdge tmp;
+    unsigned short id;
+    unsigned short to;
     char sym_pair[12];
+    string baseAsset;
+    string toAsset;
     double minPrice;
     double maxPrice;
+    double rate;
 
     // Scan each row of csv and add C2CEdge to vect of edges
     while (fscanf(fp, "%hu,%s,%s,%s,%lf,%lf,%lf",
-            &tmp.id, sym_pair, tmp.baseAsset, tmp.toAsset, &minPrice, &maxPrice, &tmp.rate
+            &id, sym_pair, baseAsset, toAsset, &minPrice, &maxPrice, &rate
             ) == 7) {
-        edges.push_back(tmp);
+        edges.emplace_back((C2CEdge(id, to, rate, baseAsset, toAsset)));
+
     }
 
     fclose(fp);

@@ -15,11 +15,11 @@ struct C2CEdge{
     std::string toAsset;    // Quote coin symbol
 
     // Constructor
-    C2CEdge(unsigned short _id, unsigned short _to, double _rate, std::string _baseAsset, std::string _toAsset)
-            : id(id), to(_to), rate(_rate), baseAsset(_baseAsset), toAsset(_toAsset) {}
+    C2CEdge(unsigned short _id, unsigned short _to, double _rate, std::string _baseAsset, std::string _toAsset);
 
-    // Init empty
-    C2CEdge() {}
+    // Init empty (Constructor)
+    C2CEdge();
+
 };
 
 #endif
