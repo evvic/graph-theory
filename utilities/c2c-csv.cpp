@@ -17,7 +17,7 @@ void ParseC2C::readPairsToEdge(std::vector<C2CEdge>& edges) {
 
 
     const unsigned short header_cnt = 6;
-    string header_names[6];
+    char header_names[6][12];
 
     // GIVING WARNINGS, CHANGE TO C STRINGS
     // Read past the header in the first row
@@ -28,8 +28,8 @@ void ParseC2C::readPairsToEdge(std::vector<C2CEdge>& edges) {
     unsigned short id;
     unsigned short to;
     char sym_pair[12];
-    string baseAsset;
-    string toAsset;
+    char baseAsset[8];
+    char toAsset[8];
     double minPrice;
     double maxPrice;
     double rate;
@@ -43,6 +43,8 @@ void ParseC2C::readPairsToEdge(std::vector<C2CEdge>& edges) {
     }
 
     fclose(fp);
+} else {
+    cout << "Error opening " << fname << endl;
 }
 
 }
