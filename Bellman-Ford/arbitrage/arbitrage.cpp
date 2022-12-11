@@ -17,8 +17,9 @@ int main() {
 
     c2c_parser.readPairsToEdge(edges);
 
+    cout << "Show edges" << endl;
     for (auto edge : edges) {
-        cout << "edge" << endl;
+        cout << edge << endl;
     }
 
 }

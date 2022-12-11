@@ -22,4 +22,6 @@ struct C2CEdge{
 
 };
 
+std::ostream& operator << (std::ostream& o, C2CEdge& p);
+
 #endif
