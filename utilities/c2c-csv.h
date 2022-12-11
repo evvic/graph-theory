@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include "c2c-edge.h"
 
 // Class for reading/writing crypto-to-crypto csvs!
@@ -12,6 +13,7 @@
 class ParseC2C {
 private:
     std::string fname;
+    std::map<std::string, int> symbols; // SYMBOL, ID
 
 public:
     // Constructor: requires csv filename
