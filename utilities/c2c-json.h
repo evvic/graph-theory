@@ -38,7 +38,7 @@ public:
     RequestC2C(std::string _fname);
 
     // pass vect of edges by reference
-    void readPairsToEdge(std::vector<C2CEdge>& edges);
+    void populateEdges(std::vector<C2CEdge>& edges);
 
     // Create Adjacency List from json request
     void readToAdjList(std::vector<std::vector<C2CEdge>>& graph);
