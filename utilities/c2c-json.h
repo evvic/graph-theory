@@ -11,21 +11,23 @@
 // for Graph Theory
 
 class RequestC2C {
-private:
-    std::string fname;
+private:    
+    // temporarily here with symbols
+    unsigned short _id;
     std::map<std::string, int> symbols; // SYMBOL, ID
+
     std::map<std::string, double> rates; // SYMBOLPAIR, exchange rate
 
     std::vector<C2CEdge> edges;
 
     /* MEMBER FUNCTIONS */
     // Define a callback function that will be called by the curl library
-    // to process the response data from the API
-    size_t callback(void *contents, size_t size, size_t nmemb, void *userp);
+    // to process the response data from the get exchange info API call
+    static size_t callbackExchange(void *contents, size_t size, size_t nmemb, void *userp);
 
-    // Checks symbols map if symbols pair exists
-    // Relevant if exchange rate is needed
-    bool findInSymbols(std::string pair);
+    // Define a callback function that will be called by the curl library
+    // to process the response data from the ticker API call
+    static size_t callbackRates(void *contents, size_t size, size_t nmemb, void *userp);
 
     // If currency symbol does not have an ID assigned create and return one
     // If currency symbol has an ID assigned, return it
@@ -35,10 +37,13 @@ private:
 
 public:
     // Constructor: requires csv filename
-    RequestC2C(std::string _fname);
+    RequestC2C();
 
     // pass vect of edges by reference
     void populateEdges(std::vector<C2CEdge>& edges);
+
+    // Initialize
+    void initRates();
 
     // Create Adjacency List from json request
     void readToAdjList(std::vector<std::vector<C2CEdge>>& graph);
@@ -47,7 +52,7 @@ public:
     void setRates(std::map<std::string, double> r);
 
     // GETTERS
-    double getRateForSymbolPair(std::string pair);
+    bool getRateForSymbolPair(std::string pair, double& rate);
 
 };
 
