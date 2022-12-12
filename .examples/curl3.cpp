@@ -1,22 +1,28 @@
   #include <iostream>
   #include <string>
   #include <vector>
+  #include <map>
   #include <json/json.h> // for parsing JSON
   #include <curl/curl.h> // for making HTTP requests
 
+  /*
+  Fills a map with "SYMBOLPAIR" and rate of exchange of all tradeable
+  c2c currency pairs
+  */
+
   // Define a struct to store the product pair and its spot price
-  struct Pair
-  {
-    std::string symbol;
-    double price;
-  };
+//   struct Pair
+//   {
+//     std::string symbol;
+//     double price;
+//   };
 
   // Define a callback function that will be called by the curl library
   // to process the response data from the API
   size_t callback(void *contents, size_t size, size_t nmemb, void *userp)
   {
     // Cast the userp pointer to a vector of Pair structs
-    std::vector<Pair> *pairs = static_cast<std::vector<Pair>*>(userp);
+    std::map<std::string, double> *rates = static_cast<std::map<std::string, double>*>(userp);
 
     // Convert the void pointer to a char pointer and calculate the size
     // of the response data
@@ -30,14 +36,14 @@
 
     for (const auto& item : jsonResponse)
     {
-        Pair pair;
+        std::pair<std::string, double> _symbolpair;
 
         std::cout << item << std::endl;
 
         try {
-            pair.symbol = item["symbol"].asString();
-            pair.price = std::stod(item["price"].asString());
-            pairs->push_back(pair);
+            _symbolpair.first = item["symbol"].asString();
+            _symbolpair.second = std::stod(item["price"].asString());
+            rates->insert(_symbolpair);
             
         } catch (std::exception& e) {
             std::cout << "Error: " << e.what() << std::endl;
@@ -52,10 +58,13 @@
   {
     // Set up the CURL request
     CURL *curl = curl_easy_init();
-    curl_easy_setopt(curl, CURLOPT_URL, "https://www.binance.com/api/v3/ticker/price");
+    //const std::string url = "https://api.binance.com/sapi/v1/convert/exchangeInfo";
+    const std::string url = "https://www.binance.com/api/v3/ticker/price";
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
     // Set up a vector to store the product pairs and their spot prices
-    std::vector<Pair> pairs;
+    std::map<std::string, double> rates;
 
     // Set up a buffer to store the response from the API
     std::string response;
@@ -65,16 +74,16 @@
 
     // Set the callback function and user data pointer
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &pairs);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &rates);
 
     // Perform the request
     curl_easy_perform(curl);
 
     // Print out the product pairs and their spot prices
-    // for (const auto& pair : pairs)
-    // {
-    //   std::cout << pair.symbol << ": " << pair.price << std::endl;
-    // }
+    for (const auto& pair : rates)
+    {
+      std::cout << pair.first << ": " << pair.second << std::endl;
+    }
 
     // Clean up the CURL pointer
     curl_easy_cleanup(curl);
