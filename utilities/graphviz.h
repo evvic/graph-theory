@@ -30,7 +30,7 @@ private:
     // THEN IMPLEMENT FOR WRITING
 
     // Adjacency list
-    std::vector<std::vector<std::pair<int, double>>> al;
+    std::vector<std::vector<std::pair<int, double> > > al;
 
     // Writing member function for a driected weighted graph
     void writeDigraph(std::ofstream& ofile);
