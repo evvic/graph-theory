@@ -20,6 +20,7 @@ size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata) {
     // Parse the response data as JSON
     Json::Value root;
     Json::Reader reader;
+    cout << "about to parse..." << endl;
     bool success = reader.parse(*response, root);
     if (!success) {
         cerr << "Failed to parse JSON: " << reader.getFormattedErrorMessages() << endl;
@@ -28,6 +29,8 @@ size_t write_callback(char* ptr, size_t size, size_t nmemb, void* userdata) {
 
     // Create a vector to store the trading pair and spot price data
     vector<TradingPairPrice> data;
+
+    cout << "in callabck about to save data to vect" << endl;
 
     // Loop through the array of trading pairs and spot prices
     for (const auto& element : root) {

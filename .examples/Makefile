@@ -2,7 +2,7 @@
 TARGET = example
 
 # Specify the source files
-SOURCES = curl2.cpp #foo.cpp bar.cpp
+SOURCES = curl3.cpp #foo.cpp bar.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11
