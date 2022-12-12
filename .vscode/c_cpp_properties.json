@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/Data_Structures"
+                "${workspaceFolder}/Data_Structures",
+                "/usr/local/Cellar/jsoncpp"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
