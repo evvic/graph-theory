@@ -12,34 +12,22 @@ int main() {
     RequestC2C jsonReader;
 
     // json curl request to get rates
-    jsonReader.initRates();
+    jsonReader.initRates2();
+
+    
 
     vector<C2CEdge> edges;
 
     // json curl request to get exchange info
-    //jsonReader.populateEdges(edges);
+    jsonReader.populateEdges2(edges);
 
     cout << "Show edges" << endl;
     for (auto edge : edges) {
         cout << edge << endl;
     }
 
+    cout << "rates map size: " << jsonReader.ratesSize() << endl;
+    cout << "edges size: " << edges.size() << endl;
+
 }
-
-// int main() {
-//     // name w/ filepath of dir
-//     string fname = "binance_trading_pairs.csv";
-
-//     ParseC2C c2c_parser(fname);
-
-//     vector<C2CEdge> edges;
-
-//     c2c_parser.readPairsToEdge(edges);
-
-//     cout << "Show edges" << endl;
-//     for (auto edge : edges) {
-//         cout << edge << endl;
-//     }
-
-// }
 

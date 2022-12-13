@@ -11,28 +11,51 @@
 // for Graph Theory
 
 class RequestC2C {
-private:    
-    // temporarily here with symbols
-    unsigned short _id;
-    std::map<std::string, int> symbols; // SYMBOL, ID
+protected:
 
-    std::map<std::string, double> rates; // SYMBOLPAIR, exchange rate
+    // Struct for tracking each symbol and giving it a unique ID
+    struct UniqueSymbols {
+        unsigned short _id;
+        std::map<std::string, int> symbols; // SYMBOL, ID
 
+        // Constructor, init ID
+        UniqueSymbols();
+
+        // If currency symbol does not have an ID assigned create and return one
+        // If currency symbol has an ID assigned, return it
+        unsigned short getSymbolID(std::string sym);
+    };
+
+    // Struct for holding map of symbol pairs to their rates and returning them
+    // struct ConversionRates {
+    //     std::map<std::string, double> rates_map; // SYMBOLPAIR, exchange rate
+
+    //     // GETTERS
+    //     bool getRateForSymbolPair(std::string pair, double& rate);
+    // };
+
+private:        
+
+    std::string api_key;
+    std::string secret_key;
+
+    UniqueSymbols symbols;
+    //ConversionRates rates;
     std::vector<C2CEdge> edges;
+
+    std::map<std::string, double> rates_map; // SYMBOLPAIR, exchange rate
 
     /* MEMBER FUNCTIONS */
     // Define a callback function that will be called by the curl library
     // to process the response data from the get exchange info API call
-    static size_t callbackExchange(void *contents, size_t size, size_t nmemb, void *userp);
+    static size_t callbackExchange(char *contents, size_t size, size_t nmemb, void *userp);
 
     // Define a callback function that will be called by the curl library
     // to process the response data from the ticker API call
     static size_t callbackRates(void *contents, size_t size, size_t nmemb, void *userp);
 
-    // If currency symbol does not have an ID assigned create and return one
-    // If currency symbol has an ID assigned, return it
-    unsigned short getSymbolID(std::string sym);
-
+    // Pass the url and returns the json response <string>
+    std::string json_request(const std::string &url);
 
 
 public:
@@ -51,8 +74,17 @@ public:
     // SETTERS
     void setRates(std::map<std::string, double> r);
 
-    // GETTERS
+    size_t parseExchangeInfo(void *contents, size_t size, size_t nmemb);   
+
     bool getRateForSymbolPair(std::string pair, double& rate);
+
+    int ratesSize();
+
+    // Version 2
+    void populateEdges2(std::vector<C2CEdge>& edges);
+
+    void initRates2();
+   
 
 };
 
