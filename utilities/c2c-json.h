@@ -26,13 +26,10 @@ protected:
         unsigned short getSymbolID(std::string sym);
     };
 
-    // Struct for holding map of symbol pairs to their rates and returning them
-    // struct ConversionRates {
-    //     std::map<std::string, double> rates_map; // SYMBOLPAIR, exchange rate
+    const std::string COUNTRY_CURRENCY_CODES[4] = {"GBP", "AUD", "JPY", "CNY"};
 
-    //     // GETTERS
-    //     bool getRateForSymbolPair(std::string pair, double& rate);
-    // };
+    // Uses COUNTRY_CURRENCY_CODES to lint out 
+    bool isElligibleCountry(std::string);
 
 private:        
 

@@ -24,25 +24,6 @@ void RequestC2C::setRates(std::map<std::string, double> r) {
     rates_map = r;
 }
 
-// size_t RequestC2C::callbackExchange(void *contents, size_t size, size_t nmemb, void *userp) {
-//     // Cast the userp pointer to a vector of edges
-//     //std::vector<C2CEdge> *edges = static_cast<std::vector<C2CEdge>*>(userp);
-
-//     // Cast the userp pointer to UniqueSymbols struct
-//     //UniqueSymbols *symbols = static_cast<UniqueSymbols*>(userp);
-
-//     // Cast the userp pointer to UniqueSymbols struct
-//     //ConversionRates *rates = static_cast<ConversionRates*>(userp);
-
-//     // Convert the void* userdata to a pointer to the class instance
-//     RequestC2C *self = static_cast<RequestC2C*>(userp);
-
-//     size_t dataSize = self->parseExchangeInfo(contents, size, nmemb);
-
-
-//     return dataSize;
-// }
-
 // Custom callback function that concatenates the received data into a single string
 static size_t concat_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
@@ -410,6 +391,7 @@ void RequestC2C::initRates2() {
         try {
             _symbolpair.first = item["symbol"].asString();
             _symbolpair.second = std::stod(item["price"].asString());
+
             rates_map.insert(_symbolpair);
             
         } catch (std::exception& e) {
@@ -420,7 +402,6 @@ void RequestC2C::initRates2() {
 
 
 }
-
 
 
 void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
@@ -440,11 +421,34 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
     // Iterate through the JSON object and extract the data for each struct
     for (const auto &obj : json_value)
     {
-        C2CEdge edge;
+        C2CEdge edge;       // init temp edge struct to append to vect
+        double _rate = 0.0; // init temp rate var to pass as reference
 
         try {
+            // Set values from json obj
             edge.fromAsset = obj["fromAsset"].asString();
             edge.toAsset = obj["toAsset"].asString();
+
+            
+            // If element exchange rate exists in symbols map, continue processing
+            if (!getRateForSymbolPair((edge.fromAsset + edge.toAsset), _rate)) {
+                std::cerr << "Error: " << (edge.fromAsset + edge.toAsset) << " does not have an exchange rate." << std::endl;
+                continue;
+            }
+
+            // Set rate from passed previous function 
+            edge.rate = _rate;
+
+            // Lint out country currencies (i.e. "GBP")
+            if (!isElligibleCountry(edge.fromAsset) || !isElligibleCountry(edge.toAsset)) {
+                std::cerr << "Warning. " << (edge.fromAsset + '-' + edge.toAsset) << " contains an unuseable country code." << std::endl;
+            }
+
+            // Get ID for fromAsset symbol or create one if not one assigned yet
+            edge.id = symbols.getSymbolID(edge.fromAsset);
+
+            // Get ID for toAsset symbol or create one if not one assigned yet
+            edge.to = symbols.getSymbolID(edge.toAsset);
 
             edges3.push_back(edge);
         } catch (std::exception& e) {
@@ -453,4 +457,11 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
         }
     }
 
+}
+
+bool RequestC2C::isElligibleCountry(std::string curr) {
+    for (auto str : COUNTRY_CURRENCY_CODES) {
+        if (str == curr) return false;
+    }
+    return true;
 }
