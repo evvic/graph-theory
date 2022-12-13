@@ -1,23 +1,31 @@
-# include directory for C2CEdge struct
+# Specify the target executable
+TARGET = arbitrage
+
+# Include other directories
 INC=-I/../../utilities
 
-arbitrage: arbitrage.o c2c-edge.o c2c-json.o bellman-ford-c2c.o graphviz.o
-	g++ -std=gnu++11 arbitrage.o c2c-edge.o c2c-json.o bellman-ford-c2c.o graphviz.o -o arbitrage -ljsoncpp -lcurl
+UTI=../../utilities/
 
-arbitrage.o: arbitrage.cpp
-	g++ -std=gnu++11 -c arbitrage.cpp -ljsoncpp -lcurl
+# Specify the source files
+SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)c2c-json.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp
 
-c2c-edge.o: ../../utilities/c2c-edge.cpp
-	g++ -std=gnu++11 -c ../../utilities/c2c-edge.cpp
+# Compiler flags
+CXXFLAGS = -std=c++11
 
-c2c-json.o: ../../utilities/c2c-json.cpp
-	g++ -std=gnu++11 -c ../../utilities/c2c-json.cpp -ljsoncpp -lcurl
+# Linker flags
+LDFLAGS += -ljsoncpp -lcurl
+LD_LIBRARY_PATH += /usr/local/Cellar/jsoncpp
 
-graphviz.o: ../../utilities/graphviz.cpp
-	g++ -std=gnu++11 -c ../../utilities/graphviz.cpp
+# Specify the C++ compiler
+CXX = g++
 
-bellman-ford-c2c.o: bellman-ford-c2c.cpp
-	g++ -std=gnu++11 -c bellman-ford-c2c.cpp
+# The remove command
+RM = rf -f
 
-clean:
-	rm *.o arbitrage
+# Build the target executable
+$(TARGET): $(SOURCES)
+	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET) $(LDFLAGS)
+
+# Remove object files
+clean: 
+	rf -f *.o

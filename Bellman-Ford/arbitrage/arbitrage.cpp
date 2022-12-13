@@ -17,13 +17,12 @@ int main() {
     vector<C2CEdge> edges;
 
     // json curl request to get exchange info
-    jsonReader.populateEdges(edges);
+    //jsonReader.populateEdges(edges);
 
     cout << "Show edges" << endl;
     for (auto edge : edges) {
         cout << edge << endl;
     }
-
 
 }
 
