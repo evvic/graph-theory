@@ -1,5 +1,6 @@
 #include "c2c-json.h"
 #include "c2c-edge.h"
+#include "read-keys.h"
 #include <json/json.h> // for parsing JSON
 #include <curl/curl.h> // for making HTTP requests
 #include <string>
@@ -11,6 +12,11 @@
 
 // Constructor runs all the functions to get the data
 RequestC2C::RequestC2C() {
+
+    // Obtain API keys from .env file
+    ReadKeys reader;
+    api_key = reader.getKey(".env", "api_key");
+    secret_key = reader.getKey(".env", "secret_key");
     
 }
 
