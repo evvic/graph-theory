@@ -81,7 +81,8 @@ public:
     void populateEdges2(std::vector<C2CEdge>& edges);
 
     void initRates2();
-   
+
+    unsigned short getVerticesCount();
 
 };
 

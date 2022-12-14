@@ -32,7 +32,7 @@ static size_t concat_callback(char *ptr, size_t size, size_t nmemb, void *userda
     data->append(ptr, realsize);
     return realsize;
 }
-
+/*
 size_t RequestC2C::callbackExchange(char *contents, size_t size, size_t nmemb, void *userp) {
     // Convert the user-defined data to a pointer to the RequestC2C object
     RequestC2C *request = static_cast<RequestC2C*>(userp);
@@ -70,8 +70,9 @@ size_t RequestC2C::callbackExchange(char *contents, size_t size, size_t nmemb, v
 
     return size * nmemb;
 }
+*/
 
-
+/*
 size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) {
     // Convert the void pointer to a char pointer and calculate the size
     // of the response data
@@ -88,7 +89,7 @@ size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) 
         // init empty C2CEdge struct
         C2CEdge element;
 
-        std::cout << item << std::endl;
+        //std::cout << item << std::endl;
 
         try {
             // Collect relevant data from json object
@@ -100,7 +101,7 @@ size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) 
             double _rate = 0.0;
             // If element exchange rate exists in symbols map, continue processing
             if (!getRateForSymbolPair((element.fromAsset + element.toAsset), _rate)) {
-                std::cout << "Error: " << (element.fromAsset + element.toAsset) << " does not have an exchange rate." << std::endl;
+                std::cerr << "Error: " << (element.fromAsset + element.toAsset) << " does not have an exchange rate." << std::endl;
                 continue;
             }
 
@@ -116,10 +117,10 @@ size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) 
             // Append to vect
             edges.emplace_back(element);
 
-            std::cout << "Added edge " << element << " to edges" << std::endl;
+            //std::cout << "Added edge " << element << " to edges" << std::endl;
 
         } catch (std::exception& e) {
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
         }
     }
 
@@ -128,6 +129,8 @@ size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) 
     // Return the size of the response data to indicate that it was processed successfully
     return dataSize;
 }
+
+*/
 
 size_t RequestC2C::callbackRates(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -157,7 +160,7 @@ size_t RequestC2C::callbackRates(void *contents, size_t size, size_t nmemb, void
             rates->insert(_symbolpair);
             
         } catch (std::exception& e) {
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
             continue;
         }
     }
@@ -209,7 +212,7 @@ void RequestC2C::populateEdges(std::vector<C2CEdge>& edges) {
         // Perform the request
         CURLcode res = curl_easy_perform(curl);
 
-        std::cout << response << std::endl;
+        //std::cout << response << std::endl;
 
         // Check for errors
         if (res != CURLE_OK)
@@ -221,7 +224,7 @@ void RequestC2C::populateEdges(std::vector<C2CEdge>& edges) {
         std::cerr << "curl failed to initialize." << std::endl;
     }
 
-    std::cout << "Cleaning up..." << std::endl;
+    //std::cout << "Cleaning up..." << std::endl;
 
     // Clean up the CURL pointer
     curl_easy_cleanup(curl);
@@ -265,7 +268,7 @@ void RequestC2C::initRates() {
 // double passed by reference is how the rate is returned
 bool RequestC2C::getRateForSymbolPair(std::string pair, double& rate) {
 
-    std::cout << "ratepair " << pair;
+    //std::cout << "ratepair " << pair;
 
     // Check if symbol pair exists in rates map
     const std::map<std::string,double>::iterator it_rate = rates_map.find(std::string(pair));
@@ -274,7 +277,7 @@ bool RequestC2C::getRateForSymbolPair(std::string pair, double& rate) {
     //return (it_rate != rates_map.end())? true : false;
 
     if (it_rate == rates_map.end()) {
-        std::cout << " is not in rates_map";
+        //std::cout << " is not in rates_map";
         rate = 0.0;
         return false;
     }
@@ -283,7 +286,7 @@ bool RequestC2C::getRateForSymbolPair(std::string pair, double& rate) {
         
         rate = it_rate->second;
         
-        std::cout << " is in rates_map with value " <<  rate << std::endl;
+        //std::cout << " is in rates_map with value " <<  rate << std::endl;
         return true;
     }
 }
@@ -354,7 +357,7 @@ std::string RequestC2C::json_request(const std::string &url)
         // Perform the request
         CURLcode res = curl_easy_perform(curl);
 
-        std::cout << response << std::endl;
+        //std::cout << response << std::endl;
 
         // Check for errors
         if (res != CURLE_OK)
@@ -395,7 +398,7 @@ void RequestC2C::initRates2() {
             rates_map.insert(_symbolpair);
             
         } catch (std::exception& e) {
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
             continue;
         }
     }
@@ -432,7 +435,7 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
             
             // If element exchange rate exists in symbols map, continue processing
             if (!getRateForSymbolPair((edge.fromAsset + edge.toAsset), _rate)) {
-                std::cerr << "Error: " << (edge.fromAsset + edge.toAsset) << " does not have an exchange rate." << std::endl;
+                //std::cerr << "Error: " << (edge.fromAsset + edge.toAsset) << " does not have an exchange rate." << std::endl;
                 continue;
             }
 
@@ -441,7 +444,8 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
 
             // Lint out country currencies (i.e. "GBP")
             if (!isElligibleCountry(edge.fromAsset) || !isElligibleCountry(edge.toAsset)) {
-                std::cerr << "Warning. " << (edge.fromAsset + '-' + edge.toAsset) << " contains an unuseable country code." << std::endl;
+                //std::cerr << "Warning. " << (edge.fromAsset + '-' + edge.toAsset) << " contains an unuseable country code." << std::endl;
+                continue;
             }
 
             // Get ID for fromAsset symbol or create one if not one assigned yet
@@ -452,7 +456,7 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
 
             edges3.push_back(edge);
         } catch (std::exception& e) {
-            std::cout << "Error: " << e.what() << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
             continue;
         }
     }
@@ -464,4 +468,8 @@ bool RequestC2C::isElligibleCountry(std::string curr) {
         if (str == curr) return false;
     }
     return true;
+}
+
+unsigned short RequestC2C::getVerticesCount() {
+    return symbols._id;
 }

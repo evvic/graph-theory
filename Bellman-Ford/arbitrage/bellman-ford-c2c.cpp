@@ -7,67 +7,47 @@
 using namespace std;
 
 // CONSTRUCTOR
-BellmanFordC2C::BellmanFordC2C(int n) {
-    this->nodeCount = n;
-    //createEmptyGraph();
+BellmanFordC2C::BellmanFordC2C(int _V) : V(_V), adj(_V) {}
+
+// add a directed edge from u to v with the given weight
+void BellmanFordC2C::addEdge(int u, int v, int weight) {
+    adj[u].push_back(Edge(u, v, convert_rate_to_additive(weight)));
 }
 
-// private member function to create empty graph
-void BellmanFordC2C::createEmptyGraph() {
-    // Init only 1 dimension of the graph
-    graph = vector<vector<C2CEdge>>(nodeCount);
-}
+// invoke the Bellman-Ford algorithm to detect negative cycles
+std::vector<int> BellmanFordC2C::bellmanFord(int source) {
+    // initialize distances to infinity
+    std::vector<int> distance(V, std::numeric_limits<int>::max());
+    distance[source] = 0; // distance from source to source is 0
 
-void BellmanFordC2C::addEdge(C2CEdge edge) {
-    edgeCount++;
-    graph.at(edge.id).push_back(edge);
-}
-
-// E = num edges
-// V = num vertices (nodes)
-// S = id of starting node
-// D = array of size V tracking best distance from S to each node
-//     init every element in D to positive infinity
-//     D[S] = 0
-// CURRENTLY ONLY WORKS IF START NODE IS ZER0
-vector<double> BellmanFordC2C::bellmanford(int start) {
-
-    // Maintain an array of min distance to each node
-    vector<double> dist(nodeCount, numeric_limits<double>::max());
-    dist.at(start) = 0.0;
-
-    // Outter loop for BF redundancy checking
-    for (int i = 0; i < nodeCount - 1; i++) {
-        // Compare ALL edges in 2D graph
-        for (int j = 0; j < graph.size(); j++) {
-            for ( auto edge : graph.at(j)) {
-                // Relax edge (update dist vect with shortest path to node)
-                if (dist.at(j) + edge.rate < dist.at(edge.to)) {
-                    dist.at(edge.to) = dist.at(j) + edge.rate;
-                }
+    // relax edges repeatedly
+    for (int i = 0; i < V - 1; i++) {
+        for (int u = 0; u < V; u++) {
+            for (auto& edge : adj[u]) {
+            int v = edge.v;
+            int weight = edge.weight;
+            distance[v] = std::min(distance[v], distance[u] + weight);
             }
         }
     }
 
-    // Repeat to find nodes caught in negative cycle
-    for (int i = 0; i < nodeCount - 1; i++) {
-        // Compare ALL edges in 2D graph
-        for (int j = 0; j < graph.size(); j++) {
-            for ( auto edge : graph.at(j)) {
-                // Catch any negative cycles
-                if (dist.at(j) + edge.rate < dist.at(edge.to)) {
-                    dist.at(edge.to) = numeric_limits<double>::min();
-                }
+    // check for negative-weight cycles
+    std::vector<int> negativeCycle;
+    for (int u = 0; u < V; u++) {
+        for (auto& edge : adj[u]) {
+            int v = edge.v;
+            int weight = edge.weight;
+            if (distance[v] > distance[u] + weight) {
+                negativeCycle.push_back(v);
             }
         }
     }
 
-    cout << "Cheapest distances from start node " << start << endl;
-    for (auto num : dist) {
-        cout << num << endl;
-    }
+    return negativeCycle;
+}
 
-    // check bounds, if not having end node return infinity
-    return dist;
-
+// Negate the reciprocal of the exchange rate. This converts it into a
+// weight that the Bellman-Ford algorithm can use to detect negative cycles.
+double BellmanFordC2C::convert_rate_to_additive(double exchange_rate) {
+    return -1.0 / exchange_rate;
 }
