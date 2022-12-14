@@ -21,6 +21,9 @@ struct C2CEdge{
     // Init empty (Constructor)
     C2CEdge();
 
+    // Convert conversion rate to additive weight
+    double rateToWeight(double r);
+
 };
 
 // Operator Overloading

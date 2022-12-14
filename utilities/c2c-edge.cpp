@@ -8,16 +8,22 @@
 using namespace std;
 
 // Constructor
+// weight is the additive inverse of rate, therefore weight can jsut be calculated by giving the rate parameter
 C2CEdge::C2CEdge(unsigned short _from, unsigned short _to, double _rate, std::string _fromAsset, std::string _toAsset)
-    : from(_from), to(_to), rate(_rate), fromAsset(_fromAsset), toAsset(_toAsset) {}
+    : from(_from), to(_to), rate(_rate), weight(rateToWeight(_rate)), fromAsset(_fromAsset), toAsset(_toAsset) {}
 
 // Empty Constructor
 C2CEdge::C2CEdge() {
     from = 0;
     to = 0;
-    rate = 0.0;
+    rate = 1.0;
+    weight = rateToWeight(1.0);
     fromAsset = "XXX";
     toAsset = "XXX";
+}
+
+double C2CEdge::rateToWeight(double r) {
+    return -1.0 / r;
 }
 
 ostream& operator << (ostream& o, C2CEdge& p)
