@@ -132,6 +132,7 @@ size_t RequestC2C::parseExchangeInfo(void *contents, size_t size, size_t nmemb) 
 
 */
 
+/*
 size_t RequestC2C::callbackRates(void *contents, size_t size, size_t nmemb, void *userp)
 {
 
@@ -261,6 +262,7 @@ void RequestC2C::initRates() {
     curl_easy_cleanup(curl);
 
 }
+*/
 
 // helpers
 

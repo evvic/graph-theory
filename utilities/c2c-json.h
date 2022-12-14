@@ -45,11 +45,11 @@ private:
     /* MEMBER FUNCTIONS */
     // Define a callback function that will be called by the curl library
     // to process the response data from the get exchange info API call
-    static size_t callbackExchange(char *contents, size_t size, size_t nmemb, void *userp);
+    //static size_t callbackExchange(char *contents, size_t size, size_t nmemb, void *userp);
 
     // Define a callback function that will be called by the curl library
     // to process the response data from the ticker API call
-    static size_t callbackRates(void *contents, size_t size, size_t nmemb, void *userp);
+    //static size_t callbackRates(void *contents, size_t size, size_t nmemb, void *userp);
 
     // Pass the url and returns the json response <string>
     std::string json_request(const std::string &url);
@@ -60,10 +60,10 @@ public:
     RequestC2C();
 
     // pass vect of edges by reference
-    void populateEdges(std::vector<C2CEdge>& edges);
+    //void populateEdges(std::vector<C2CEdge>& edges);
 
     // Initialize
-    void initRates();
+    //void initRates();
 
     // Create Adjacency List from json request
     void readToAdjList(std::vector<std::vector<C2CEdge>>& graph);
@@ -71,7 +71,7 @@ public:
     // SETTERS
     void setRates(std::map<std::string, double> r);
 
-    size_t parseExchangeInfo(void *contents, size_t size, size_t nmemb);   
+    //size_t parseExchangeInfo(void *contents, size_t size, size_t nmemb);   
 
     bool getRateForSymbolPair(std::string pair, double& rate);
 
