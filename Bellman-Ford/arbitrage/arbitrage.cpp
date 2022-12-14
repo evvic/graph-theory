@@ -42,11 +42,10 @@ int main() {
 
     auto neg_cycles = alg.bellmanFord(1);
 
-    cout << "Negative cycles: ";
+    cout << "Negative cycles: " << endl;
     for (auto node : neg_cycles) {
-        cout << node << ' ';
+        cout << node.u << "->" << node.v << ' ' << node.weight << endl;
     }
-    cout << endl;
 
 }
 

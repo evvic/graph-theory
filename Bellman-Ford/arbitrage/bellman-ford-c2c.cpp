@@ -1,6 +1,6 @@
 #include "bellman-ford-c2c.h"
 #include "../../utilities/c2c-edge.h"
-#include <vector>
+ #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>
 
@@ -15,7 +15,7 @@ void BellmanFordC2C::addEdge(int u, int v, int weight) {
 }
 
 // invoke the Bellman-Ford algorithm to detect negative cycles
-std::vector<int> BellmanFordC2C::bellmanFord(int source) {
+std::vector<Edge> BellmanFordC2C::bellmanFord(int source) {
     // initialize distances to infinity
     std::vector<int> distance(V, std::numeric_limits<int>::max());
     distance[source] = 0; // distance from source to source is 0
@@ -32,13 +32,13 @@ std::vector<int> BellmanFordC2C::bellmanFord(int source) {
     }
 
     // check for negative-weight cycles
-    std::vector<int> negativeCycle;
+    std::vector<Edge> negativeCycle;
     for (int u = 0; u < V; u++) {
         for (auto& edge : adj[u]) {
             int v = edge.v;
             int weight = edge.weight;
             if (distance[v] > distance[u] + weight) {
-                negativeCycle.push_back(v);
+                negativeCycle.push_back(edge);
             }
         }
     }

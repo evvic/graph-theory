@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include "../../utilities/c2c-edge.h"
 
 // a simple class to represent a weighted edge in the graph
 class Edge {
@@ -23,7 +24,7 @@ public:
     void addEdge(int u, int v, int weight);
 
     // invoke the Bellman-Ford algorithm to detect negative cycles
-    std::vector<int> bellmanFord(int source);
+    std::vector<Edge> bellmanFord(int source);
 
     // Negate the reciprocal of the exchange rate. This converts it into a
     // weight that the Bellman-Ford algorithm can use to detect negative cycles.
