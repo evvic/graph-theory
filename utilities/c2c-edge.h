@@ -7,15 +7,16 @@
 
 struct C2CEdge{
     // Variables
-    unsigned short id;  // ID of base node
-    unsigned short to;  // Pointing to ID of 'quote' node (coin)
-    double rate;        // Ratio of converting from base coin to quote coin: -log(r)
+    unsigned short from;      // ID of base node (from)
+    unsigned short to;      // Pointing to ID of 'quote' node (coin)
+    double rate;            // Ratio of converting from base coin to quote coin 
+    double weight;          // additive weight from base to quote asset: -log(rate)
 
     std::string fromAsset;  // Base coin symbol. i.e. BTC
     std::string toAsset;    // Quote coin symbol
 
     // Constructor
-    C2CEdge(unsigned short _id, unsigned short _to, double _rate, std::string _fromAsset, std::string _toAsset);
+    C2CEdge(unsigned short _from, unsigned short _to, double _rate, std::string _fromAsset, std::string _toAsset);
 
     // Init empty (Constructor)
     C2CEdge();

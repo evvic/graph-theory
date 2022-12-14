@@ -7,9 +7,9 @@
 class Edge {
 public:
     int u, v;
-    int weight;
+    double weight;
 
-    Edge(int u, int v, int weight) : u(u), v(v), weight(weight) {}
+    Edge(int u, int v, double weight) : u(u), v(v), weight(weight) {}
 };
 
 // a class to represent a graph using an adjacency list
@@ -21,7 +21,7 @@ public:
     BellmanFordC2C(int V);
 
     // add a directed edge from u to v with the given weight
-    void addEdge(int u, int v, int weight);
+    void addEdge(int u, int v, double weight);
 
     // invoke the Bellman-Ford algorithm to detect negative cycles
     std::vector<Edge> bellmanFord(int source);

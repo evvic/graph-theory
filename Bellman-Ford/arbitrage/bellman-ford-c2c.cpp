@@ -10,7 +10,7 @@ using namespace std;
 BellmanFordC2C::BellmanFordC2C(int _V) : V(_V), adj(_V) {}
 
 // add a directed edge from u to v with the given weight
-void BellmanFordC2C::addEdge(int u, int v, int weight) {
+void BellmanFordC2C::addEdge(int u, int v, double weight) {
     adj[u].push_back(Edge(u, v, convert_rate_to_additive(weight)));
 }
 

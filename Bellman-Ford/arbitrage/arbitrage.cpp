@@ -37,7 +37,7 @@ int main() {
 
     // Populate adjacency list in BF class with edges vect
     for (auto edge : edges) {
-        alg.addEdge(edge.id, edge.to, edge.rate);
+        alg.addEdge(edge.from, edge.to, edge.rate);
     }
 
     auto neg_cycles = alg.bellmanFord(1);

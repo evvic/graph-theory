@@ -449,7 +449,7 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
             }
 
             // Get ID for fromAsset symbol or create one if not one assigned yet
-            edge.id = symbols.getSymbolID(edge.fromAsset);
+            edge.from = symbols.getSymbolID(edge.fromAsset);
 
             // Get ID for toAsset symbol or create one if not one assigned yet
             edge.to = symbols.getSymbolID(edge.toAsset);
