@@ -26,10 +26,17 @@ protected:
         unsigned short getSymbolID(std::string sym);
     };
 
-    const std::string COUNTRY_CURRENCY_CODES[4] = {"GBP", "AUD", "JPY", "CNY"};
-
+    
     // Uses COUNTRY_CURRENCY_CODES to lint out 
+    const std::string COUNTRY_CURRENCY_CODES[4] = {"GBP", "AUD", "JPY", "CNY"};
     bool isElligibleCountry(std::string);
+
+    // Actually runs the API call to get all C2C pair info
+    void populateEdges2(std::vector<C2CEdge>& edges);
+
+    // API call to get all C2C pairs and their conversion rates
+    void initRates2();
+
 
 private:        
 
@@ -42,48 +49,32 @@ private:
 
     std::map<std::string, double> rates_map; // SYMBOLPAIR, exchange rate
 
-    /* MEMBER FUNCTIONS */
-    // Define a callback function that will be called by the curl library
-    // to process the response data from the get exchange info API call
-    //static size_t callbackExchange(char *contents, size_t size, size_t nmemb, void *userp);
-
-    // Define a callback function that will be called by the curl library
-    // to process the response data from the ticker API call
-    //static size_t callbackRates(void *contents, size_t size, size_t nmemb, void *userp);
-
     // Pass the url and returns the json response <string>
     std::string json_request(const std::string &url);
 
 
 public:
-    // Constructor: requires csv filename
-    RequestC2C();
+    // Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
+    RequestC2C(const std::string keysfile = ".env", const std::string api = "api_key", const std::string secret = "secret_key");
 
     // pass vect of edges by reference
-    //void populateEdges(std::vector<C2CEdge>& edges);
+    void populateEdges(std::vector<C2CEdge>& edges3);
 
-    // Initialize
-    //void initRates();
-
-    // Create Adjacency List from json request
-    void readToAdjList(std::vector<std::vector<C2CEdge>>& graph);
-
-    // SETTERS
-    void setRates(std::map<std::string, double> r);
-
-    //size_t parseExchangeInfo(void *contents, size_t size, size_t nmemb);   
-
+    // Retrurn the rate given the symbol pair i.e. "BTCUSDT" -> 17420.6
     bool getRateForSymbolPair(std::string pair, double& rate);
 
-    int ratesSize();
+    // Returns the size of the rates_map datastructure
+    int ratesSize();    
 
-    // Version 2
-    void populateEdges2(std::vector<C2CEdge>& edges);
-
-    void initRates2();
-
+    // Returns number of vertices makng up the edges 
     unsigned short getVerticesCount();
 
+    // Create Adjacency List from json request
+    // NOT YET IMPLEMNETED
+    //void readToAdjList(std::vector<std::vector<C2CEdge>>& graph);
+
+    // In case rates has been set outside of the function, this can populate rates internally
+    void setRates(std::map<std::string, double> r);
 };
 
 

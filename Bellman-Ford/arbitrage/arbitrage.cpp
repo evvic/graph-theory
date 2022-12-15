@@ -3,7 +3,6 @@
 #include <string>
 #include "bellman-ford-c2c.h"
 #include "../../utilities/graphviz.h"
-//#include "../../utilities/c2c-csv.h"
 #include "../../utilities/c2c-json.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
 
@@ -13,26 +12,20 @@ void findCircularArbitrage(const std::vector<std::vector<C2CEdge>>& graph);
 void dfs(const std::vector<std::vector<C2CEdge>>& graph, std::vector<bool>& visited, std::vector<C2CEdge>& path, double& profit, unsigned short current);
 
 int main() {
-    RequestC2C jsonReader;
 
-    // json curl request to get rates
-    jsonReader.initRates2();
-
+    // Init vect to be populated with all C2C edges
     vector<C2CEdge> edges;
 
-    // json curl request to get exchange info
-    jsonReader.populateEdges2(edges);
+    // Class for making all API calls to get current C2C pairs info
+    RequestC2C jsonReader;
+    jsonReader.populateEdges(edges);
 
-    // cout << "Show edges" << endl;
-    // for (auto edge : edges) {
-    //     cout << edge << endl;
-    // }
+    // Get num of vertices to init Arbitrage graph class
+    unsigned short num_v = jsonReader.getVerticesCount();
 
+    // Check data
     cout << "rates map size: " << jsonReader.ratesSize() << endl;
     cout << "edges size: " << edges.size() << endl;
-
-    // Get num of vertices to init BF class
-    auto num_v = jsonReader.getVerticesCount();
 
     // Init BF class
     BellmanFordC2C alg(num_v);
