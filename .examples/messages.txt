@@ -1,2 +1,0 @@
-In c++ write a binance API request to GET /sapi/v1/convert/exchangeInfo and store in a datastructure
-
