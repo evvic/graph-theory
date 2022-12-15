@@ -33,3 +33,6 @@
 
 # Environment variables
 *.env
+
+# Examples directory .examples
+.examples/
