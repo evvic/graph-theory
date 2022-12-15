@@ -1,15 +1,12 @@
-#include <iostream>
-#include <vector>
-#include <string>
 #include "bellman-ford-c2c.h"
 #include "../../utilities/graphviz.h"
 #include "../../utilities/c2c-json.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
+#include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
-
-void findCircularArbitrage(const std::vector<std::vector<C2CEdge>>& graph);
-void dfs(const std::vector<std::vector<C2CEdge>>& graph, std::vector<bool>& visited, std::vector<C2CEdge>& path, double& profit, unsigned short current);
 
 int main() {
 
@@ -28,41 +25,37 @@ int main() {
     cout << "edges size: " << edges.size() << endl;
 
     // Init BF class
-    BellmanFordC2C alg(num_v);
+    // BellmanFordC2C alg(num_v);
+
+    // Example using bellamnford alg to return edges in negative cycle
+    // auto neg_cycles = alg.bellmanFord(1);
+
+    // Another BF example with a different implementation
+    // auto neg_cycles2 = alg.findArbitrage();
 
     // Init DFS class
-    //ArbitrageDFS alg(num_v);
+    ArbitrageDFS alg(num_v);
 
-    // Populate adjacency list in BF class with edges vect
+    // Populate adjacency list in Arbitrage graph class with edges vect
     for (auto edge : edges) {
         alg.addEdge(edge);
     }
 
-    auto neg_cycles = alg.bellmanFord(1);
+    /* DFS circular arbitrage */
+    vector<C2CEdge> cycles = alg.findCircularArbitrage();
 
-    //auto neg_cycles2 = alg.findArbitrage();
-
-    // for (int i = 0; i < neg_cycles2.size(); i++) {
-    //     cout << "Cycle #" << i << endl;
-        
-    //     for (auto node : neg_cycles2[i]) {
-    //         cout << node.fromAsset << "->" << node.toAsset << ' ' << node.rate << endl;
-    //     }
-    // }
-
-    for (auto node : neg_cycles) {
-        //cout << node.fromAsset << "->" << node.toAsset << ' ' << node.rate << endl;
-        cout << node << endl;
+    cout << "Negative cycles: " << endl;
+    for (auto edge : cycles) {
+        cout << edge << endl;
     }
 
-    /* DFS circular arbitrage */
-    //auto cycles = alg.findCircularArbitrage();
-
-    // cout << "Negative cycles: " << endl;
-    // for (auto edge : cycles) {
-    //     cout << edge << endl;
-    // }
+    // ...
+    // Check vector is circular and each edge connects
 
 
+    // ...
+    // Perform API call to buy
+    // Create new class for this method
+    // Log any trades or attempts to trade
 
 }
