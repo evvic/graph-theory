@@ -7,7 +7,7 @@ INC=-I/../../utilities
 UTI=../../utilities/
 
 # Specify the source files
-SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)c2c-json.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp $(UTI)read-keys.cpp
+SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)c2c-json.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11
