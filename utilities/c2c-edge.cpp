@@ -26,7 +26,7 @@ double C2CEdge::rateToWeight(double r) {
     return -1.0 / r;
 }
 
-ostream& operator << (ostream& o, C2CEdge& p)
+ostream& operator << (ostream& o, const C2CEdge& p)
 {
     o << left << setw(10) << (p.fromAsset + "-" + p.toAsset) << setw(12) << right << p.from << "->" << p.to << setw(14) << right << p.rate;
     return o;
