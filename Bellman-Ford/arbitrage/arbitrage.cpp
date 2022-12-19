@@ -1,6 +1,6 @@
 #include "bellman-ford-c2c.h"
 #include "../../utilities/graphviz.h"
-#include "../../utilities/c2c-json.h"
+#include "../../utilities/Binance/c2c-json.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
 #include <iostream>
 #include <vector>
@@ -58,11 +58,11 @@ int main() {
         cerr << "Error in circualr trade" << endl;
     }
 
-
     // ...
     // Perform API call to buy
     // Create new class for this method
     // Log any trades or attempts to trade
+
 
 
 }
