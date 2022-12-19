@@ -2,11 +2,9 @@
 #include <curl/curl.h>
 #include "c2c-buy.h"
 #include "../read-keys.h" // Reading in API keys
+#include "generate-signature.h"
 #include <iostream>
-#include <openssl/hmac.h>   // signature
-#include <openssl/sha.h>    // signature
-#include <iomanip>          // signature
-#include <sstream>          // signature
+#include <chrono>         // Mandatory parameter: timestamp
 
 // Constructor runs all the functions to get the data
 // Optional paramters: 
@@ -73,28 +71,43 @@ size_t MarketBuyC2C::WriteCallback(void* contents, size_t size, size_t nmemb, vo
 std::string MarketBuyC2C::viewWalletContents() {
     CURL* curl = curl_easy_init();
     if (!curl) {
-        return "";
+    std::cerr << "Error initializing curl library" << std::endl;
+    return "";
     }
 
     std::string url = "https://api.binance.com/api/v3/account";
 
     // Calculate the request signature
     std::string request_path = "/api/v3/account";
-    std::string request_method = "GET";
-    std::string total_params = "";  // No parameters for this request
-    std::string signature = CalculateSignature(request_path, request_method, total_params);
+    std::string request_method = "POST";
+    //std::string total_params = ""; // No parameters for this request
 
-    // Construct the POST data for the request
-    std::string post_data = "signature=" + signature;
+    // Get the current timestamp in milliseconds
+    auto now = std::chrono::system_clock::now();
+    auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+    auto value = now_ms.time_since_epoch();
+    long timestamp = value.count();
+
+    // Add the timestamp parameter to the request parameters
+    std::string total_params = "timestamp=" + std::to_string(timestamp);
+
+    std::cout << total_params << std::endl;
+    std::cout << "Calculate signature" << std::endl;
+
+    SignatureSHA256 sign;
+    std::string signature = sign.generate(secret_key_, request_path, request_method, total_params);
+    std::cout << signature << std::endl;
+
+    // Append signature to the URL as a query parameter
+    url += "?signature=" + signature;
 
     struct curl_slist* headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
     headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key_).c_str());
+    headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + secret_key_).c_str());
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_USERPWD, (secret_key_ + ":").c_str());
 
     std::string response;
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -108,28 +121,7 @@ std::string MarketBuyC2C::viewWalletContents() {
     curl_easy_cleanup(curl);
     curl_slist_free_all(headers);
 
+    std::cout << response << std::endl;
+
     return response;
-}
-
-// Calculates the HMAC SHA256 request signature for the specified request path, request method, and request parameters.
-std::string MarketBuyC2C::CalculateSignature(const std::string& request_path, const std::string& request_method,
-                                    const std::string& total_params) {
-    // Concatenate the request method, request path, and total_params into a single string
-    std::string data = request_method + request_path + total_params;
-
-    // Calculate the HMAC SHA256 hash of the data using the secret key as the key
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    HMAC_CTX ctx;
-    HMAC_CTX_init(&ctx);
-    HMAC_Init_ex(&ctx, secret_key_.c_str(), secret_key_.length(), EVP_sha256(), NULL);
-    HMAC_Update(&ctx, (unsigned char*)data.c_str(), data.length());
-    HMAC_Final(&ctx, hash, &SHA256_DIGEST_LENGTH);
-    HMAC_CTX_cleanup(&ctx);
-
-    // Convert the hash to a hexadecimal string
-    std::stringstream ss;
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
-    }
-    return ss.str();
 }
