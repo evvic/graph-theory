@@ -1,6 +1,7 @@
 #include "bellman-ford-c2c.h"
 #include "../../utilities/graphviz.h"
 #include "../../utilities/Binance/c2c-json.h"
+#include "../../utilities/Binance/c2c-buy.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
 #include <iostream>
 #include <vector>
@@ -62,6 +63,13 @@ int main() {
     // Perform API call to buy
     // Create new class for this method
     // Log any trades or attempts to trade
+    MarketBuyC2C buyer;
+
+    string resp = buyer.viewWalletContents();
+
+    cout << resp << endl;
+
+    //buyer.marketBuy("USDT-")
 
 
 

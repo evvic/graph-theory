@@ -4,15 +4,23 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/Data_Structures",
-                "/usr/local/Cellar/jsoncpp"
+                "/usr/local/opt/openssl@3/include",
+                "/usr/local/opt/openssl@3/lib"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "macFrameworkPath": [
+                "/usr/local/Cellar/jsoncpp",
+                "/usr/local/opt/openssl@3"
+            ],
+            "compilerArgs": [
+                "/usr/local/opt/openssl@3/include/openssl/hmac.h",
+                "/usr/local/opt/openssl@3/include/openssl/sha.h"
+            ]
         }
     ],
     "version": 4
