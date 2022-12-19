@@ -8,6 +8,8 @@
 
 using namespace std;
 
+bool isCircular(vector<C2CEdge>& cycle);
+
 int main() {
 
     // Init vect to be populated with all C2C edges
@@ -42,7 +44,8 @@ int main() {
     }
 
     /* DFS circular arbitrage */
-    vector<C2CEdge> cycles = alg.findCircularArbitrage();
+    vector<C2CEdge> cycles = alg.findCircularArbitrage(std::vector<unsigned short>());
+    // There seems to be some bugs with the path....
 
     cout << "Negative cycles: " << endl;
     for (auto edge : cycles) {
@@ -51,6 +54,9 @@ int main() {
 
     // ...
     // Check vector is circular and each edge connects
+    if (!isCircular(cycles)) {
+        cerr << "Error in circualr trade" << endl;
+    }
 
 
     // ...
@@ -58,4 +64,13 @@ int main() {
     // Create new class for this method
     // Log any trades or attempts to trade
 
+
+}
+
+bool isCircular(vector<C2CEdge>& cycle) {
+    // first check size
+    if (cycle.size() < 2) return false;
+
+    // conditional if circular
+    return (cycle[0].from == cycle[cycle.size() - 1].to)? true : false;
 }
