@@ -31,7 +31,7 @@ std::string SignatureSHA256::generate(const std::string& secret_key, const std::
     // Convert result to hex string
     std::stringstream ss;
     for (unsigned int i = 0; i < result_len; i++) {
-    ss << std::hex << std::setw(2) << std::setfill('0') << (int)result[i];
+        ss << std::hex << std::setw(2) << std::setfill('0') << (int)result[i];
     }
     std::string signature = ss.str();
 
