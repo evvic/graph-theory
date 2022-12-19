@@ -28,7 +28,7 @@ protected:
 
 private:
     int V;                                  // Number of vertices
-    ProfitPath ppath;                       // For tracking best profit with its path
+    ProfitPath best;                        // For tracking best profit with its path
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
 public:
@@ -41,7 +41,7 @@ public:
     // Entry point into recursive dfs() function
     // Returns vector of edges for most profitable circular path
     // Returns empty vector if no profitable path found
-    std::vector<C2CEdge> findCircularArbitrage();
+    std::vector<C2CEdge> findCircularArbitrage(std::vector<unsigned short> traversal_IDs);
 
 };
 
