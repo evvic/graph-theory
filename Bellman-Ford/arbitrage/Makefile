@@ -10,7 +10,7 @@ INC += -I/usr/local/opt/openssl@3/include
 UTI=../../utilities/
 
 # Specify the source files
-SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UTI)Binance/c2c-buy.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp
+SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UTI)Binance/generate-signature.cpp $(UTI)Binance/c2c-buy.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11
