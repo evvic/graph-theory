@@ -67,7 +67,7 @@ int main() {
 
     string resp = buyer.viewWalletContents();
 
-    cout << resp << endl;
+    //cout << resp << endl;
 
     //buyer.marketBuy("USDT-")
 

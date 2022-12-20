@@ -33,6 +33,7 @@
 
 # Environment variables
 *.env
+*.pem
 
 # Examples directory .examples
 .examples/
