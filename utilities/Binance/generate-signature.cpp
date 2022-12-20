@@ -14,9 +14,9 @@
 #include <string>
 
 // Empty constructor
-SignatureSHA256::SignatureSHA256() {}
+GenerateSignature::GenerateSignature() {}
 
-std::string SignatureSHA256::generate(const std::string& secret_key, const std::string& request_path,
+std::string GenerateSignature::rsaHmacSha256(const std::string& secret_key, const std::string& request_path,
     const std::string& request_method, const std::string& total_params)
 {
     // Arrange the list of parameters into a string. Separate each parameter with a &
@@ -47,33 +47,38 @@ std::string SignatureSHA256::generate(const std::string& secret_key, const std::
 
 }
 
-///
-std::string SignatureSHA256::compute_signature(const std::string& key, const std::string& message) {
-    // Initialize HMAC-SHA256 context
-    HMAC_CTX* ctx = HMAC_CTX_new();
-    HMAC_Init_ex(ctx, (unsigned char*)key.c_str(), key.size(), EVP_sha256(), NULL);
+// ///
+// std::string GenerateSignature::compute_signature(const std::string& key, const std::string& message) {
+//     // Initialize HMAC-SHA256 context
+//     HMAC_CTX* ctx = HMAC_CTX_new();
+//     HMAC_Init_ex(ctx, (unsigned char*)key.c_str(), key.size(), EVP_sha256(), NULL);
 
-    // Update context with message
-    HMAC_Update(ctx, (unsigned char*)message.c_str(), message.size());
+//     // Update context with message
+//     HMAC_Update(ctx, (unsigned char*)message.c_str(), message.size());
 
-    // Finalize HMAC-SHA256 calculation
-    unsigned char result[EVP_MAX_MD_SIZE];
-    unsigned int result_len;
-    HMAC_Final(ctx, result, &result_len);
-    HMAC_CTX_free(ctx);
+//     // Finalize HMAC-SHA256 calculation
+//     unsigned char result[EVP_MAX_MD_SIZE];
+//     unsigned int result_len;
+//     HMAC_Final(ctx, result, &result_len);
+//     HMAC_CTX_free(ctx);
 
-    // Convert result to hex string
-    std::stringstream ss;
-    for (unsigned int i = 0; i < result_len; i++) {
-        ss << std::hex << std::setw(2) << std::setfill('0') << (int)result[i];
-    }
-    std::string signature = ss.str();
+//     // Convert result to hex string
+//     std::stringstream ss;
+//     for (unsigned int i = 0; i < result_len; i++) {
+//         ss << std::hex << std::setw(2) << std::setfill('0') << (int)result[i];
+//     }
+//     std::string signature = ss.str();
 
-    // Return signature
-    return signature;
+//     // Return signature
+//     return signature;
+// }
+std::string GenerateSignature::compute_signature(const std::string& key, const std::string& message) {
+    return hmacSha256(key, message);
 }
 
-std::string SignatureSHA256::base64_encode(const unsigned char* input, int input_len) {
+
+
+std::string GenerateSignature::base64_encode(const unsigned char* input, int input_len) {
     // Initialize output buffer
     size_t output_len = (input_len / 3 + 1) * 4 + 1;
     unsigned char* output = new unsigned char[output_len];
@@ -87,60 +92,8 @@ std::string SignatureSHA256::base64_encode(const unsigned char* input, int input
     return output_str;
 }
 
-
-
-////// new method
-// std::string url_encode(const std::string& input) {
-//     std::stringstream ss;
-//     for (unsigned char c : input) {
-//         if (c == ' ') {
-//             ss << '+';
-//         } else if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
-//             ss << c;
-//         } else {
-//             ss << '%' << std::hex << std::uppercase << (int)c;
-//         }
-//     }
-//     return ss.str();
-// }
-
-
-
-// std::string generate_signature(const std::string& api_secret, const std::string& api_call, const std::string& api_method, const std::string& api_params) {
-//     // Initialize HMAC-SHA256 context
-//     HMAC_CTX* ctx = HMAC_CTX_new();
-//     HMAC_Init_ex(ctx, api_secret.c_str(), api_secret.size(), EVP_sha256(), NULL);
-
-//     // Get the current timestamp in milliseconds
-//     auto now = std::chrono::system_clock::now();
-//     auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
-//     auto value = now_ms.time_since_epoch();
-//     long timestamp = value.count();
-
-//     // Add the timestamp parameter to the request parameters
-//     std::string total_params = api_params + "&timestamp=" + std::to_string(timestamp);
-
-//     // Update context with request path and method
-//     HMAC_Update(ctx, (unsigned char*)api_call.c_str(), api_call.size());
-//     HMAC_Update(ctx, (unsigned char*)api_method.c_str(), api_method.size());
-
-//     // Update context with request parameters
-//     HMAC_Update(ctx, (unsigned char*)total_params.c_str(), total_params.size());
-
-//     // Finalize HMAC-SHA256 calculation
-//     unsigned char result[EVP_MAX_MD_SIZE];
-//     unsigned int result_len;
-//     HMAC_Final(ctx, result, &result_len);
-//     HMAC_CTX_free(ctx);
-
-//     // Convert result to base64 string
-//     std::string signature = base64_encode(result, result_len);
-
-//     // Return signature
-//     return signature;
-// }
-
-std::string SignatureSHA256::prependQuestionMark(const std::string& s)
+// Prepend '?' to total_params payload
+std::string GenerateSignature::prependQuestionMark(const std::string& s)
 {
     if (s.empty() || s[0] == '?')
     {
@@ -152,8 +105,10 @@ std::string SignatureSHA256::prependQuestionMark(const std::string& s)
     }
 }
 
-/// 
-std::string SignatureSHA256::hmacSha256(const std::string& key, const std::string& payload)
+// Returns an HMAC SHA256 signature
+// secret_key is used as the key and total_params (payload) as the value
+// for the HMAC operation
+std::string GenerateSignature::hmacSha256(const std::string& key, const std::string& payload)
 {
     // Compute the HMAC-SHA256 signature
     EVP_MD_CTX* ctx = EVP_MD_CTX_create();

@@ -6,7 +6,7 @@
 // To include a valid request signature in the request to the Binance API:
 // Must perform a keyed HMAC SHA256 operation
 
-class SignatureSHA256 {
+class GenerateSignature {
 private:
 
     /////// Functions supporting generate() function ///////
@@ -18,24 +18,20 @@ private:
     // Encode output as base64 strin
     std::string base64_encode(const unsigned char* input, int input_len);
 
-
-
     // Prepend '?' to total_params payload
     std::string prependQuestionMark(const std::string& s);
 
 public:
-    SignatureSHA256();
+    GenerateSignature();
 
     // Returns a calculated SHA 256 signature required for authorized API calls
-    std::string generate(const std::string& secret_key, const std::string& request_path,
+    std::string rsaHmacSha256(const std::string& secret_key, const std::string& request_path,
                          const std::string& request_method, const std::string& total_params);
 
-    // func
+    // Returns an HMAC SHA256 signature required for authorized API calls
+    // secret_key is used as the key and total_params (payload) as the value
+    // for the HMAC operation
     std::string hmacSha256(const std::string& key, const std::string& payload);
-
-
-
-
 };
 
 #endif

@@ -77,7 +77,6 @@ std::string MarketBuyC2C::viewWalletContents() {
 
     std::string url = "https://api.binance.com/api/v3/account";
 
-    std::cout << secret_key_ << std::endl;
 
     // Calculate the request signature
     std::string request_path = "/api/v3/account";
@@ -97,7 +96,7 @@ std::string MarketBuyC2C::viewWalletContents() {
     std::cout << total_params << std::endl;
     std::cout << "Calculate signature" << std::endl;
 
-    SignatureSHA256 sign;
+    GenerateSignature sign;
     //std::string signature = sign.generate(secret_key_, request_path, request_method, total_params);
     std::string signature = sign.hmacSha256(secret_key_, total_params);
     std::cout << signature << std::endl;
