@@ -30,7 +30,7 @@ size_t CurlScaffold::defaultCallback(void* contents, size_t size, size_t nmemb, 
 }
 
 
-std::string CurlScaffold::curlResponse(const std::string& url, const std::string& signature) {
+std::string CurlScaffold::curlResponse(const std::string& url_payload, const std::string& signature) {
     // Initialize curl
     CURL* curl = curl_easy_init();
     
@@ -45,7 +45,7 @@ std::string CurlScaffold::curlResponse(const std::string& url, const std::string
     headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key).c_str());
     headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + signature).c_str());
 
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, url_payload.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     std::string response;

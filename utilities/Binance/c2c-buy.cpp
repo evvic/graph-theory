@@ -63,34 +63,27 @@ std::string MarketBuyC2C::viewWalletContents() {
     std::string url = "https://api.binance.com/api/v3/account";
 
     // Calculate the request signature
-    std::string request_path = "/api/v3/account";
-    std::string request_method = "GET";
+    // std::string request_path = "/api/v3/account";
+    // std::string request_method = "GET";
     //std::string total_params = ""; // No parameters for this request
 
     // Get the current timestamp in milliseconds
-    auto now = std::chrono::system_clock::now();
-    auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
-    auto value = now_ms.time_since_epoch();
-    long timestamp = value.count();
+    long timestamp = timestampEpoch_ms();
 
     // Add the timestamp parameter to the request parameters
     std::string total_params = "timestamp=" + std::to_string(timestamp);
     // total_params++....
 
-    std::cout << total_params << std::endl;
-    std::cout << "Calculate signature" << std::endl;
-
     GenerateSignature sign;
-    //std::string signature = sign.generate(secret_key, request_path, request_method, total_params);
     std::string signature = sign.hmacSha256(secret_key, total_params);
-    std::cout << signature << std::endl;
+    // std::cout << signature << std::endl;
 
     // Append timestamp to the URL as a query parameter
     url += '?' + total_params;
     // Append signature to the URL as a query parameter
     url += "&signature=" + signature;
     
-    std::cout << url << std::endl;
+    // std::cout << url << std::endl;
 
 
     return curlResponse(url, signature);

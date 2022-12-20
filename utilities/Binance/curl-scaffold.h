@@ -17,6 +17,8 @@ public:
     // Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
     CurlScaffold(const std::string keysfile = ".env", const std::string api = "api_key", const std::string secret = "secret_key");
 
+    // Contains all boilerplate code for curling a HTTP request
+    // Requires url (+total_params appended) and HMAC generated signature
     std::string curlResponse(const std::string& url, const std::string& signature);
 
     // Get current timestamp in milliseconds
