@@ -16,8 +16,8 @@ RequestC2C::RequestC2C(const std::string keysfile, const std::string api, const 
 
     // Obtain API keys from .env file
     ReadKeys reader;
-    api_key = reader.getKey(keysfile, api);
-    secret_key = reader.getKey(keysfile, secret);
+    api_key = reader.getEnvKey(keysfile, api);
+    secret_key = reader.getEnvKey(keysfile, secret);
 
     // Error optaining one or both keys
     if (api_key.length() <= 0 || secret_key.length() <= 0) {
