@@ -11,19 +11,13 @@
 //      keysfile: path to file containing api and secret keys
 //      api: variable name of api key within specified file
 //      secret: variable name of secret key within specified file
-MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, const std::string secret) {
+MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, const std::string secret) 
+    : CurlScaffold (keysfile, api, secret) {
 
     // Obtain API keys from .env file
-    ReadKeys reader;
-    api_key_ = reader.getEnvKey(keysfile, api);
-    secret_key_ = reader.getEnvKey(keysfile, secret);
+    // Performed in CurlScaffold constructor
 
-    // Error optaining one or both keys
-    if (api_key_.length() <= 0 || secret_key_.length() <= 0) {
-        std::cerr << "Could not obtain keys for private client API access." << std::endl;
-    }
-
-    // ...    
+    // ...   
 }
 
 // Makes a market buy request to the Binance API for the specified pair and amount.
@@ -39,15 +33,15 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
 
     struct curl_slist* headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-    headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key_).c_str());
+    headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key).c_str());
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_USERPWD, (secret_key_ + ":").c_str());
+    curl_easy_setopt(curl, CURLOPT_USERPWD, (secret_key + ":").c_str());
 
     std::string response;
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, defaultCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
     CURLcode res = curl_easy_perform(curl);
@@ -61,22 +55,12 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
     return response;
 }
 
-size_t MarketBuyC2C::WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-    ((std::string*)userp)->append((char*)contents, size * nmemb);
-    return size * nmemb;
-}
 
 // Makes a request to the Binance API to view the contents of your wallet.
 // Returns the raw response from the API.
 std::string MarketBuyC2C::viewWalletContents() {
-    CURL* curl = curl_easy_init();
-    if (!curl) {
-    std::cerr << "Error initializing curl library" << std::endl;
-    return "";
-    }
 
     std::string url = "https://api.binance.com/api/v3/account";
-
 
     // Calculate the request signature
     std::string request_path = "/api/v3/account";
@@ -97,8 +81,8 @@ std::string MarketBuyC2C::viewWalletContents() {
     std::cout << "Calculate signature" << std::endl;
 
     GenerateSignature sign;
-    //std::string signature = sign.generate(secret_key_, request_path, request_method, total_params);
-    std::string signature = sign.hmacSha256(secret_key_, total_params);
+    //std::string signature = sign.generate(secret_key, request_path, request_method, total_params);
+    std::string signature = sign.hmacSha256(secret_key, total_params);
     std::cout << signature << std::endl;
 
     // Append timestamp to the URL as a query parameter
@@ -108,27 +92,6 @@ std::string MarketBuyC2C::viewWalletContents() {
     
     std::cout << url << std::endl;
 
-    struct curl_slist* headers = NULL;
-    headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-    headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key_).c_str());
-    headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + signature).c_str());
 
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-    std::string response;
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-    CURLcode res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-    return "";
-    }
-
-    curl_easy_cleanup(curl);
-    curl_slist_free_all(headers);
-
-    std::cout << response << std::endl;
-
-    return response;
+    return curlResponse(url, signature);
 }
