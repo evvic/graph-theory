@@ -2,7 +2,6 @@
 #include <curl/curl.h>
 #include "c2c-buy.h"
 #include "../read-keys.h" // Reading in API keys
-#include "generate-signature.h"
 #include <iostream>
 #include <chrono>         // Mandatory parameter: timestamp
 
@@ -62,29 +61,8 @@ std::string MarketBuyC2C::viewWalletContents() {
 
     std::string url = "https://api.binance.com/api/v3/account";
 
-    // Calculate the request signature
-    // std::string request_path = "/api/v3/account";
-    // std::string request_method = "GET";
-    //std::string total_params = ""; // No parameters for this request
+    std::string total_params = ""; // No parameters for this request
 
-    // Get the current timestamp in milliseconds
-    long timestamp = timestampEpoch_ms();
-
-    // Add the timestamp parameter to the request parameters
-    std::string total_params = "timestamp=" + std::to_string(timestamp);
-    // total_params++....
-
-    GenerateSignature sign;
-    std::string signature = sign.hmacSha256(secret_key, total_params);
-    // std::cout << signature << std::endl;
-
-    // Append timestamp to the URL as a query parameter
-    url += '?' + total_params;
-    // Append signature to the URL as a query parameter
-    url += "&signature=" + signature;
-    
-    // std::cout << url << std::endl;
-
-
-    return curlResponse(url, signature);
+    // Creates signature and performs all necessary curl requests
+    return curlHttpRequest(url, total_params);
 }

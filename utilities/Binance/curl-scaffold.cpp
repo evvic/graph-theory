@@ -3,6 +3,7 @@
 #include "../read-keys.h" // Reading in API keys
 #include <iostream>       // cerr
 #include <curl/curl.h>
+#include "generate-signature.h" // Class for signing SHA256
 
 // Constructor runs all the functions to get the data
 // Optional paramters: 
@@ -76,4 +77,29 @@ long CurlScaffold::timestampEpoch_ms() {
     auto value = now_ms.time_since_epoch();
 
     return value.count();
+}
+
+// Wrapper for curlResponse function of boilerplate code for curling a HTTP request
+// Requires url (only complete url) and structured parameters as query string
+// Returns string of JSON resposne
+std::string CurlScaffold::curlHttpRequest(std::string url, std::string total_params) {
+    // Get the current timestamp in milliseconds
+    long timestamp = timestampEpoch_ms();
+
+    // Add the timestamp parameter to the request parameters
+    total_params += ("timestamp=" + std::to_string(timestamp));
+    // total_params++....
+
+    GenerateSignature sign;
+    const std::string signature = sign.hmacSha256(secret_key, total_params);
+    // std::cout << signature << std::endl;
+
+    // Append total_params to the URL as a query parameter + '?'
+    url += '?' + total_params;
+    // Append signature to the URL as a query parameter
+    url += "&signature=" + signature;
+    
+    // std::cout << url << std::endl;
+
+    return curlResponse(url, signature);
 }
