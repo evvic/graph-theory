@@ -22,45 +22,27 @@ MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, co
 // Makes a market buy request to the Binance API for the specified pair and amount.
 // Returns the raw response from the API.
 std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
-    CURL* curl = curl_easy_init();
-    if (!curl) {
-        return "";
-    }
 
-    std::string url = "https://api.binance.com/api/v3/order";
-    std::string post_data = "symbol=" + pair + "&side=BUY&type=MARKET&quantity=" + std::to_string(amount);
+    // append /test 
+    // Creates and validates a new order but does not send it into the matching engin
+    std::string url = "https://api.binance.com/api/v3/order/test";
+    //std::string total_params = "symbol=" + pair + "&side=BUY&type=MARKET&quantity=" + std::to_string(amount);
 
-    struct curl_slist* headers = NULL;
-    headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-    headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key).c_str());
+    std::string total_params = "symbol=USDTBNB&side=BUY&type=MARKET&timeInForce=IOC&quantity=0.01";
+    //std::string total_params = "symbol=USDTBNB&side=BUY&type=LIMIT&timeInForce=GTC&quantity=0.2&price=0.1&recvWindow=5000";
 
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(curl, CURLOPT_USERPWD, (secret_key + ":").c_str());
+    // This http  request rewuires it to be a post
+    const bool isPost = true;
 
-    std::string response;
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, defaultCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-    CURLcode res = curl_easy_perform(curl);
-    if (res != CURLE_OK) {
-        return "";
-    }
-
-    curl_easy_cleanup(curl);
-    curl_slist_free_all(headers);
-
-    return response;
+    // Creates signature and performs all necessary curl requests
+    return curlHttpRequest(url, total_params, isPost);
 }
-
 
 // Makes a request to the Binance API to view the contents of your wallet.
 // Returns the raw response from the API.
 std::string MarketBuyC2C::viewWalletContents() {
 
     std::string url = "https://api.binance.com/api/v3/account";
-
     std::string total_params = ""; // No parameters for this request
 
     // Creates signature and performs all necessary curl requests

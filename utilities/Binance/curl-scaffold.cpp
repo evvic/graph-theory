@@ -31,20 +31,36 @@ size_t CurlScaffold::defaultCallback(void* contents, size_t size, size_t nmemb, 
 }
 
 
-std::string CurlScaffold::curlResponse(const std::string& url_payload, const std::string& signature) {
+std::string CurlScaffold::curlResponse(const std::string& url_payload, const std::string& signature, const bool& isPost) {
     // Initialize curl
     CURL* curl = curl_easy_init();
     
+    std::cout << url_payload << std::endl;
+
     // Check if curl was successfully initialized
     if (!curl) {
         std::cerr << "Error initializing curl library" << std::endl;
         return "";
     }
 
+    // Set HTTP request method (post || get)
+    if (isPost) {
+        // Set the request method to POST
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+    } else {
+        // Set the request method to GET
+        curl_easy_setopt(curl, CURLOPT_POST, 0L);
+    }
+    
+
     struct curl_slist* headers = NULL;
     headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
     headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key).c_str());
     headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + signature).c_str());
+
+
+    // Set the query parameters to send in the request
+    //curl_easy_setopt(curl, CURLOPT_POSTFIELDS, getQueryparamsFromUrl(url_payload).c_str());
 
     curl_easy_setopt(curl, CURLOPT_URL, url_payload.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -82,24 +98,61 @@ long CurlScaffold::timestampEpoch_ms() {
 // Wrapper for curlResponse function of boilerplate code for curling a HTTP request
 // Requires url (only complete url) and structured parameters as query string
 // Returns string of JSON resposne
-std::string CurlScaffold::curlHttpRequest(std::string url, std::string total_params) {
+std::string CurlScaffold::curlHttpRequest(std::string url, std::string total_params, const bool& isPost) {
     // Get the current timestamp in milliseconds
     long timestamp = timestampEpoch_ms();
 
     // Add the timestamp parameter to the request parameters
+    // If "timestamp" is not the first param (and '&' not included already), include the '&'
+    if (total_params.size() > 0 && total_params.back() != '&' ) {
+        total_params += '&';
+    }
     total_params += ("timestamp=" + std::to_string(timestamp));
-    // total_params++....
 
     GenerateSignature sign;
     const std::string signature = sign.hmacSha256(secret_key, total_params);
     // std::cout << signature << std::endl;
 
     // Append total_params to the URL as a query parameter + '?'
-    url += '?' + total_params;
+    // Check if '?' already prepended to total_params
+    url += ('?' + total_params);
     // Append signature to the URL as a query parameter
-    url += "&signature=" + signature;
+    url += ("&signature=" + signature);
     
-    // std::cout << url << std::endl;
+    return curlResponse(url, urlEncode(signature), isPost);
+}
 
-    return curlResponse(url, signature);
+// Helper funtion to URL-encode query parameters (or url)
+// Returns encoded string
+std::string CurlScaffold::urlEncode(const std::string& input) {
+    CURL* curl = curl_easy_init();
+    if (curl) {
+        char* encoded = curl_easy_escape(curl, input.c_str(), input.size());
+        if (encoded) {
+            std::string output(encoded);
+            curl_free(encoded);
+            curl_easy_cleanup(curl);
+            return output;
+        }
+    }
+    return "";
+}
+
+
+
+// Returns substring of url payload given
+std::string CurlScaffold::getQueryparamsFromUrl(const std::string url_payload) {
+    
+    size_t delim = url_payload.find_last_of('?');
+
+    // If '?' was not found return empty string
+    if (delim == std::string::npos) {
+        return "";
+    }
+
+    // Add 1 to exclude the '?' itself
+    delim ++;
+
+    std::cout << url_payload.substr(delim, url_payload.length()) << std::endl;
+    return url_payload.substr(delim, url_payload.length());
 }

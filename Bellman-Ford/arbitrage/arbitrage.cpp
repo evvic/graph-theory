@@ -69,7 +69,7 @@ int main() {
 
     //cout << resp << endl;
 
-    //buyer.marketBuy("USDT-")
+    resp = buyer.marketBuy("USDTBNB", 0.01);
 
 
 
