@@ -5,9 +5,10 @@
 #include <curl/curl.h>
 #include "curl-scaffold.h"
 
-class MarketBuyC2C : CurlScaffold {
- private:
-    
+class MarketBuyC2C {
+private:
+    std::string api_key;
+    std::string secret_key;
 
    // Calculates the HMAC SHA256 request signature for the specified request path, request method, and request parameters.
    std::string CalculateSignature(const std::string& request_path, const std::string& request_method,
