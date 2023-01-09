@@ -212,6 +212,12 @@ void RequestC2C::populateEdges2(std::vector<C2CEdge>& edges3) {
             edge.fromAsset = obj["fromAsset"].asString();
             edge.toAsset = obj["toAsset"].asString();
 
+            // Temporarily remove DAI as a tradeable edge
+            if (edge.fromAsset == "DAI" || edge.toAsset == "DAI") {
+                std::cout << "Ignoring symbol pair " << edge.fromAsset << '-' << edge.toAsset << std::endl;
+                continue;
+            }
+
             
             // If element exchange rate exists in symbols map, continue processing
             if (!getRateForSymbolPair((edge.fromAsset + edge.toAsset), _rate)) {

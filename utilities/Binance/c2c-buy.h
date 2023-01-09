@@ -24,6 +24,10 @@ class MarketBuyC2C : CurlScaffold {
     // Returns the raw response from the API.
     std::string marketBuy(const std::string& pair, double amount);
 
+    // Request a quote for the requested token pairs
+    // Returns the raw response from the API. Response is the quited rate and window of time available
+    std::string sendQuote(const std::string& fromAsset, const std::string& toAsset);
+
     // Makes a request to the Binance API to view the contents of your wallet.
     // Returns the raw response from the API.
     std::string viewWalletContents();
