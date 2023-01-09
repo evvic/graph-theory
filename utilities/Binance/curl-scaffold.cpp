@@ -51,12 +51,19 @@ std::string CurlScaffold::curlResponse(const std::string& url_payload, const std
         // Set the request method to GET
         curl_easy_setopt(curl, CURLOPT_POST, 0L);
     }
+
+    // Set the error buffer
+    char errorBuffer[CURL_ERROR_SIZE];
+    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
+
+    // enable verbose output
+    //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
     
 
     struct curl_slist* headers = NULL;
-    headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+    //headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
     headers = curl_slist_append(headers, ("X-MBX-APIKEY: " + api_key).c_str());
-    headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + signature).c_str());
+    //headers = curl_slist_append(headers, ("X-MBX-SIGNATURE: " + signature).c_str());
 
 
     // Set the query parameters to send in the request
@@ -72,6 +79,7 @@ std::string CurlScaffold::curlResponse(const std::string& url_payload, const std
     CURLcode res = curl_easy_perform(curl);
 
     if (res != CURLE_OK) {
+        std::cout << errorBuffer << std::endl;
         return "";
     }
 
@@ -92,7 +100,12 @@ long CurlScaffold::timestampEpoch_ms() {
     auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
     auto value = now_ms.time_since_epoch();
 
-    return value.count();
+    auto ret = value.count();
+
+    std::cout << "timestamp " << ret << std::endl;
+    std::cout << "timestamp " << "1673275084565" << std::endl;
+
+    return ret;
 }
 
 // Wrapper for curlResponse function of boilerplate code for curling a HTTP request
@@ -118,8 +131,11 @@ std::string CurlScaffold::curlHttpRequest(std::string url, std::string total_par
     url += ('?' + total_params);
     // Append signature to the URL as a query parameter
     url += ("&signature=" + signature);
+
+    std::cout << "signature " << "8625254220fbda3e6382aa5470a790871ccf1869a99511bb205c8ee49de59698" << std::endl;
+    std::cout << "signature " << signature << std::endl;
     
-    return curlResponse(url, urlEncode(signature), isPost);
+    return curlResponse(url, signature, isPost);
 }
 
 // Helper funtion to URL-encode query parameters (or url)

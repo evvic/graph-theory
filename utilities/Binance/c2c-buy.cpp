@@ -45,7 +45,7 @@ std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::str
     // Creates and validates a new quote
     std::string url = "https://api.binance.com/sapi/v1/convert/getQuote";
 
-    std::string total_params = "fromAsset=DAI&toAsset=BNB";
+    std::string total_params = "fromAsset=DAI&toAsset=BNB&fromAmount=2";
 
     // This http  request rewuires it to be a post
     const bool isPost = true;
