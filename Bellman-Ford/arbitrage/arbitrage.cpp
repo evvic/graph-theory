@@ -69,8 +69,11 @@ int main() {
 
     //cout << resp << endl;
 
-    resp = buyer.marketBuy("USDTBNB", 0.01);
+    //resp = buyer.marketBuy("USDTBNB", 0.01);
 
+    resp = buyer.sendQuote("DAI", "BNB");
+
+    cout << resp << endl;
 
 
 }

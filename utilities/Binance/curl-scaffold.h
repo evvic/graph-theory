@@ -59,6 +59,7 @@ public:
     void setHeaders(const std::map<std::string, std::string> &headers);
     void setQueryParams(const std::map<std::string, std::string> &queryParams);
     void setUrl(const std::string &url);
+    void setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams);
     void setBody(const std::string &body);
 
 };

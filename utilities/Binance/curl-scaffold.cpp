@@ -58,13 +58,25 @@ void CurlScaffold::setBody(const std::string &body) {
     this->body = body;
 }
 
+void CurlScaffold::setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams) {
+    std::string url = baseUrl;
+    if (!queryParams.empty()) {
+        url += "?";
+        bool first = true;
+        for (const auto &param : queryParams) {
+            if (!first) {
+                url += "&";
+            }
+            url += param.first + "=" + param.second;
+            first = false;
+        }
+    }
+    this->url = url;
+}
+
+
 // Execute the request and return the response
 std::string CurlScaffold::executeRequest() {
-    http_client client(this->url);
-
-    http_request request;
-
-    request.headers().add("X-MBX-APIKEY", this->api_key);
 
     // Create timestamp & add to params
     std::string timestamp = std::to_string(timestampEpoch_ms());
@@ -74,12 +86,15 @@ std::string CurlScaffold::executeRequest() {
     std::string signature = generateSignature(getQueryString(queryParams));
     queryParams.insert(std::make_pair("signature", signature));
 
+    this->setUrl(url, queryParams);
+
+    http_client client(this->url);
+
+    http_request request;
+    request.headers().add("X-MBX-APIKEY", this->api_key);
+
     for (const auto &header : this->headers) {
         request.headers().add(header.first, header.second);
-    }
-
-    for (const auto &param : this->queryParams) {
-        request.set_query_parameter(param.first, param.second);
     }
 
     if (this->isPost) {
@@ -91,6 +106,7 @@ std::string CurlScaffold::executeRequest() {
 
     return client.request(request).get().extract_string().get();
 }
+
 
 // Get the current timestamp in milliseconds
 long CurlScaffold::timestampEpoch_ms() {
