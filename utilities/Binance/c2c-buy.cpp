@@ -42,13 +42,10 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
 // Returns the raw response from the API. Response is the quited rate and window of time
 std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::string& toAsset) {
 
-    // append /test 
-    // Creates and validates a new order but does not send it into the matching engin
-    std::string url = "https://api.binance.com/api/v3/order/test";
-    //std::string total_params = "symbol=" + pair + "&side=BUY&type=MARKET&quantity=" + std::to_string(amount);
+    // Creates and validates a new quote
+    std::string url = "https://api.binance.com/sapi/v1/convert/getQuote";
 
-    std::string total_params = "symbol=USDTBNB&side=BUY&type=MARKET&timeInForce=IOC&quantity=0.01&recvWindow=5000";
-    //std::string total_params = "symbol=USDTBNB&side=BUY&type=LIMIT&timeInForce=GTC&quantity=0.2&price=0.1&recvWindow=5000";
+    std::string total_params = "fromAsset=DAI&toAsset=BNB";
 
     // This http  request rewuires it to be a post
     const bool isPost = true;
