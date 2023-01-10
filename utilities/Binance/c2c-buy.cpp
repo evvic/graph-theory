@@ -1,6 +1,6 @@
 #include <string>
 #include <curl/curl.h>
-#include "http-scaffold.h"
+#include "../http/http-scaffold.h"
 #include "c2c-buy.h"
 #include "../read-keys.h" // Reading in API keys
 #include <iostream>
