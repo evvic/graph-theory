@@ -14,7 +14,7 @@
 MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, const std::string secret) {
 
     // Obtain API keys from .env file
-    // Performed in CurlScaffold constructor
+    // Performed in HttpScaffold constructor
 
     // ...   
 }
@@ -24,7 +24,7 @@ MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, co
 std::string MarketBuyC2C::marketBuy(const std::string& pair, const double& amount) {
     
     // Object that handles http request
-    CurlScaffold request;
+    HttpScaffold request;
 
     // append /test 
     // Creates and validates a new order but does not send it into the matching engin
@@ -55,7 +55,7 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, const double& amoun
 std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount) {
 
     // Object that handles http request
-    CurlScaffold request;
+    HttpScaffold request;
 
     // Creates and validates a new quote
     std::string url = "https://api.binance.com/sapi/v1/convert/getQuote";
@@ -79,7 +79,7 @@ std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::str
 // Returns the raw response from the API.
 std::string MarketBuyC2C::viewWalletContents() {
 
-    CurlScaffold request;
+    HttpScaffold request;
 
     std::string url = "https://api.binance.com/api/v3/account";
     std::string total_params = ""; // No parameters for this request

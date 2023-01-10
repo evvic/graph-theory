@@ -2,25 +2,24 @@
 #include <chrono>         // Mandatory parameter: timestamp
 #include "../read-keys.h" // Reading in API keys
 #include <iostream>       // cerr
-//#include <curl/curl.h>
 #include "generate-signature.h" // Class for signing SHA256
 #include <cpprest/http_client.h>
 #include <cpprest/filestream.h>
 #include <cpprest/json.h>
 #include <map>
 
-using namespace utility; // Common utilities like string conversions
-using namespace web; // Common features like URIs.
-using namespace web::http; // Common HTTP functionality
-using namespace web::http::client; // HTTP client features
+using namespace utility;     // Common utilities like string conversions
+using namespace web;         // Common features like URIs.
+using namespace web::http;   // Common HTTP functionality
+using namespace web::http::client;    // HTTP client features
 using namespace concurrency::streams; // Asynchronous streams
 
-// Constructor runs all the functions to get the data
+// Constructor runs all the functions to get the keys
 // Optional paramters:
 // keysfile: path to file containing api and secret keys
 // api: variable name of api key within specified file
 // secret: variable name of secret key within specified file
-CurlScaffold::CurlScaffold(const std::string keysfile, const std::string api, const std::string secret)
+HttpScaffold::HttpScaffold(const std::string keysfile, const std::string api, const std::string secret)
 {
     // Obtain API keys from .env file
     ReadKeys reader;
@@ -29,36 +28,41 @@ CurlScaffold::CurlScaffold(const std::string keysfile, const std::string api, co
 
     // Error optaining one or both keys
     if (api_key.length() <= 0 || secret_key.length() <= 0) {
-        std::cerr << "Could not obtain keys for private client API access." << std::endl;
+        std::cerr << "Could not obtain keys " << api << " & " << secret << " from " << keysfile << std::endl;
     }
 }
 
+// Constructor takes api & secret key and initializes members 
+HttpScaffold::HttpScaffold(const std::string api, const std::string secret) : 
+    api_key(api), secret_key(secret)
+{}
+
 // Set the request method to POST
-void CurlScaffold::setIsPost(bool isPost) {
+void HttpScaffold::setIsPost(bool isPost) {
     this->isPost = isPost;
 }
 
 // Set the headers to send in the request
-void CurlScaffold::setHeaders(const std::map<std::string, std::string> &headers) {
+void HttpScaffold::setHeaders(const std::map<std::string, std::string> &headers) {
     this->headers = headers;
 }
 
 // Set the query parameters to send in the request
-void CurlScaffold::setQueryParams(const std::map<std::string, std::string> &queryParams) {
+void HttpScaffold::setQueryParams(const std::map<std::string, std::string> &queryParams) {
     this->queryParams = queryParams;
 }
 
 // Set the url for the request
-void CurlScaffold::setUrl(const std::string &url) {
+void HttpScaffold::setUrl(const std::string &url) {
     this->url = url;
 }
 
 // Set the body for the request
-void CurlScaffold::setBody(const std::string &body) {
+void HttpScaffold::setBody(const std::string &body) {
     this->body = body;
 }
 
-void CurlScaffold::setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams) {
+void HttpScaffold::setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams) {
     std::string url = baseUrl;
     if (!queryParams.empty()) {
         url += "?";
@@ -76,7 +80,7 @@ void CurlScaffold::setUrl(const std::string &baseUrl, const std::map<std::string
 
 
 // Execute the request and return the response
-std::string CurlScaffold::executeRequest() {
+std::string HttpScaffold::executeRequest() {
 
     // Create timestamp & add to params
     std::string timestamp = std::to_string(timestampEpoch_ms());
@@ -109,7 +113,7 @@ std::string CurlScaffold::executeRequest() {
 
 
 // Get the current timestamp in milliseconds
-long CurlScaffold::timestampEpoch_ms() {
+long HttpScaffold::timestampEpoch_ms() {
     // Get current time with chrono library
     auto now = std::chrono::system_clock::now();
 
@@ -123,12 +127,12 @@ long CurlScaffold::timestampEpoch_ms() {
 }
 
 // Get the current timestamp in seconds
-long CurlScaffold::timestampEpoch_s() {
+long HttpScaffold::timestampEpoch_s() {
     return timestampEpoch_ms() / 1000;
 }
 
 // Generate the query string for a GET request
-std::string CurlScaffold::getQueryString(const std::map<std::string, std::string> &queryParams) {
+std::string HttpScaffold::getQueryString(const std::map<std::string, std::string> &queryParams) {
     std::string queryString = "";
     bool first = true;
     for (const auto &param : queryParams) {
@@ -142,13 +146,13 @@ std::string CurlScaffold::getQueryString(const std::map<std::string, std::string
 }
 
 // Generate the signature for a request using the HMAC-SHA256 method
-std::string CurlScaffold::generateSignature(const std::string &queryString) {
+std::string HttpScaffold::generateSignature(const std::string &queryString) {
     GenerateSignature signatureGenerator;
     return signatureGenerator.hmacSha256(secret_key, queryString);
 }
 
 // Make a GET request to the specified url
-std::string CurlScaffold::get(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::map<std::string, std::string> &headers) {
+std::string HttpScaffold::get(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::map<std::string, std::string> &headers) {
     this->setUrl(url);
     this->setQueryParams(queryParams);
     this->setHeaders(headers);
@@ -158,7 +162,7 @@ std::string CurlScaffold::get(const std::string &url, const std::map<std::string
 }
 
 // Make a POST request to the specified url
-std::string CurlScaffold::post(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::string &body, const std::map<std::string, std::string> &headers) {
+std::string HttpScaffold::post(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::string &body, const std::map<std::string, std::string> &headers) {
     this->setUrl(url);
     this->setQueryParams(queryParams);
     this->setHeaders(headers);
@@ -172,7 +176,7 @@ std::string CurlScaffold::post(const std::string &url, const std::map<std::strin
 
 // OLD CURL METHOD
 
-// std::string CurlScaffold::curlResponse(const std::string& url_payload, const std::string& signature, const bool& isPost) {
+// std::string HttpScaffold::curlResponse(const std::string& url_payload, const std::string& signature, const bool& isPost) {
 //     // Initialize curl
 //     CURL* curl = curl_easy_init();
     
@@ -233,7 +237,7 @@ std::string CurlScaffold::post(const std::string &url, const std::map<std::strin
 // }
 
 // // Get the current timestamp in milliseconds
-// long CurlScaffold::timestampEpoch_ms() {
+// long HttpScaffold::timestampEpoch_ms() {
 //     // Get current time with chrono library
 //     auto now = std::chrono::system_clock::now();
 
@@ -252,7 +256,7 @@ std::string CurlScaffold::post(const std::string &url, const std::map<std::strin
 // // Wrapper for curlResponse function of boilerplate code for curling a HTTP request
 // // Requires url (only complete url) and structured parameters as query string
 // // Returns string of JSON resposne
-// std::string CurlScaffold::curlHttpRequest(std::string url, std::string total_params, const bool& isPost) {
+// std::string HttpScaffold::curlHttpRequest(std::string url, std::string total_params, const bool& isPost) {
 //     // Get the current timestamp in milliseconds
 //     long timestamp = timestampEpoch_ms();
 
@@ -281,7 +285,7 @@ std::string CurlScaffold::post(const std::string &url, const std::map<std::strin
 
 // // Helper funtion to URL-encode query parameters (or url)
 // // Returns encoded string
-// std::string CurlScaffold::urlEncode(const std::string& input) {
+// std::string HttpScaffold::urlEncode(const std::string& input) {
 //     CURL* curl = curl_easy_init();
 //     if (curl) {
 //         char* encoded = curl_easy_escape(curl, input.c_str(), input.size());
@@ -298,7 +302,7 @@ std::string CurlScaffold::post(const std::string &url, const std::map<std::strin
 
 
 // // Returns substring of url payload given
-// std::string CurlScaffold::getQueryparamsFromUrl(const std::string url_payload) {
+// std::string HttpScaffold::getQueryparamsFromUrl(const std::string url_payload) {
     
 //     size_t delim = url_payload.find_last_of('?');
 

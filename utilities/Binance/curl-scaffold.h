@@ -1,50 +1,39 @@
-#ifndef CURL_SCAFFOLD
-#define CURL_SCAFFOLD
+#ifndef HTTP_SCAFFOLD
+#define HTTP_SCAFFOLD
 
 #include <string>
 #include <map>
 
-// Think about renaming file & class
-
-class CurlScaffold {
+class HttpScaffold {
 protected:
-    std::string api_key;
-    std::string secret_key;
+    std::string api_key;    // Mandatory keys
+    std::string secret_key; // Mandatory keys
 
-    bool isPost;
-    std::map<std::string, std::string> headers;
-    std::map<std::string, std::string> queryParams;
-    std::string url;
+    bool isPost;            // Flag for POST or GET
+
+    // http variables
+    std::string url; 
     std::string body;
+    std::map<std::string, std::string> headers; 
+    std::map<std::string, std::string> queryParams;
+    
 
-    // // Callback func for curl respinse
-    // static size_t defaultCallback(void* contents, size_t size, size_t nmemb, void* userp);
-
-    // // Helper funtion to URL-encode query parameters (or url)
-    // // Returns encoded string
-    // std::string urlEncode(const std::string& input);
-
-    // // Contains all boilerplate code for curling a HTTP request
-    // // Requires url (+total_params appended) and HMAC generated signature
-    // // Defaults bool isPost to false. True == POST, False == GET
-    // std::string curlResponse(const std::string& url, const std::string& signature, const bool& isPost = false);
-
-    // std::string getQueryparamsFromUrl(const std::string url_payload);
-
-    // Execute the request and return the response
+    // Execute the request and return the response (boiler plate)
     std::string executeRequest();
 
-    // Given 
+    // Returns HMAC Sha256 signature given query params (must include timestamp)
+    // Requires secret_key member variable
     std::string generateSignature(const std::string &queryString);
 
 public:
-    // Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
-    CurlScaffold(const std::string keysfile = ".env", const std::string api = "api_key", const std::string secret = "secret_key");
-
+    // Default Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
+    HttpScaffold(const std::string keysfile = ".env", const std::string api = "api_key", const std::string secret = "secret_key");
     
+    // Constructor takes api & secret key and initializes members 
+    HttpScaffold(const std::string api, const std::string secret);
 
-    // Wrapper for curlResponse function of boilerplate code for curling a HTTP request
-    // Requires url (only complete url) and structured parameters as query string
+    // Wrapper for executeRequest function of boilerplate code for a rest HTTP request
+    // Requires url (only complete url), map of query parameters, & map of headers
     // Returns string of JSON resposne
     std::string get(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::map<std::string, std::string> &headers);
     std::string post(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::string &body, const std::map<std::string, std::string> &headers);
@@ -63,41 +52,5 @@ public:
     void setBody(const std::string &body);
 
 };
-
-// class CurlScaffold {
-// protected:
-//     std::string api_key;
-//     std::string secret_key;
-
-//     // Callback func for curl respinse
-//     static size_t defaultCallback(void* contents, size_t size, size_t nmemb, void* userp);
-
-//     // Helper funtion to URL-encode query parameters (or url)
-//     // Returns encoded string
-//     std::string urlEncode(const std::string& input);
-
-//     // Contains all boilerplate code for curling a HTTP request
-//     // Requires url (+total_params appended) and HMAC generated signature
-//     // Defaults bool isPost to false. True == POST, False == GET
-//     std::string curlResponse(const std::string& url, const std::string& signature, const bool& isPost = false);
-
-//     std::string getQueryparamsFromUrl(const std::string url_payload);
-
-// public:
-//     // Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
-//     CurlScaffold(const std::string keysfile = ".env", const std::string api = "api_key", const std::string secret = "secret_key");
-
-    
-
-//     // Wrapper for curlResponse function of boilerplate code for curling a HTTP request
-//     // Requires url (only complete url) and structured parameters as query string
-//     // Returns string of JSON resposne
-//     // Defaults bool isPost to false. True == POST, False == GET
-//     std::string curlHttpRequest(std::string url, std::string total_params, const bool& isPost = false);
-
-//     // Get current timestamp in milliseconds
-//     long timestampEpoch_ms();
-
-// };
 
 #endif
