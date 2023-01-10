@@ -4,7 +4,7 @@
 #include <vector>
 #include <limits>
 #include <stack>
-#include "../../utilities/c2c-edge.h"
+#include "../../utilities/edges/c2c-edge.h"
 
 class ArbitrageDFS {
 protected:

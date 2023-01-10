@@ -6,8 +6,8 @@
 #ifndef BINANCE_CONVERT
 #define BINANCE_CONVERT
 
-#include "../unique-symbols.h"
-#include "../c2c-edge.h"
+#include "../edges/unique-symbols.h"
+#include "../edges/c2c-edge.h"
 #include <string>
 
 

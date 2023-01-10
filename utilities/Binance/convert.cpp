@@ -1,6 +1,6 @@
 #include "convert.h"
 #include "../http/http-scaffold.h"
-#include "../c2c-edge.h"
+#include "../edges/c2c-edge.h"
 #include <json/json.h> // for parsing JSON
 #include <vector>
 #include <map>

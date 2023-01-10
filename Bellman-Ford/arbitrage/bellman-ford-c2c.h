@@ -5,7 +5,7 @@
 #include <vector>
 #include <limits>
 #include <stack>
-#include "../../utilities/c2c-edge.h"
+#include "../../utilities/edges/c2c-edge.h"
 
 // a class to represent a graph using an adjacency list
 class BellmanFordC2C {

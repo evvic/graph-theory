@@ -1,5 +1,5 @@
 #include "c2c-csv.h"
-#include "c2c-edge.h"
+#include "edges/c2c-edge.h"
 #include <string>
 #include <vector>
 #include <iostream> //test
