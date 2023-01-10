@@ -28,6 +28,9 @@ public:
     // Pass vect of edges by reference
     void populateEdges(std::vector<C2CEdge>& edges3);
 
+    // Returns number of vertices makng up the edges 
+    unsigned short getVerticesCount();
+
 };
 
 #endif

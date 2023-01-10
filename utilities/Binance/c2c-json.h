@@ -10,6 +10,10 @@
 // Parse json format into edges of a graph to be used
 // for Graph Theory
 
+//////////////////////////
+// DEPRECATE THIS CLASS //
+//////////////////////////
+
 class RequestC2C {
 protected:
 

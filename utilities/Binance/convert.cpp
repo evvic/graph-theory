@@ -78,8 +78,6 @@ void BinanceConvert::populateEdges(std::vector<C2CEdge>& edges3) {
         }
     }
 
-
-
 }
 
 bool BinanceConvert::isElligibleCountry(std::string curr) {
@@ -87,4 +85,8 @@ bool BinanceConvert::isElligibleCountry(std::string curr) {
         if (str == curr) return false;
     }
     return true;
+}
+
+unsigned short BinanceConvert::getVerticesCount() {
+    return symbols._id;
 }

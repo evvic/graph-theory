@@ -87,6 +87,7 @@ int main() {
 
     convert.populateEdges(co_edges);
     cout << "edges size: " << co_edges.size() << endl;
+    cout << "number of vertices: " << convert.getVerticesCount() << endl;
 
 
 
