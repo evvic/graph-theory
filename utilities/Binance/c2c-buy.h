@@ -23,11 +23,11 @@ private:
 
    // Makes a market buy request to the Binance API for the specified pair & amount.
    // Returns the raw response from the API.
-   std::string marketBuy(const std::string& pair, double amount);
+   std::string marketBuy(const std::string& pair, const double& amount);
 
    // Request a quote for the requested token pairs
    // Returns the raw response from the API. Response is the quited rate and window of time available
-   std::string sendQuote(const std::string& fromAsset, const std::string& toAsset);
+   std::string sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
 
    // Makes a request to the Binance API to view the contents of your wallet.
    // Returns the raw response from the API.

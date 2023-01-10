@@ -21,8 +21,9 @@ MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, co
 
 // Makes a market buy request to the Binance API for the specified pair and amount.
 // Returns the raw response from the API.
-std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
-
+std::string MarketBuyC2C::marketBuy(const std::string& pair, const double& amount) {
+    
+    // Object that handles http request
     CurlScaffold request;
 
     // append /test 
@@ -32,14 +33,17 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
 
     std::string total_params = "symbol=USDTBNB&side=BUY&type=MARKET&timeInForce=IOC&quantity=0.01&recvWindow=5000";
     
-    // MUST CHANGE PARAMS IN THE FUTURE (copy total_params)
+    // Query parameters (appended to url)
     std::map<std::string, std::string> params;
-    params.insert(std::make_pair("fromAsset", "DAI"));
-    params.insert(std::make_pair("toAsset", "BNB"));
-    params.insert(std::make_pair("fromAmount", "2"));
+    params.insert(std::make_pair("symbol", "USDTBNB"));
+    params.insert(std::make_pair("side", "BUY"));
+    params.insert(std::make_pair("type", "MARKET"));
+    params.insert(std::make_pair("quantity", "0.1"));
 
+    // Any message to attach to the body
     std::string body = "";
 
+    // Additional header
     std::map<std::string, std::string> headers;
 
     // Creates signature and performs all necessary curl requests
@@ -48,38 +52,27 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, double amount) {
 
 // Request a quote for the requested token pairs
 // Returns the raw response from the API. Response is the quited rate and window of time
-std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::string& toAsset) {
+std::string MarketBuyC2C::sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount) {
 
+    // Object that handles http request
     CurlScaffold request;
 
     // Creates and validates a new quote
     std::string url = "https://api.binance.com/sapi/v1/convert/getQuote";
 
+    // Query parameters (appended to url)
     std::map<std::string, std::string> params;
-    params.insert(std::make_pair("fromAsset", "DAI"));
-    params.insert(std::make_pair("toAsset", "BNB"));
-    params.insert(std::make_pair("fromAmount", "2"));
+    params.insert(std::make_pair("fromAsset", fromAsset));
+    params.insert(std::make_pair("toAsset", toAsset));
+    params.insert(std::make_pair("fromAmount", std::to_string(fromAmount)));
 
+    // Any message to attach to the body
     std::string body = "";
 
+    // Additional header
     std::map<std::string, std::string> headers;
 
-    // Setters
-    // request.setIsPost(true);
-    // request.setBody();
-    // request.setHeaders();
-    // request.setQueryParams();
-    // request.setUrl(url);
-
     return request.post(url, params, body, headers);
-
-    // std::string total_params = "fromAsset=DAI&toAsset=BNB&fromAmount=2";
-
-    // // This http  request rewuires it to be a post
-    // const bool isPost = true;
-
-    // // Creates signature and performs all necessary curl requests
-    // return curlHttpRequest(url, total_params, isPost);
 }
 
 // Makes a request to the Binance API to view the contents of your wallet.
