@@ -5,6 +5,8 @@
 #include <limits>
 #include <stack>
 #include "../../utilities/edges/c2c-edge.h"
+#include <tbb/tbb.h>
+
 
 class ThreadedArbitrage {
 protected:
@@ -31,17 +33,21 @@ private:
     ProfitPath best;                        // For tracking best profit with its path
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
+    oneapi::tbb::enumerable_thread_specific<std::list<ProfitPath> > localPaths;
+
 public:
     // Constructor requires number of vertices
     ThreadedArbitrage(int V);
 
     // Add a directed edge to->from with the given rate (multiplicative for DFS)
     void addEdge(C2CEdge e);
+
+    void parallelSetEdges(/*const*/ std::vector<C2CEdge>& edges);
     
     // Entry point into recursive dfs() function
     // Returns vector of edges for most profitable circular path
     // Returns empty vector if no profitable path found
-    std::vector<C2CEdge> findCircularArbitrage(std::vector<unsigned short> traversal_IDs);
+    std::vector<C2CEdge> findCircularArbitrage();
 
 };
 

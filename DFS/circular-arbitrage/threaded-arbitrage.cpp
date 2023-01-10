@@ -1,8 +1,13 @@
 #include "threaded-arbitrage.h"
 #include "../../utilities/edges/c2c-edge.h"
+#include "../../utilities/Binance/convert.h"
 #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>
+//#include <thread>
+#include <tbb/tbb.h>
+#include <tbb/parallel_for.h>
+
 
 using namespace std;
 
@@ -99,10 +104,12 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
     visited[current] = false;
 }
 
+
+
 // Define a function to search for the best circular arbitrage opportunity
 // traversal_IDs holds all crypto IDs that should be used as the initial point of circular arbitrage
 // If traversal_IDs is empty, loop through all vertices
-std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage(std::vector<unsigned short> traversal_IDs) {
+std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
     // Initialize the visited vector to all false values
     std::vector<bool> visited(adj.size(), false);
 
@@ -130,19 +137,20 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage(std::vector<unsign
 
         // Create a temp visited vect<> for exploring all optional paths to get back to start
         std::vector<bool> tvisited(adj.size(), false);
-        // Set visited[i] = true???
+
+        // TESTING: only check for starting at BTC
+        if (adj[i].size() <= 0 || adj[i][0].fromAsset != "BTC") {
+            continue;
+        }
 
         // If the node has not been visited, explore it using DFS
         if (!visited.at(i)) {
+            
             visited.at(i) = true;
             dfs(adj, tvisited, tempath, i);
 
         }
 
-        if (tempath.profit > best.profit) {
-            // copy tembest data into best if true
-            // already being done in DFS(?)
-        }
     }
     
 
@@ -174,4 +182,30 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage(std::vector<unsign
     // If we did not find a profitable circular arbitrage opportunity, return an empty vector
 
     return std::vector<C2CEdge>();
+}
+
+void ThreadedArbitrage::parallelSetEdges(/*const*/ vector<C2CEdge>& edges) {
+
+    std::mutex mtx;
+
+    // Use parallel_for to make API calls to get the edge weight for each edge
+    tbb::parallel_for(static_cast<std::size_t>(0), edges.size(), [&](int i) {
+
+        // C2CEdge temp(C2CEdge);
+        // CLEAN THIS FUNCTION
+
+        // Make the API call to get the weight for the edge
+        std::string resp = BinanceConvert::sendQuote(edges[i].fromAsset, edges[i].toAsset, 1.0);
+        // Assign the weight to the edge
+
+        std::cout << resp << std::endl;
+
+        edges[i].rate = 1.0;
+
+        // Use a lock to update the shared data
+        std::unique_lock<std::mutex> lock(mtx);
+        // Add the edge and its weight to the adjacency list
+        this->addEdge(edges[i]);
+        lock.unlock();
+    });
 }

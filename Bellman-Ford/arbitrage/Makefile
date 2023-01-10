@@ -1,11 +1,18 @@
 # Specify the target executable
 TARGET = arbitrage
 
+# Path to vcpkg installation
+VCPKG_DIR = /usr/local/vcpkg
+
 # Include other directories
 INC=-I/../../utilities
 
 # Set the include path for the OpenSSL headers
 INC += -I/usr/local/opt/openssl@3/include
+
+# TBB library and include paths
+TBB_INCLUDE_DIR = $(VCPKG_DIR)/installed/x64-osx/include
+TBB_LIB_DIR = $(VCPKG_DIR)/installed/x64-osx/lib
 
 # cppREST library linking
 CPPRESTSDK_PATH = /usr/local/Cellar/cpprestsdk/2.10.18
@@ -27,11 +34,13 @@ SOURCES = arbitrage.cpp $(UTI)edges/c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UT
 # Compiler flags
 CXXFLAGS = -std=c++11
 CXXFLAGS += $(INC)
+CXXFLAGS += -I$(TBB_INCLUDE_DIR)
 CXXFLAGS += $(CPPRESTSDK_INCLUDES)
 
 # Linker flags
 LDFLAGS += -L/usr/local/opt/openssl@3/lib -lssl -lcrypto
 LDFLAGS += -ljsoncpp -lcurl
+LDFLAGS += -L$(TBB_LIB_DIR) -ltbb -ltbbmalloc
 LDFLAGS += -L$(CPPRESTSDK_LIB_PATH) $(CPPRESTSDK_LIBS)
 
 # Specify the C++ compiler
