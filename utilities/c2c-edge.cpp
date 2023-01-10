@@ -1,9 +1,8 @@
 #include "c2c-edge.h"
 #include <string>
 #include <vector>
-#include <iostream> //test
+//#include <iostream> //test
 #include <iomanip>  // std::setw
-
 
 using namespace std;
 
