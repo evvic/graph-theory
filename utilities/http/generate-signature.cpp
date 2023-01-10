@@ -8,7 +8,6 @@
 #include <cstring>
 #include <iomanip>          // signature
 #include <sstream>          // signature
-#include <curl/curl.h>
 #include <chrono>
 #include <iostream>
 #include <string>
@@ -47,31 +46,6 @@ std::string GenerateSignature::rsaHmacSha256(const std::string& secret_key, cons
 
 }
 
-// ///
-// std::string GenerateSignature::compute_signature(const std::string& key, const std::string& message) {
-//     // Initialize HMAC-SHA256 context
-//     HMAC_CTX* ctx = HMAC_CTX_new();
-//     HMAC_Init_ex(ctx, (unsigned char*)key.c_str(), key.size(), EVP_sha256(), NULL);
-
-//     // Update context with message
-//     HMAC_Update(ctx, (unsigned char*)message.c_str(), message.size());
-
-//     // Finalize HMAC-SHA256 calculation
-//     unsigned char result[EVP_MAX_MD_SIZE];
-//     unsigned int result_len;
-//     HMAC_Final(ctx, result, &result_len);
-//     HMAC_CTX_free(ctx);
-
-//     // Convert result to hex string
-//     std::stringstream ss;
-//     for (unsigned int i = 0; i < result_len; i++) {
-//         ss << std::hex << std::setw(2) << std::setfill('0') << (int)result[i];
-//     }
-//     std::string signature = ss.str();
-
-//     // Return signature
-//     return signature;
-// }
 std::string GenerateSignature::compute_signature(const std::string& key, const std::string& message) {
     return hmacSha256(key, message);
 }

@@ -69,10 +69,14 @@ int main() {
 
     //cout << resp << endl;
 
-    // resp = buyer.marketBuy("USDTBNB", 0.01);
-    std::cout << "sendign quote ask" << std::endl;
-    resp = buyer.sendQuote("DAI", "BNB");
 
+    resp = buyer.sendQuote("DAI", "BNB", 2);
+
+    cout << resp << endl;
+    
+    resp = buyer.marketBuy("USDTBNB", 0.01);
+
+    cout << resp << endl;
 
 
 }
