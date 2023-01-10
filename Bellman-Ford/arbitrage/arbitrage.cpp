@@ -1,6 +1,7 @@
 #include "bellman-ford-c2c.h"
 #include "../../utilities/graphviz.h"
 #include "../../utilities/Binance/c2c-json.h"
+#include "../../utilities/Binance/convert.h"
 #include "../../utilities/Binance/c2c-buy.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
 #include <iostream>
@@ -77,6 +78,16 @@ int main() {
     resp = buyer.marketBuy("USDTBNB", 0.01);
 
     cout << resp << endl;
+
+    ///////////////// convert class
+    // Init vect to be populated with all C2C edges
+    vector<C2CEdge> co_edges;
+
+    BinanceConvert convert;
+
+    convert.populateEdges(co_edges);
+    cout << "edges size: " << co_edges.size() << endl;
+
 
 
 }

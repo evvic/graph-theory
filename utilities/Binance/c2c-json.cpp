@@ -7,6 +7,10 @@
 #include <vector>
 #include <iostream> //test
 
+//////////////////////////
+// DEPRECATE THIS CLASS //
+//////////////////////////
+
 // Constructor runs all the functions to get the data
 // Optional paramters: 
 //      keysfile: path to file containing api and secret keys
