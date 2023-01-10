@@ -1,5 +1,5 @@
 #include "dfs-arbitrage.h"
-#include "../../utilities/c2c-edge.h"
+#include "../../utilities/edges/c2c-edge.h"
 #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>

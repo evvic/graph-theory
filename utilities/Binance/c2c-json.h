@@ -4,11 +4,15 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "../c2c-edge.h"
+#include "../edges/c2c-edge.h"
 
 // Class for reading/writing crypto-to-crypto JSON!
 // Parse json format into edges of a graph to be used
 // for Graph Theory
+
+//////////////////////////
+// DEPRECATE THIS CLASS //
+//////////////////////////
 
 class RequestC2C {
 protected:

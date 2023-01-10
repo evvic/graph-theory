@@ -1,11 +1,15 @@
 #include "c2c-json.h"
-#include "../c2c-edge.h"
+#include "../edges/c2c-edge.h"
 #include "../read-keys.h" // Reading in API keys
 #include <json/json.h> // for parsing JSON
 #include <curl/curl.h> // for making HTTP requests
 #include <string>
 #include <vector>
 #include <iostream> //test
+
+//////////////////////////
+// DEPRECATE THIS CLASS //
+//////////////////////////
 
 // Constructor runs all the functions to get the data
 // Optional paramters: 
