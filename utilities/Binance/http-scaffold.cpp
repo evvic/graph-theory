@@ -1,4 +1,4 @@
-#include "curl-scaffold.h"
+#include "http-scaffold.h"
 #include <chrono>         // Mandatory parameter: timestamp
 #include "../read-keys.h" // Reading in API keys
 #include <iostream>       // cerr

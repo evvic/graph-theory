@@ -22,7 +22,7 @@ UTI=../../utilities/
 SOURCES = arbitrage.cpp $(UTI)c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UTI)Binance/generate-signature.cpp \
 		  $(UTI)Binance/c2c-buy.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp \
 		  $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp \
-		  $(UTI)Binance/curl-scaffold.cpp
+		  $(UTI)Binance/http-scaffold.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11

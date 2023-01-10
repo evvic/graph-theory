@@ -1,6 +1,6 @@
 #include <string>
 #include <curl/curl.h>
-#include "curl-scaffold.h"
+#include "http-scaffold.h"
 #include "c2c-buy.h"
 #include "../read-keys.h" // Reading in API keys
 #include <iostream>
@@ -15,8 +15,6 @@ MarketBuyC2C::MarketBuyC2C(const std::string keysfile, const std::string api, co
 
     // Obtain API keys from .env file
     // Performed in HttpScaffold constructor
-
-    // ...   
 }
 
 // Makes a market buy request to the Binance API for the specified pair and amount.
