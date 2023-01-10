@@ -21,8 +21,8 @@ UTI=../../utilities/
 # Specify the source files
 SOURCES = arbitrage.cpp $(UTI)edges/c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UTI)http/generate-signature.cpp \
 		  $(UTI)edges/unique-symbols.cpp $(UTI)Binance/c2c-buy.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp \
-		  $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp \
-		  $(UTI)Binance/convert.cpp $(UTI)http/http-scaffold.cpp 
+		  $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp $(UTI)Binance/convert.cpp \
+		  $(UTI)http/http-scaffold.cpp ../../DFS/circular-arbitrage/threaded-arbitrage.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11

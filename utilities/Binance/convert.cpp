@@ -90,3 +90,29 @@ bool BinanceConvert::isElligibleCountry(std::string curr) {
 unsigned short BinanceConvert::getVerticesCount() {
     return symbols._id;
 }
+
+// Independant (static)
+// Request a quote for the requested token pairs
+// Returns the raw response from the API. Response is the quited rate and window of time
+std::string BinanceConvert::sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount) {
+
+    // Object that handles http request
+    HttpScaffold request;
+
+    // Creates and validates a new quote
+    std::string url = "https://api.binance.com/sapi/v1/convert/getQuote";
+
+    // Query parameters (appended to url)
+    std::map<std::string, std::string> params;
+    params.insert(std::make_pair("fromAsset", fromAsset));
+    params.insert(std::make_pair("toAsset", toAsset));
+    params.insert(std::make_pair("fromAmount", std::to_string(fromAmount)));
+
+    // Any message to attach to the body
+    std::string body = "";
+
+    // Additional header
+    std::map<std::string, std::string> headers;
+
+    return request.post(url, params, body, headers);
+}

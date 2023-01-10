@@ -31,6 +31,13 @@ public:
     // Returns number of vertices makng up the edges 
     unsigned short getVerticesCount();
 
+    // Independent function 
+    static std::string sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
+
+    
+
 };
+
+
 
 #endif
