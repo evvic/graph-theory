@@ -65,6 +65,8 @@ void BinanceConvert::populateEdges(std::vector<C2CEdge>& edges3) {
             // Get ID for toAsset symbol or create one if not one assigned yet
             edge.to = symbols.getSymbolID(edge.toAsset);
 
+            std::cout << edge.fromAsset << ": fromAssetMinAmount " << edge.fromAssetMinAmount << std::endl;
+
             edges3.push_back(edge);
         } catch (std::exception& e) {
             std::cerr << "Error: " << e.what() << std::endl;
@@ -132,7 +134,9 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
     try {
         QuoteEdge temp;
 
-        temp.quoteId = stod(json_value["quoteId"].asString());
+        //std::cout << json_value["quoteId"].asString() << json_value["quoteId"].isString() << std::endl;
+
+        //temp.quoteId = stod(json_value["quoteId"].asString());
         temp.ratio = stod(json_value["ratio"].asString());
         temp.inverseRatio = stod(json_value["inverseRatio"].asString());
         temp.validTimestamp = (long)json_value["validTimestamp"].asDouble();

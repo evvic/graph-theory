@@ -17,9 +17,9 @@ using namespace std;
 ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V), num_calls(0) {}
 
 // Add a directed edge to->from with the given rate (multiplicative for DFS)
-void ThreadedArbitrage::addEdge(C2CEdge e) {
+void ThreadedArbitrage::addEdge(const C2CEdge e) {
     // weight is calculated in the C2CEdge constructor
-    adj[e.from].push_back(C2CEdge(e.from, e.to, e.rate, e.fromAsset, e.toAsset));
+    adj[e.from].push_back(e);
 }
 
 // DFS for cicrular arbitrage
@@ -28,7 +28,7 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
     
     // Return if current node has no edges
     if (graph.at(current).empty()) {
-        cout << tpath.path.top().toAsset << " no edges to explore" << endl;
+        cout << tpath.path.back().toAsset << " no edges to explore" << endl;
         return;
     }
     
@@ -53,52 +53,21 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
 
         // If the edge leads back to the starting node, we have found a circular path
         if (edge.to == tpath.origin()) {
-            // Calculate the profit for the circular path
-            double p = 1.0;
 
-            cout << "adding edge to complete path: " << edge << endl;
+            cout << "Adding edge to complete circular path: " << edge << endl;
             // Add edge completing the circular path
-            tpath.path.push(edge);
+            tpath.path.push_back(edge);
 
-            cout << "Returned to startign node!" << endl;
+            cout << "Returned to starting node!" << endl;
 
-            // Stack is not iterable, make a copy to iterate through
-            stack<C2CEdge> path_copy(tpath.path);
-            double tAmount = 0; // In the future init with amount free in wallet
-            while (!path_copy.empty()) {
-
-                // Start with double the min amount
-                if (tAmount < path_copy.top().fromAssetMinAmount) {
-                    tAmount = path_copy.top().fromAssetMinAmount * 2;
-                }
-                
-                // Make API call to get quoted rate
-                QuoteEdge quote = BinanceConvert::parseSendQuote(path_copy.top().fromAsset, path_copy.top().toAsset, tAmount);
-                num_calls++;
-
-                p *= quote.ratio;           // stack rate 
-                tAmount = quote.toAmount;   // set amount to start with next iteration
-
-                cout << path_copy.top().toAsset << "<-" << path_copy.top().fromAsset << ' ';
-                path_copy.pop();
-            }
-
-            // If the profit is greater than the current best, update the best profit
-            if (p > tpath.profit) {
-                cout << "Profit is better with path.." << p << endl;
-
-                tpath.profit = p;
-                best.profit = p;
-                best.path = tpath.path;
-                // think of a way to store the profit path
-            }
-            else cout << "Profit " << p << " is not better than best " << best.profit << endl;
-
+            // function to iterate through the path to calculate profit
+            calculateProfit(tpath);
+            
             // Remove edge completing circular path (unnessary)
-            cout << "REMOVING node to complete path: " << tpath.path.top() << endl; 
-            tpath.path.pop();
+            cout << "REMOVING edge completing path to continue searching other options: " << tpath.path.back() << endl; 
+            tpath.path.pop_back();
 
-            cout << "Total getQuote API calls made: " << num_calls << endl << endl;
+            cout << "Total getQuote API calls made: " << num_calls << endl << endl << endl << endl;
 
             // TESTING, after finding first circular path, break
             return;
@@ -109,13 +78,13 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
             cout << "adding edge to path: " << edge << endl;
 
             // Add the current edge to the path
-            tpath.path.push(edge);
+            tpath.path.push_back(edge);
             dfs(graph, visited, tpath, edge.to);
 
-            cout << "REMOVING node to path: " << tpath.path.top() << endl;
+            cout << "REMOVING node to path: " << tpath.path.back() << endl;
 
             // Remove the current node from the path
-            tpath.path.pop();
+            tpath.path.pop_back();
 
         }
 
@@ -188,21 +157,8 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
         cout << "Found profit of " << best.profit << " given the following:" << endl;
 
         // Create a vector to hold the path of edges
-        std::vector<C2CEdge> edges;
-
         // Loop through the edges in the best path, adding them to the path vector
-        stack<C2CEdge> temp(best.path);
-        while (!temp.empty()) {
-
-            cout << temp.top() <<endl;
-
-
-            edges.push_back(temp.top());
-            // Rotate vect to get edges in correct order
-            std::rotate(edges.rbegin(), edges.rbegin() + 1, edges.rend());
-
-            temp.pop();
-        }
+        std::vector<C2CEdge> edges(best.path.rbegin(), best.path.rend());
 
         // Return the path of edges for the best circular arbitrage opportunity
         return edges;
@@ -238,4 +194,52 @@ void ThreadedArbitrage::parallelSetEdges(/*const*/ vector<C2CEdge>& edges) {
         this->addEdge(edges[i]);
         lock.unlock();
     });
+}
+
+double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
+
+    // Calculate the profit for the circular path
+    double p = 1.0;
+
+    // In the future init with amount free in wallet
+    double tAmount = 0; 
+
+    for (auto edge : tpath.path) {
+        cout << edge.fromAsset << "->" << edge.toAsset << endl;
+        cout << "edge.fromAssetMinAmount = " << edge.fromAssetMinAmount << endl;
+
+        // Start with double the min amount
+        if (tAmount < edge.fromAssetMinAmount) {
+            tAmount = edge.fromAssetMinAmount * 2;
+        }
+        
+        // Make API call to get quoted rate
+        QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount);
+        num_calls++;
+
+        p *= quote.ratio;           // stack rate 
+        tAmount = quote.toAmount;   // set amount to start with next iteration
+
+        
+
+    }
+    
+
+
+
+    // If the profit is greater than the current best, update the best profit
+    if (p > best.profit) {
+        cout << "Profit is better with path.." << p << endl;
+
+        // Unneccessary
+        //tpath.profit = p;
+        best.profit = p;
+        best.path = tpath.path;
+
+    } else {
+        cout << "Profit " << p << " is not better than best " << best.profit << endl;
+    }
+
+    // return calculated profit
+    return p;
 }

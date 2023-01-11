@@ -26,7 +26,7 @@ protected:
 
     public:
         double profit;              // Current best profit
-        std::stack<C2CEdge> path;   // Current path for best profit
+        std::vector<C2CEdge> path;   // Current path for best profit
         
         // Start node should be immutable after initalization
         // Profit should be initialized to 0.0
@@ -42,9 +42,10 @@ private:
     ProfitPath best;                        // For tracking best profit with its path
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
-    oneapi::tbb::enumerable_thread_specific<std::list<ProfitPath> > localPaths;
+    //oneapi::tbb::enumerable_thread_specific<std::list<ProfitPath> > localPaths;
 
     int num_calls;  // counter of getQuote api calls per run of the alg
+    double calculateProfit(const ProfitPath& tpath);
 
 public:
     // Constructor requires number of vertices
