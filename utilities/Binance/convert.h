@@ -8,6 +8,7 @@
 
 #include "../edges/unique-symbols.h"
 #include "../edges/c2c-edge.h"
+#include "quote-edge.h"
 #include <string>
 
 
@@ -34,6 +35,8 @@ public:
     // Independent function 
     static std::string sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
 
+    // Wrapper for sendQuote to jsut return the conversion rate
+    static QuoteEdge parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
     
 
 };

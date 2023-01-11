@@ -1,6 +1,7 @@
 #include "convert.h"
 #include "../http/http-scaffold.h"
 #include "../edges/c2c-edge.h"
+#include "quote-edge.h"
 #include <json/json.h> // for parsing JSON
 #include <vector>
 #include <map>
@@ -43,18 +44,11 @@ void BinanceConvert::populateEdges(std::vector<C2CEdge>& edges3) {
             edge.fromAsset = obj["fromAsset"].asString();
             edge.toAsset = obj["toAsset"].asString();
 
-            // Temporarily remove DAI as a tradeable edge
-            // if (edge.fromAsset == "DAI" || edge.toAsset == "DAI") {
-            //     std::cout << "Ignoring symbol pair " << edge.fromAsset << '-' << edge.toAsset << std::endl;
-            //     continue;
-            // }
-
-            // CHANGE TO JUST CREATE UNIQUE SYMBOL ID
-            // If element exchange rate exists in symbols map, continue processing
-            // if (!getRateForSymbolPair((edge.fromAsset + edge.toAsset), _rate)) {
-            //     //std::cerr << "Error: " << (edge.fromAsset + edge.toAsset) << " does not have an exchange rate." << std::endl;
-            //     continue;
-            // }
+            // Conversion limits
+            edge.fromAssetMinAmount = stod(obj["fromAssetMinAmount"].asString());
+            edge.fromAssetMaxAmount = stod(obj["fromAssetMaxAmount"].asString());
+            edge.toAssetMinAmount = stod(obj["toAssetMinAmount"].asString());
+            edge.toAssetMaxAmount = stod(obj["toAssetMaxAmount"].asString());
 
             // Set rate from passed previous function 
             edge.rate = _rate;
@@ -115,4 +109,43 @@ std::string BinanceConvert::sendQuote(const std::string& fromAsset, const std::s
     std::map<std::string, std::string> headers;
 
     return request.post(url, params, body, headers);
+}
+
+// Independant (static)
+// Wrapper for sendQuote to jsut return the conversion rate
+QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount) {
+    
+    std::cout << "fromAmount = " << fromAmount << std::endl;
+
+    // Creates signature and performs all necessary http requests
+    std::string response = sendQuote(fromAsset, toAsset, fromAmount);
+
+    // JSON parser
+    Json::Value json_value;
+    Json::Reader reader;
+
+    if (!reader.parse(response, json_value)) {
+        std::cerr << "Error parsing JSON string!" << std::endl;
+        return QuoteEdge();
+    }
+
+    try {
+        QuoteEdge temp;
+
+        temp.quoteId = stod(json_value["quoteId"].asString());
+        temp.ratio = stod(json_value["ratio"].asString());
+        temp.inverseRatio = stod(json_value["inverseRatio"].asString());
+        temp.validTimestamp = (long)json_value["validTimestamp"].asDouble();
+        temp.toAmount = stod(json_value["toAmount"].asString());
+        temp.fromAmount = stod(json_value["fromAmount"].asString());
+
+        std::cout << temp << std::endl;
+
+        return temp;
+
+    } catch (std::exception& e) {
+        std::cerr << "parseRefRate Error: " << e.what() << std::endl;
+        std::cerr << response << std::endl;
+        return QuoteEdge();
+    }
 }

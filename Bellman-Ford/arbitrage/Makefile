@@ -29,7 +29,7 @@ UTI=../../utilities/
 SOURCES = arbitrage.cpp $(UTI)edges/c2c-edge.cpp $(UTI)Binance/c2c-json.cpp $(UTI)http/generate-signature.cpp \
 		  $(UTI)edges/unique-symbols.cpp $(UTI)Binance/c2c-buy.cpp $(UTI)graphviz.cpp bellman-ford-c2c.cpp \
 		  $(UTI)read-keys.cpp ../../DFS/circular-arbitrage/dfs-arbitrage.cpp $(UTI)Binance/convert.cpp \
-		  $(UTI)http/http-scaffold.cpp ../../DFS/circular-arbitrage/threaded-arbitrage.cpp
+		  $(UTI)http/http-scaffold.cpp ../../DFS/circular-arbitrage/threaded-arbitrage.cpp $(UTI)Binance/quote-edge.cpp
 
 # Compiler flags
 CXXFLAGS = -std=c++11

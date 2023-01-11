@@ -76,7 +76,7 @@ int main() {
         method.addEdge(edge);
     }
 
-    method.parallelSetEdges(co_edges);
+    //method.parallelSetEdges(co_edges);
 
     auto cycles = method.findCircularArbitrage();
     

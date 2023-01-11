@@ -1,6 +1,7 @@
 #include "threaded-arbitrage.h"
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/convert.h"
+#include "../../utilities/Binance/quote-edge.h"
 #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>
@@ -9,10 +10,11 @@
 #include <tbb/parallel_for.h>
 
 
+
 using namespace std;
 
 // CONSTRUCTOR
-ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V) {}
+ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V), num_calls(0) {}
 
 // Add a directed edge to->from with the given rate (multiplicative for DFS)
 void ThreadedArbitrage::addEdge(C2CEdge e) {
@@ -26,7 +28,7 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
     
     // Return if current node has no edges
     if (graph.at(current).empty()) {
-        //cout << tpath.path.top().toAsset << " no edges to explore" << endl;
+        cout << tpath.path.top().toAsset << " no edges to explore" << endl;
         return;
     }
     
@@ -42,50 +44,75 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
     for (const C2CEdge& edge : graph[current]) {
         //cout << "Exploring edge " << edge << endl;
 
+        // If edge leads back to starting node but path length == 2, skip
+        if (edge.to == tpath.origin() && tpath.path.size() < 4) {
+            visited[edge.to] = true;
+            continue;
+        }
+
+
         // If the edge leads back to the starting node, we have found a circular path
         if (edge.to == tpath.origin()) {
             // Calculate the profit for the circular path
             double p = 1.0;
 
-            //cout << "adding edge to complete path: " << edge << endl;
+            cout << "adding edge to complete path: " << edge << endl;
             // Add edge completing the circular path
             tpath.path.push(edge);
 
-            //cout << "Returned to startign node!" << endl;
+            cout << "Returned to startign node!" << endl;
 
             // Stack is not iterable, make a copy to iterate through
             stack<C2CEdge> path_copy(tpath.path);
+            double tAmount = 0; // In the future init with amount free in wallet
             while (!path_copy.empty()) {
-                p *= path_copy.top().rate;
-                //cout << path_copy.top().toAsset << "<-" << path_copy.top().fromAsset << ' ';
+
+                // Start with double the min amount
+                if (tAmount < path_copy.top().fromAssetMinAmount) {
+                    tAmount = path_copy.top().fromAssetMinAmount * 2;
+                }
+                
+                // Make API call to get quoted rate
+                QuoteEdge quote = BinanceConvert::parseSendQuote(path_copy.top().fromAsset, path_copy.top().toAsset, tAmount);
+                num_calls++;
+
+                p *= quote.ratio;           // stack rate 
+                tAmount = quote.toAmount;   // set amount to start with next iteration
+
+                cout << path_copy.top().toAsset << "<-" << path_copy.top().fromAsset << ' ';
                 path_copy.pop();
             }
 
             // If the profit is greater than the current best, update the best profit
             if (p > tpath.profit) {
-                //cout << "Profit is better with path.." << p << endl;
+                cout << "Profit is better with path.." << p << endl;
 
                 tpath.profit = p;
                 best.profit = p;
                 best.path = tpath.path;
                 // think of a way to store the profit path
             }
-            //else cout << "Profit " << p << " is not better with path.." << endl;
+            else cout << "Profit " << p << " is not better than best " << best.profit << endl;
 
             // Remove edge completing circular path (unnessary)
-            //cout << "REMOVING node to complete path: " << tpath.path.top() << endl; 
+            cout << "REMOVING node to complete path: " << tpath.path.top() << endl; 
             tpath.path.pop();
+
+            cout << "Total getQuote API calls made: " << num_calls << endl << endl;
+
+            // TESTING, after finding first circular path, break
+            return;
         }
 
         // If the edge leads to an unvisited node, explore it recursively
         else if (!visited[edge.to]) {
-            //cout << "adding edge to path: " << edge << endl;
+            cout << "adding edge to path: " << edge << endl;
 
             // Add the current edge to the path
             tpath.path.push(edge);
             dfs(graph, visited, tpath, edge.to);
 
-            //cout << "REMOVING node to path: " << tpath.path.top() << endl;
+            cout << "REMOVING node to path: " << tpath.path.top() << endl;
 
             // Remove the current node from the path
             tpath.path.pop();
@@ -140,6 +167,7 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
 
         // TESTING: only check for starting at BTC
         if (adj[i].size() <= 0 || adj[i][0].fromAsset != "BTC") {
+            std::cout << "Skipping dfs for " << adj[i][0].fromAsset << std::endl;
             continue;
         }
 
@@ -193,6 +221,8 @@ void ThreadedArbitrage::parallelSetEdges(/*const*/ vector<C2CEdge>& edges) {
 
         // C2CEdge temp(C2CEdge);
         // CLEAN THIS FUNCTION
+        // HITS THE LIMIT VERY QUICKLY
+        // MUST SWITCH TO WEB SOCKETS
 
         // Make the API call to get the weight for the edge
         std::string resp = BinanceConvert::sendQuote(edges[i].fromAsset, edges[i].toAsset, 1.0);

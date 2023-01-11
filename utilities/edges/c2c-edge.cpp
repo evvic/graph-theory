@@ -19,7 +19,20 @@ C2CEdge::C2CEdge() {
     weight = rateToWeight(1.0);
     fromAsset = "XXX";
     toAsset = "XXX";
+
+    fromAssetMinAmount = 0;
+    fromAssetMaxAmount = 0;
+    toAssetMinAmount = 0;
+    toAssetMaxAmount = 0;
 }
+
+// Extended constructor
+C2CEdge::C2CEdge(unsigned short _from, unsigned short _to, double _rate, std::string _fromAsset, std::string _toAsset,
+                double _fromAssetMinAmount, double _fromAssetMaxAmount, double _toAssetMinAmount, double _toAssetMaxAmount)
+                : from(_from), to(_to), rate(_rate), weight(rateToWeight(_rate)), fromAsset(_fromAsset), toAsset(_toAsset),
+                fromAssetMinAmount(_fromAssetMinAmount), fromAssetMaxAmount(_fromAssetMaxAmount), 
+                toAssetMinAmount(_toAssetMinAmount), toAssetMaxAmount(_toAssetMaxAmount) {}
+
 
 double C2CEdge::rateToWeight(double r) {
     return -1.0 / r;
