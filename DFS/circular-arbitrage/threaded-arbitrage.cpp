@@ -6,11 +6,6 @@
 #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>
-//#include <thread>
-//#include <tbb/tbb.h>
-//#include <tbb/parallel_for.h>
-
-
 
 using namespace std;
 

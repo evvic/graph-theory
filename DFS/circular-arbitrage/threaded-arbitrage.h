@@ -7,9 +7,6 @@
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/api-limits.h"
 
-//#include <tbb/tbb.h>
-
-
 
 // Therefore only 900 getQuote calls per minute
 
@@ -39,9 +36,6 @@ private:
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
     LimitTracker tracker;                   // Class to track when API Limit is reached
-
-
-    //oneapi::tbb::enumerable_thread_specific<std::list<ProfitPath> > localPaths;
 
     int num_calls;  // counter of getQuote api calls per run of the alg
     double calculateProfit(const ProfitPath& tpath);
