@@ -46,8 +46,6 @@ public:
 
     // Add a directed edge to->from with the given rate (multiplicative for DFS)
     void addEdge(C2CEdge e);
-
-    void parallelSetEdges(/*const*/ std::vector<C2CEdge>& edges);
     
     // Entry point into recursive dfs() function
     // Returns vector of edges for most profitable circular path

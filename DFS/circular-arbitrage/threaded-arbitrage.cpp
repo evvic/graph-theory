@@ -164,34 +164,6 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
     return std::vector<C2CEdge>();
 }
 
-// void ThreadedArbitrage::parallelSetEdges(/*const*/ vector<C2CEdge>& edges) {
-
-//     std::mutex mtx;
-
-//     // Use parallel_for to make API calls to get the edge weight for each edge
-//     tbb::parallel_for(static_cast<std::size_t>(0), edges.size(), [&](int i) {
-
-//         // C2CEdge temp(C2CEdge);
-//         // CLEAN THIS FUNCTION
-//         // HITS THE LIMIT VERY QUICKLY
-//         // MUST SWITCH TO WEB SOCKETS
-
-//         // Make the API call to get the weight for the edge
-//         auto resp = BinanceConvert::sendQuote(edges[i].fromAsset, edges[i].toAsset, 1.0);
-//         // Assign the weight to the edge
-
-//         std::cout << resp.getResponseString() << std::endl;
-
-//         edges[i].rate = 1.0;
-
-//         // Use a lock to update the shared data
-//         std::unique_lock<std::mutex> lock(mtx);
-//         // Add the edge and its weight to the adjacency list
-//         this->addEdge(edges[i]);
-//         lock.unlock();
-//     });
-// }
-
 double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     int weightUID;          // Temp for getting UID weight from API call
