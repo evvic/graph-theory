@@ -13,8 +13,7 @@
 
 class LimitTracker {
 private:
-    // boilerplate function for wait until (time period)
-    void waitTillNext(std::chrono::duration<int> duration_type)
+    
 
 protected:
     int cntSapiUidWeight;   // count sAPI UID weight
@@ -43,6 +42,10 @@ public:
     static void waitTillNextMinute();
     static void waitTillNextHour();
     static void waitTillNextDay();
+
+    // boilerplate function for wait until (time period)
+    template <typename T>
+    static void waitTillNext();
 
     int updateUidWeight();
     int updateUidWeight(int w);

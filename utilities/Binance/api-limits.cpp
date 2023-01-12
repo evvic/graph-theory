@@ -56,15 +56,18 @@ LimitTracker::LimitTracker() {
 int LimitTracker::updateUidWeight(int w) {
     cntSapiUidWeight = w;
     sapiUidTimestamp = HttpScaffold::timestampEpoch_ms();
+
+    return w;
 }
 
 
-void LimitTracker::waitTillNext(std::chrono::duration<int> duration_type) {
+template <typename T>
+void LimitTracker::waitTillNext() {
     // Get the current time
     auto now = std::chrono::system_clock::now();
 
     // Get the time point representing the next duration
-    auto next_duration = std::chrono::time_point_cast<duration_type>(now) + duration_type(1);
+    auto next_duration = std::chrono::time_point_cast<T>(now) + T(1);
 
     // Calculate the duration until the next duration
     auto duration = next_duration - now;
@@ -80,15 +83,15 @@ void LimitTracker::waitTillNext(std::chrono::duration<int> duration_type) {
 }
 
 void LimitTracker::waitTillNextMinute() {
-    waitTillNext(std::chrono::minutes);
+    LimitTracker::waitTillNext<std::chrono::minutes>();
 }
 
 void LimitTracker::waitTillNextHour() {
-    waitTillNext(std::chrono::hours);
+    LimitTracker::waitTillNext<std::chrono::hours>();
 }
 
 void LimitTracker::waitTillNextDay() {
-    waitTillNext(std::chrono::seconds(24 * 60 * 60));
+    LimitTracker::waitTillNext<std::chrono::duration<int, std::ratio<3600*24>>>();
 }
 
 

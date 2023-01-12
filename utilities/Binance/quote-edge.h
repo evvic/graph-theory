@@ -8,7 +8,7 @@
 struct QuoteEdge {
     // 
     
-    double quoteId;         // "12415572564",
+    std::string quoteId;    // "12415572564",
     double ratio;           // "38163.7",
     double inverseRatio;    // "0.0000262",
     long validTimestamp;    // 1623319461670,
@@ -16,7 +16,7 @@ struct QuoteEdge {
     double fromAmount;      // "0.1"
 
     // Constructor to init all params
-    QuoteEdge(double _quoteId, double _ratio, double _inverseRatio, long _validTimestamp, double _toAmount, double _fromAmount);
+    QuoteEdge(std::string _quoteId, double _ratio, double _inverseRatio, long _validTimestamp, double _toAmount, double _fromAmount);
 
     // Default constructor
     QuoteEdge();

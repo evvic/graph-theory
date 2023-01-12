@@ -147,9 +147,9 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
 
         // Check if quoteId is a member of the object
         if (json_value.isMember("quoteId"))
-            temp.quoteId = stod(json_value["quoteId"].asString());
+            temp.quoteId = json_value["quoteId"].asString();
         else
-            temp.quoteId = 0;
+            temp.quoteId = "";
 
         temp.ratio = stod(json_value["ratio"].asString());
         temp.inverseRatio = stod(json_value["inverseRatio"].asString());
