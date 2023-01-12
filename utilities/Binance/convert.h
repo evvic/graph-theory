@@ -34,7 +34,8 @@ public:
     static HttpScaffold sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
 
     // Wrapper for sendQuote to jsut return the conversion rate
-    static QuoteEdge parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
+    // Returns updated sapi UID weight as reference
+    static QuoteEdge parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount, int& weight);
     
 
 };

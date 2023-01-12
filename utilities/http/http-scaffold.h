@@ -48,9 +48,11 @@ public:
     std::string post(const std::string &url, const std::map<std::string, std::string> &queryParams, const std::string &body, const std::map<std::string, std::string> &headers);
     
     // HELPERS
-    long timestampEpoch_ms();   // Get current timestamp in milliseconds
-    long timestampEpoch_s();    // Get current timestamp in seconds
+    static long timestampEpoch_ms();   // Get current timestamp in milliseconds
+    static long timestampEpoch_s();    // Get current timestamp in seconds
     std::string getQueryString(const std::map<std::string, std::string> &queryParams); // Generate the query string for a request
+
+    void printResponseHeader();
 
     // SETTERS
     void setIsPost(bool isPost);

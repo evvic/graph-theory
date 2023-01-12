@@ -5,15 +5,11 @@
 #include <limits>
 #include <stack>
 #include "../../utilities/edges/c2c-edge.h"
+#include "../../utilities/Binance/api-limits.h"
+
 //#include <tbb/tbb.h>
 
-// Binance Convert API limitations
-// sapi/ endpoints (the oens used for the cpnvert endpoints)
-// Each endpoint with IP limits has an independent 12000 per minute limit.
-// Each endpoint with UID limits has an independent 180000 per minute limit.
-// Any endpoint has a hard limit of 1200 per minute
-// GET /sapi/v1/convert/exchangeInfo  500 Weight(IP)
-// POST /sapi/v1/convert/getQuote     200 Weight(UID)
+
 
 // Therefore only 900 getQuote calls per minute
 
@@ -41,6 +37,9 @@ private:
     int V;                                  // Number of vertices
     ProfitPath best;                        // For tracking best profit with its path
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
+
+    LimitTracker tracker;                   // Class to track when API Limit is reached
+
 
     //oneapi::tbb::enumerable_thread_specific<std::list<ProfitPath> > localPaths;
 

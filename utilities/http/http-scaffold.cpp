@@ -207,3 +207,10 @@ std::string HttpScaffold::getHeader(std::string key) {
 std::string HttpScaffold::getResponseString() {
     return responseObjStr;
 }
+
+// Set the response headers and convert from http_headers type to map
+void HttpScaffold::printResponseHeader() {
+    for (auto &header : responseHeaders) {
+        std::cout << header.first << ": " << header.second << std::endl;
+    }
+}

@@ -2,6 +2,7 @@
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/convert.h"
 #include "../../utilities/Binance/quote-edge.h"
+#include "../../utilities/Binance/api-limits.h"
 #include <vector>
 #include <limits> // for initializing to positive infinity
 #include <iostream>
@@ -198,11 +199,19 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
 
 double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
-    // Calculate the profit for the circular path
-    double p = 1.0;
+    int weightUID;          // Temp for getting UID weight from API call
 
-    // In the future init with amount free in wallet
-    double tAmount = 0; 
+    double p = 1.0;         // Calculate the profit for the circular path
+    double tAmount = 0;     // In the future init with amount free in wallet
+
+
+    // Check if loop can fully complete without reaching API call limit
+    // given the number of edges (each edge == api call)
+    // calculates and returns bool of 
+    if (!tracker.enoughFreeWeight(tpath.path.size())) {
+        // If not enough free weight, wait till next minute to have more
+        LimitTracker::waitTillNextMinute();
+    }
 
     for (auto edge : tpath.path) {
         cout << edge.fromAsset << "->" << edge.toAsset << endl;
@@ -215,7 +224,7 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
         }
         
         // Make API call to get quoted rate
-        QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount);
+        QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount, weightUID);
         num_calls++;    // incrememnt api
 
         p *= quote.ratio;           // stack profit rate 

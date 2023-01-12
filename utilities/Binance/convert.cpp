@@ -116,14 +116,14 @@ HttpScaffold BinanceConvert::sendQuote(const std::string& fromAsset, const std::
 
 // Independant (static)
 // Wrapper for sendQuote to jsut return the conversion rate
-QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount) {
+// Returns updated sapi UID weight as reference
+QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount, int& weight) {
     
-
-
-    std::cout << "fromAmount = " << fromAmount << std::endl;
-
     // Creates signature and performs all necessary http requests
     HttpScaffold httpResponse = sendQuote(fromAsset, toAsset, fromAmount);
+
+    // update UID weight from given header
+    weight = stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME));
 
     std::string response = httpResponse.getResponseString();
 
@@ -169,11 +169,11 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
 
         if (errCode == 345103) {
             // Your hourly quotation limit is reached. Please try again later in the next hour.
-            
+            LimitTracker::waitTillNextHour();
             
         } else if (errCode == 345239) {
             // Your daily quotation limit is reached. Please try again later next day.
-            
+            LimitTracker::waitTillNextDay();
         } else {
             std::cerr << response << std::endl;
         }
