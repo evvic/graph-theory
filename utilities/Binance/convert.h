@@ -15,8 +15,6 @@ private:
 
 protected:
 
-    
-
     // Uses COUNTRY_CURRENCY_CODES to lint out 
     const std::string COUNTRY_CURRENCY_CODES[4] = {"GBP", "AUD", "JPY", "CNY"};
     bool isElligibleCountry(std::string curr);

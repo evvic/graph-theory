@@ -1,8 +1,8 @@
 #include <string>
-#include <curl/curl.h>
 #include "../http/http-scaffold.h"
 #include "c2c-buy.h"
 #include "../read-keys.h" // Reading in API keys
+#include <json/json.h>    // for parsing JSON
 #include <iostream>
 #include <chrono>         // Mandatory parameter: timestamp
 
@@ -44,7 +44,7 @@ std::string MarketBuyC2C::marketBuy(const std::string& pair, const double& amoun
     // Additional header
     std::map<std::string, std::string> headers;
 
-    // Creates signature and performs all necessary curl requests
+    // Creates signature and performs all necessary http requests
     return request.post(url, params, body, headers);
 }
 
@@ -58,10 +58,45 @@ std::string MarketBuyC2C::viewWalletContents() {
     std::string url = "https://api.binance.com/api/v3/account";
     std::string total_params = ""; // No parameters for this request
 
-    // Creates signature and performs all necessary curl requests
+    // Creates signature and performs all necessary http requests
     return request.get(url, std::map<std::string, std::string>(), std::map<std::string, std::string>());
 }
 
+// Returns users (API key) wallet {"Currency_name" : amount} string, double
+// Of only coins that have some amount in them ( > 0)
 std::map<std::string, double> MarketBuyC2C::getMappedWallet() {
+    // Init wallet map
+    std::map<std::string, double> wallet;
 
+    // Get stringified json response
+    std::string response = MarketBuyC2C::viewWalletContents();
+
+    // JSON parser
+    Json::Value json_value;
+    Json::Reader reader;
+
+    // Check if can parse
+    if (!reader.parse(response, json_value)) {
+        std::cerr << "Error parsing JSON string!" << std::endl;
+        return wallet;
+    }
+
+    try {
+        // name of object holding array
+
+        for (auto coin : json_value["balances"]) {
+            std::string asset = coin["asset"].asString();
+            double balance = stod(coin["free"].asString());
+
+            // Skip any coins where the balance is 0
+            if (balance == 0.0) continue;
+
+            std::cout << coin << std::endl;
+            wallet.insert(std::make_pair(asset, balance));
+        }
+    }  catch (std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+
+    return wallet;
 }

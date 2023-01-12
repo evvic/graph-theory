@@ -44,17 +44,14 @@ int main() {
     // Log any trades or attempts to trade
     MarketBuyC2C buyer;
 
-    string resp = buyer.viewWalletContents();
+    //string resp = buyer.viewWalletContents();
 
     //cout << resp << endl;
 
+    MarketBuyC2C::getMappedWallet();
 
-    resp = buyer.sendQuote("DAI", "BNB", 2);
-
-    cout << resp << endl;
     
-    resp = buyer.marketBuy("USDTBNB", 0.01);
-
+    string resp = buyer.marketBuy("USDTBNB", 0.01);
     cout << resp << endl;
 
     ///////////////// convert class

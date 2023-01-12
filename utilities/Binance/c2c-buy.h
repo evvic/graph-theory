@@ -2,16 +2,11 @@
 #define C2C_BUY
 
 #include <string>
-#include <curl/curl.h>
 
 class MarketBuyC2C {
 private:
     std::string api_key;
     std::string secret_key;
-
-    // Calculates the HMAC SHA256 request signature for the specified request path, request method, and request parameters.
-    std::string CalculateSignature(const std::string& request_path, const std::string& request_method,
-                                const std::string& total_params);
 
 public:
     // Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
@@ -27,7 +22,11 @@ public:
 
     // Makes a request to the Binance API to view the contents of your wallet.
     // Returns the raw response from the API.
-    std::string viewWalletContents();
+    static std::string viewWalletContents();
+
+    // Returns users (API key) wallet {"Currency_name" : amount} string, double
+    // Of only coins that have some amount in them ( > 0)
+    static std::map<std::string, double> getMappedWallet();
 };
 
 #endif
