@@ -1,6 +1,7 @@
 #ifndef HTTP_SCAFFOLD
 #define HTTP_SCAFFOLD
 
+#include <cpprest/http_client.h>
 #include <string>
 #include <map>
 
@@ -11,11 +12,14 @@ protected:
 
     bool isPost;            // Flag for POST or GET
 
-    // http variables
+    // http request variables
     std::string url; 
     std::string body;
     std::map<std::string, std::string> headers; 
     std::map<std::string, std::string> queryParams;
+
+    // http response variables
+    std::map<std::string, std::string> responseHeaders;
     
 
     // Execute the request and return the response (boiler plate)
@@ -50,6 +54,10 @@ public:
     void setUrl(const std::string &url);
     void setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams);
     void setBody(const std::string &body);
+    void setResponseHeaders(web::http::http_headers respHead);
+
+    // GETTERS
+    std::map<std::string, std::string> getResponseHeaders();
 
 };
 

@@ -78,6 +78,12 @@ void HttpScaffold::setUrl(const std::string &baseUrl, const std::map<std::string
     this->url = url;
 }
 
+// Set the response headers and convert from http_headers to map
+void HttpScaffold::setResponseHeaders(web::http::http_headers response_headers) {
+    for (auto &header : response_headers) {
+        responseHeaders.insert(std::make_pair(header.first, header.second));
+    }
+}
 
 // Execute the request and return the response
 std::string HttpScaffold::executeRequest() {
@@ -108,7 +114,13 @@ std::string HttpScaffold::executeRequest() {
         request.set_method(http::methods::GET);
     }
 
-    return client.request(request).get().extract_string().get();
+    http_response response = client.request(request).get();
+
+    // Store any response headers
+    this->setResponseHeaders(response.headers());
+    
+    // Return the object "stringified" resp
+    return response.extract_string().get();
 }
 
 
@@ -170,6 +182,10 @@ std::string HttpScaffold::post(const std::string &url, const std::map<std::strin
     this->setIsPost(true);
 
     return this->executeRequest();
+}
+
+std::map<std::string, std::string> HttpScaffold::getResponseHeaders() {
+    return responseHeaders;
 }
 
 

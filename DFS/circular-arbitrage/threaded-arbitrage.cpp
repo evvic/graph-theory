@@ -206,22 +206,22 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     for (auto edge : tpath.path) {
         cout << edge.fromAsset << "->" << edge.toAsset << endl;
-        cout << "edge.fromAssetMinAmount = " << edge.fromAssetMinAmount << endl;
+        
 
         // Start with double the min amount
         if (tAmount < edge.fromAssetMinAmount) {
+            cout << "using edge.fromAssetMinAmount = " << edge.fromAssetMinAmount << " *2" << endl;
             tAmount = edge.fromAssetMinAmount * 2;
         }
         
         // Make API call to get quoted rate
         QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount);
-        num_calls++;
+        num_calls++;    // incrememnt api
 
-        p *= quote.ratio;           // stack rate 
+        p *= quote.ratio;           // stack profit rate 
         tAmount = quote.toAmount;   // set amount to start with next iteration
 
         
-
     }
     
 
@@ -229,7 +229,7 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     // If the profit is greater than the current best, update the best profit
     if (p > best.profit) {
-        cout << "Profit is better with path.." << p << endl;
+        cout << "Updating best profit: " << p << endl;
 
         // Unneccessary
         //tpath.profit = p;
