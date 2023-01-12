@@ -1,11 +1,7 @@
-// CREATE BINANCE CONVERT API CLASS
-
-// 1. populate edges funvc
-// 
-
 #ifndef BINANCE_CONVERT
 #define BINANCE_CONVERT
 
+#include "../http/http-scaffold.h"
 #include "../edges/unique-symbols.h"
 #include "../edges/c2c-edge.h"
 #include "quote-edge.h"
@@ -18,6 +14,8 @@ private:
     UniqueSymbols symbols;
 
 protected:
+
+    
 
     // Uses COUNTRY_CURRENCY_CODES to lint out 
     const std::string COUNTRY_CURRENCY_CODES[4] = {"GBP", "AUD", "JPY", "CNY"};
@@ -33,7 +31,7 @@ public:
     unsigned short getVerticesCount();
 
     // Independent function 
-    static std::string sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
+    static HttpScaffold sendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);
 
     // Wrapper for sendQuote to jsut return the conversion rate
     static QuoteEdge parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount);

@@ -78,11 +78,16 @@ void HttpScaffold::setUrl(const std::string &baseUrl, const std::map<std::string
     this->url = url;
 }
 
-// Set the response headers and convert from http_headers to map
+// Set the response headers and convert from http_headers type to map
 void HttpScaffold::setResponseHeaders(web::http::http_headers response_headers) {
     for (auto &header : response_headers) {
+        std::cout << "header: " << header.first << ": " << header.second << std::endl;
         responseHeaders.insert(std::make_pair(header.first, header.second));
     }
+}
+
+void HttpScaffold::setResponseObjStr(std::string respStr) {
+    responseObjStr = respStr;
 }
 
 // Execute the request and return the response
@@ -119,8 +124,11 @@ std::string HttpScaffold::executeRequest() {
     // Store any response headers
     this->setResponseHeaders(response.headers());
     
+    // Store the response string
+    setResponseObjStr(response.extract_string().get());
+
     // Return the object "stringified" resp
-    return response.extract_string().get();
+    return responseObjStr;
 }
 
 
@@ -186,6 +194,19 @@ std::string HttpScaffold::post(const std::string &url, const std::map<std::strin
 
 std::map<std::string, std::string> HttpScaffold::getResponseHeaders() {
     return responseHeaders;
+}
+
+// Get specific header value given key
+std::string HttpScaffold::getHeader(std::string key) {
+    auto it = responseHeaders.find(key);
+    if (it != responseHeaders.end()) {
+        return it->second;
+    }
+    return "";
+}
+
+std::string HttpScaffold::getResponseString() {
+    return responseObjStr;
 }
 
 

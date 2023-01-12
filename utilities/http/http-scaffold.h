@@ -20,6 +20,7 @@ protected:
 
     // http response variables
     std::map<std::string, std::string> responseHeaders;
+    std::string responseObjStr;
     
 
     // Execute the request and return the response (boiler plate)
@@ -28,6 +29,10 @@ protected:
     // Returns HMAC Sha256 signature given query params (must include timestamp)
     // Requires secret_key member variable
     std::string generateSignature(const std::string &queryString);
+
+    // Response setters
+    void setResponseHeaders(web::http::http_headers respHead);
+    void setResponseObjStr(std::string respStr);
 
 public:
     // Default Constructor: optionally requires filename containing API and secret keys, variable names of API and secret in the file
@@ -54,10 +59,12 @@ public:
     void setUrl(const std::string &url);
     void setUrl(const std::string &baseUrl, const std::map<std::string, std::string> &queryParams);
     void setBody(const std::string &body);
-    void setResponseHeaders(web::http::http_headers respHead);
+    
 
     // GETTERS
     std::map<std::string, std::string> getResponseHeaders();
+    std::string getHeader(std::string key);
+    std::string getResponseString();
 
 };
 
