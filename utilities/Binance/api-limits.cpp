@@ -72,8 +72,9 @@ void LimitTracker::waitTillNext() {
     // Calculate the duration until the next duration
     auto duration = next_duration - now;
 
-    // Print the duration until the next duration
-    std::cout << "Sleeping for " << duration.count() << " seconds" << std::endl;
+    // Print the duration until the next duration in seconds
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+    std::cout << "Sleeping for " << seconds.count() << " seconds" << std::endl;
 
     // Put the thread to sleep until the next duration
     std::this_thread::sleep_until(next_duration);
@@ -81,6 +82,7 @@ void LimitTracker::waitTillNext() {
     auto now_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::cout << "Woken up! Time: " <<std::put_time(std::localtime(&now_time), "%F %T") << std::endl;
 }
+
 
 void LimitTracker::waitTillNextMinute() {
     LimitTracker::waitTillNext<std::chrono::minutes>();
@@ -101,7 +103,11 @@ bool LimitTracker::enoughFreeWeight(int num_calls) {
     // TODO use timestamp of last time updated to see if its been over a minute
 
     if ((sendQuoteReqestUID * num_calls) > SAPI_UID_1M_LIMIT) {
+        std::cout << (sendQuoteReqestUID * num_calls) << " > " << SAPI_UID_1M_LIMIT << std::endl;
         return false;
     }
-    else return true;
+    else {
+        std::cout << (sendQuoteReqestUID * num_calls) << " < " << SAPI_UID_1M_LIMIT << std::endl;
+        return true;
+    }
 }

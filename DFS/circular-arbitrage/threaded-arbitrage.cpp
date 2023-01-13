@@ -1,6 +1,7 @@
 #include "threaded-arbitrage.h"
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/convert.h"
+#include "../../utilities/Binance/c2c-buy.h"
 #include "../../utilities/Binance/quote-edge.h"
 #include "../../utilities/Binance/api-limits.h"
 #include <vector>
@@ -108,13 +109,19 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
     // Initialize the best profit to 0
     best.profit = 0.0;
 
-    // Only loop through IDs 
-    // Choose the currency IDs that the wallet already has funds for
-
-    // If traversal_IDs is empty, loop through all vertices
+    // get current wallet balances
+    wallet = MarketBuyC2C::getMappedWallet();
 
     // Loop through all of the nodes in the graph
     for (unsigned short i = 0; i < adj.size() ; i++) {
+        // Filter & skip nodes with no funds in wallet
+        // For now just tseting with USDT
+        if (adj[i].size() <= 0 || adj[i][0].fromAsset != "USDT") {
+            std::cout << "Skipping dfs for " << adj[i][0].fromAsset << std::endl;
+            continue;
+        }
+
+
         // Create a temp ProfitPath struct to hold path of traversal
         // Include origin of start of the DFS (where it should return to be circular)
         ProfitPath tempath(i);
@@ -130,18 +137,11 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
         // Create a temp visited vect<> for exploring all optional paths to get back to start
         std::vector<bool> tvisited(adj.size(), false);
 
-        // TESTING: only check for starting at BTC
-        if (adj[i].size() <= 0 || adj[i][0].fromAsset != "BTC") {
-            std::cout << "Skipping dfs for " << adj[i][0].fromAsset << std::endl;
-            continue;
-        }
-
         // If the node has not been visited, explore it using DFS
         if (!visited.at(i)) {
             
             visited.at(i) = true;
             dfs(adj, tvisited, tempath, i);
-
         }
 
     }
@@ -167,10 +167,10 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
 double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     int weightUID;          // Temp for getting UID weight from API call
-
     double p = 1.0;         // Calculate the profit for the circular path
-    double tAmount = 0;     // In the future init with amount free in wallet
 
+    // Init starting amount with amount in wallet
+    double tAmount = wallet[tpath.path.at(0).fromAsset];     
 
     // Check if loop can fully complete without reaching API call limit
     // given the number of edges (each edge == api call)
@@ -192,7 +192,10 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
         
         // Make API call to get quoted rate
         QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount, weightUID);
-        num_calls++;    // incrememnt api
+        
+        // Keep track of amount of API calls & their accumulated weight
+        num_calls++;    // incrememnt api call count
+        tracker.updateUidWeight(weightUID);
 
         p *= quote.ratio;           // stack profit rate 
         tAmount = quote.toAmount;   // set amount to start with next iteration
@@ -201,7 +204,8 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
     }
     
 
-
+    // Include check if profit is > 1.0 
+    // ... then buy circle!
 
     // If the profit is greater than the current best, update the best profit
     if (p > best.profit) {

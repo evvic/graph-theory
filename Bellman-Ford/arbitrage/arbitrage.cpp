@@ -3,6 +3,7 @@
 #include "../../utilities/Binance/c2c-json.h"
 #include "../../utilities/Binance/convert.h"
 #include "../../utilities/Binance/c2c-buy.h"
+#include "../../utilities/Binance/api-limits.h"
 #include "../../DFS/circular-arbitrage/dfs-arbitrage.h"
 #include "../../DFS/circular-arbitrage/threaded-arbitrage.h"
 #include <iostream>
@@ -53,6 +54,9 @@ int main() {
     
     string resp = buyer.marketBuy("USDTBNB", 0.01);
     cout << resp << endl;
+
+    // Test the wait 1 minute func
+    LimitTracker::waitTillNextMinute();
 
     ///////////////// convert class
     // Init vect to be populated with all C2C edges

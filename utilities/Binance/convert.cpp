@@ -124,6 +124,7 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
 
     // update UID weight from given header
     weight = stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME));
+    std::cout << "weight = " << weight << std::endl;
 
     std::string response = httpResponse.getResponseString();
 
@@ -165,14 +166,18 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         std::cerr << "parseRefRate Error: " << e.what() << std::endl;
 
         // Handle exception
+        //if (json_value.isMember("code"))
         int errCode = json_value["code"].asInt();
+        std::string errMsg = json_value["code"].asString();
 
         if (errCode == 345103) {
             // Your hourly quotation limit is reached. Please try again later in the next hour.
+            std::cout << errMsg << std::endl;
             LimitTracker::waitTillNextHour();
             
         } else if (errCode == 345239) {
             // Your daily quotation limit is reached. Please try again later next day.
+            std::cout << errMsg << std::endl;
             LimitTracker::waitTillNextDay();
         } else {
             std::cerr << response << std::endl;

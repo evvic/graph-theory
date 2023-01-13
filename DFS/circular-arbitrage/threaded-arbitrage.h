@@ -1,12 +1,12 @@
 #ifndef DFS_THREADED_ARBITRAGE
 #define DFS_THREADED_ARBITRAGE
 
+#include "../../utilities/edges/c2c-edge.h"
+#include "../../utilities/Binance/api-limits.h"
 #include <vector>
 #include <limits>
 #include <stack>
-#include "../../utilities/edges/c2c-edge.h"
-#include "../../utilities/Binance/api-limits.h"
-
+#include <map>
 
 // Therefore only 900 getQuote calls per minute
 
@@ -36,6 +36,7 @@ private:
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
     LimitTracker tracker;                   // Class to track when API Limit is reached
+    std::map<std::string, double> wallet;   // map of coins and their current balance
 
     int num_calls;  // counter of getQuote api calls per run of the alg
     double calculateProfit(const ProfitPath& tpath);
