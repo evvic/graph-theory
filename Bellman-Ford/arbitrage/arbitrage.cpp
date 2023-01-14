@@ -55,8 +55,6 @@ int main() {
     string resp = buyer.marketBuy("USDTBNB", 0.01);
     cout << resp << endl;
 
-    // Test the wait 1 minute func
-    LimitTracker::waitTillNextMinute();
 
     ///////////////// convert class
     // Init vect to be populated with all C2C edges

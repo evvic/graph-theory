@@ -102,12 +102,12 @@ void LimitTracker::waitTillNextDay() {
 bool LimitTracker::enoughFreeWeight(int num_calls) {
     // TODO use timestamp of last time updated to see if its been over a minute
 
-    if ((sendQuoteReqestUID * num_calls) > SAPI_UID_1M_LIMIT) {
-        std::cout << (sendQuoteReqestUID * num_calls) << " > " << SAPI_UID_1M_LIMIT << std::endl;
+    if ((cntSapiUidWeight * num_calls) > SAPI_UID_1M_LIMIT) {
+        std::cout << (cntSapiUidWeight * num_calls) << " > " << SAPI_UID_1M_LIMIT << std::endl;
         return false;
     }
     else {
-        std::cout << (sendQuoteReqestUID * num_calls) << " < " << SAPI_UID_1M_LIMIT << std::endl;
+        std::cout << (cntSapiUidWeight * num_calls) << " < " << SAPI_UID_1M_LIMIT << std::endl;
         return true;
     }
 }

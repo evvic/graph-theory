@@ -167,6 +167,8 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
 
         // Handle exception
         //if (json_value.isMember("code"))
+        std::cout << json_value << std::endl;
+
         int errCode = json_value["code"].asInt();
         std::string errMsg = json_value["code"].asString();
 
