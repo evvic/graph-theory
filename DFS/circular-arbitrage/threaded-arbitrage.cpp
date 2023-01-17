@@ -11,7 +11,7 @@
 using namespace std;
 
 // CONSTRUCTOR
-ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V), num_calls(0) {}
+ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V) {}
 
 // Add a directed edge to->from with the given rate (multiplicative for DFS)
 void ThreadedArbitrage::addEdge(const C2CEdge e) {
@@ -64,7 +64,7 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
             cout << "REMOVING edge completing path to continue searching other options: " << tpath.path.back() << endl; 
             tpath.path.pop_back();
 
-            cout << "Total getQuote API calls made: " << num_calls << endl << endl << endl << endl;
+            cout << "Total getQuote API calls made: " << tracker.getNumCalls() << endl << endl << endl << endl;
 
             // TESTING, after finding first circular path, break
             return;
@@ -173,11 +173,15 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
     double tAmount = wallet[tpath.path.at(0).fromAsset];     
 
     // Check if loop can fully complete without reaching API call limit
-    // given the number of edges (each edge == api call)
-    // calculates and returns bool of 
-    if (!tracker.enoughFreeWeight(tpath.path.size())) {
-        // If not enough free weight, wait till next minute to have more
+    // given the number of edges (each edge == api call) 
+    // If not enough free weight, wait till next minute to have more
+    if (!tracker.enough1mFreeWeight(tpath.path.size())) {
         LimitTracker::waitTillNextMinute();
+    }
+
+    // If not enough API calls left in the hour, wait till next hour
+    if (!tracker.enoughFreeCalls1h(tpath.path.size())) {
+        LimitTracker::waitTillNextHour();
     }
 
     for (auto edge : tpath.path) {
@@ -194,13 +198,11 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
         QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount, weightUID);
         
         // Keep track of amount of API calls & their accumulated weight
-        num_calls++;    // incrememnt api call count
+        tracker.incrememntCalls();    // incrememnt api call count
         tracker.updateUidWeight(weightUID);
 
         p *= quote.ratio;           // stack profit rate 
         tAmount = quote.toAmount;   // set amount to start with next iteration
-
-        
     }
     
 

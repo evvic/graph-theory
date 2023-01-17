@@ -38,7 +38,7 @@ private:
     LimitTracker tracker;                   // Class to track when API Limit is reached
     std::map<std::string, double> wallet;   // map of coins and their current balance
 
-    int num_calls;  // counter of getQuote api calls per run of the alg
+    // int num_calls;  // counter of getQuote api calls per run of the alg
     double calculateProfit(const ProfitPath& tpath);
 
 public:

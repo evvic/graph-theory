@@ -124,6 +124,8 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
 
     // update UID weight from given header
     weight = stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME));
+
+    //httpResponse.printResponseHeader();
     std::cout << "weight = " << weight << std::endl;
 
     std::string response = httpResponse.getResponseString();
@@ -139,7 +141,7 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
     }
 
     // Check header for limit
-    if (stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME)) >= LimitTracker::SAPI_UID_1M_LIMIT) {
+    if (stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME)) >= LimitTracker::SAPI_UID_1M_WEIGHT_LIMIT) {
         std::cerr << "Reached " << LimitTracker::HEADER_SAPI_UID_1M_NAME << " limit." << std::endl;
     }
 
@@ -147,6 +149,7 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         QuoteEdge temp;
 
         // Check if quoteId is a member of the object
+        // If not givenId, continue checking arbitrage but cannot execute the conversion
         if (json_value.isMember("quoteId"))
             temp.quoteId = json_value["quoteId"].asString();
         else
@@ -170,16 +173,16 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         std::cout << json_value << std::endl;
 
         int errCode = json_value["code"].asInt();
-        std::string errMsg = json_value["code"].asString();
+        std::string errMsg = json_value["msg"].asString();
 
         if (errCode == 345103) {
             // Your hourly quotation limit is reached. Please try again later in the next hour.
-            std::cout << errMsg << std::endl;
+            std::cerr << errMsg << std::endl;
             LimitTracker::waitTillNextHour();
             
         } else if (errCode == 345239) {
             // Your daily quotation limit is reached. Please try again later next day.
-            std::cout << errMsg << std::endl;
+            std::cerr << errMsg << std::endl;
             LimitTracker::waitTillNextDay();
         } else {
             std::cerr << response << std::endl;

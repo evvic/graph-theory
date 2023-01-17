@@ -8,10 +8,13 @@
 /* STATIC CONSTANTS */
 
 // Binance limit in API calls per minute
-const int LimitTracker::SAPI_UID_1M_LIMIT = 180000;
-const int LimitTracker::SAPI_IP_1M_LIMIT  = 12000;
+const int LimitTracker::SAPI_UID_1M_WEIGHT_LIMIT = 180000;
+const int LimitTracker::SAPI_IP_1M_WEIGHT_LIMIT  = 12000;
 
-// Bincance limit in sAPI calls header names
+// Binance api calls limit per hour
+const int LimitTracker::SAPI_UID_1H_CALLS_LIMIT = 360;
+
+// Binance limit in sAPI calls header names
 const std::string LimitTracker::HEADER_SAPI_UID_1M_NAME = "X-SAPI-USED-UID-WEIGHT-1M";
 const std::string LimitTracker::HEADER_SAPI_IP_1M_NAME  = "X-SAPI-USED-IP-WEIGHT-1M";
 
@@ -23,6 +26,7 @@ const int LimitTracker::acceptQuoteUID     = 200;
 LimitTracker::LimitTracker() {
     cntSapiUidWeight = 0;
     cntSapiIpWeight = 0;
+    num_calls = 0;
 }
 
 // Funcrtion to ping the binance server and update the current accumulated UID weight
@@ -52,6 +56,15 @@ LimitTracker::LimitTracker() {
 //     return 69;
 
 // }
+
+int LimitTracker::incrememntCalls() {
+    num_calls++;
+    return num_calls;
+}
+
+int LimitTracker::getNumCalls() {
+    return num_calls;
+}
 
 int LimitTracker::updateUidWeight(int w) {
     cntSapiUidWeight = w;
@@ -96,18 +109,42 @@ void LimitTracker::waitTillNextDay() {
     LimitTracker::waitTillNext<std::chrono::duration<int, std::ratio<3600*24>>>();
 }
 
+bool LimitTracker::is1mLimitReached(int weight) {
+    if (weight >= SAPI_UID_1M_WEIGHT_LIMIT) return true;
+    else return false;
+}
+
+
 
 // given the number of edges (each edge == api call)
 // calculates and returns bool o
-bool LimitTracker::enoughFreeWeight(int num_calls) {
+bool LimitTracker::enough1mFreeWeight(int numCalls) {
     // TODO use timestamp of last time updated to see if its been over a minute
 
-    if ((cntSapiUidWeight * num_calls) > SAPI_UID_1M_LIMIT) {
-        std::cout << (cntSapiUidWeight * num_calls) << " > " << SAPI_UID_1M_LIMIT << std::endl;
+
+    // Check enough weight for the minute
+    if (is1mLimitReached(cntSapiUidWeight * numCalls)) {
+        std::cout << (cntSapiUidWeight * numCalls) << " > " << SAPI_UID_1M_WEIGHT_LIMIT << std::endl;
         return false;
     }
     else {
-        std::cout << (cntSapiUidWeight * num_calls) << " < " << SAPI_UID_1M_LIMIT << std::endl;
+        std::cout << (cntSapiUidWeight * numCalls) << " < " << SAPI_UID_1M_WEIGHT_LIMIT << std::endl;
         return true;
+    }
+}
+
+// given the number of edges (each edge == api call)
+// calculates and returns bool o
+bool LimitTracker::enoughFreeCalls1h(int numCalls) {
+    // TODO use timestamp of last time updated to see if its been over a minute
+
+    // Check enough calls left in the hour
+    if (((numCalls % SAPI_UID_1H_CALLS_LIMIT) + num_calls) <= SAPI_UID_1H_CALLS_LIMIT) {
+        std::cout << (numCalls + num_calls) << " < " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
+        return true;
+    }
+    else {
+        std::cout << (numCalls + num_calls) << " > " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
+        return false;
     }
 }

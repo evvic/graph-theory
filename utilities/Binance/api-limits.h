@@ -11,6 +11,12 @@
 // GET /sapi/v1/convert/exchangeInfo  500 Weight(IP)
 // POST /sapi/v1/convert/getQuote     200 Weight(UID)
 
+// HOUR LIMIT 
+// For getQuote api call there were 360 calls allowed to make in one hour
+// this call has a weight of 200, therefore 72000 hourly weight
+// 2nd test yielded 363 api calls in an hour limit
+
+// DAY LIMIT
 class LimitTracker {
 private:
     
@@ -22,14 +28,18 @@ protected:
     int cntSapiIpWeight;    // count sAPI IP weight
     long sapiIpTimestamp;   // sAPI IP timestamp of last updated count
 
+    int num_calls;          // Count number of api calls made to server
+
 public:
-    // Constructor
-    LimitTracker();
+    /* Static members */    
 
     // Binance limit in API calls per minute
-    static const int SAPI_UID_1M_LIMIT ;
-    static const int SAPI_IP_1M_LIMIT ;
-    
+    static const int SAPI_UID_1M_WEIGHT_LIMIT ;
+    static const int SAPI_IP_1M_WEIGHT_LIMIT ;
+
+    // Binance api calls limit per hour
+    static const int SAPI_UID_1H_CALLS_LIMIT;
+
     // Bincance limit in sAPI calls header names
     static const std::string HEADER_SAPI_UID_1M_NAME;
     static const std::string HEADER_SAPI_IP_1M_NAME;
@@ -47,9 +57,18 @@ public:
     template <typename T>
     static void waitTillNext();
 
+    /* Class members */
+
+    // Constructor
+    LimitTracker();
+
+    int getNumCalls();                  // Returns num_calls
+    int incrememntCalls();              // Increments num_calls
     int updateUidWeight();
     int updateUidWeight(int w);
-    bool enoughFreeWeight(int num_calls);
+    bool is1mLimitReached(int weight);
+    bool enough1mFreeWeight(int calls);
+    bool enoughFreeCalls1h(int calls);
 };
 
 #endif

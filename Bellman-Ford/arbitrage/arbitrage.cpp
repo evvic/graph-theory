@@ -43,23 +43,22 @@ int main() {
     // Perform API call to buy
     // Create new class for this method
     // Log any trades or attempts to trade
-    MarketBuyC2C buyer;
+    // MarketBuyC2C buyer;
 
     //string resp = buyer.viewWalletContents();
 
     //cout << resp << endl;
 
-    MarketBuyC2C::getMappedWallet();
+    // MarketBuyC2C::getMappedWallet();
 
     
-    string resp = buyer.marketBuy("USDTBNB", 0.01);
-    cout << resp << endl;
+    // string resp = buyer.marketBuy("USDTBNB", 0.01);
+    // cout << resp << endl;
 
 
     ///////////////// convert class
     // Init vect to be populated with all C2C edges
     vector<C2CEdge> co_edges;
-
 
     BinanceConvert convert;
 
