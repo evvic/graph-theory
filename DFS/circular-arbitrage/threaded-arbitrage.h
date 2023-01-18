@@ -8,7 +8,10 @@
 #include <stack>
 #include <map>
 
-// Therefore only 900 getQuote calls per minute
+// Binance Convert API has no trade fees (included in conversion rate)
+// therefore no additional math required for calculating potential profit
+// Slippage is also not necessary to account for because the quoted rate is locked in
+// for the given amount of time (can be adjusted in API call parameter)
 
 class ThreadedArbitrage {
 protected:
@@ -38,8 +41,11 @@ private:
     LimitTracker tracker;                   // Class to track when API Limit is reached
     std::map<std::string, double> wallet;   // map of coins and their current balance
 
-    // int num_calls;  // counter of getQuote api calls per run of the alg
+    // Returns the calcualated profit given the circualr path
     double calculateProfit(const ProfitPath& tpath);
+
+    // Performs all API calls for each conversion
+    void executeCircularTrade(const ProfitPath& tpath);
 
 public:
     // Constructor requires number of vertices
