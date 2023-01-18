@@ -14,6 +14,10 @@ const int LimitTracker::SAPI_IP_1M_WEIGHT_LIMIT  = 12000;
 // Binance api calls limit per hour
 const int LimitTracker::SAPI_UID_1H_CALLS_LIMIT = 360;
 
+// Binance error codes
+const int LimitTracker::ERR_HOUR_LIMIT_CODE = 345103;
+const int LimitTracker::ERR_DAY_LIMIT_CODE  = 345239;
+
 // Binance limit in sAPI calls header names
 const std::string LimitTracker::HEADER_SAPI_UID_1M_NAME = "X-SAPI-USED-UID-WEIGHT-1M";
 const std::string LimitTracker::HEADER_SAPI_IP_1M_NAME  = "X-SAPI-USED-IP-WEIGHT-1M";

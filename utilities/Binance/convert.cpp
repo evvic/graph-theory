@@ -155,6 +155,7 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         else
             temp.quoteId = "";
 
+        // Parse JSON object into QuoteEdge strcut
         temp.ratio = stod(json_value["ratio"].asString());
         temp.inverseRatio = stod(json_value["inverseRatio"].asString());
         temp.validTimestamp = (long)json_value["validTimestamp"].asDouble();
@@ -166,28 +167,31 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         return temp;
 
     } catch (std::exception& e) {
-        std::cerr << "parseRefRate Error: " << e.what() << std::endl;
-
         // Handle exception
-        //if (json_value.isMember("code"))
-        std::cout << json_value << std::endl;
 
+        std::cerr << "parseRefRate Error: " << e.what() << std::endl;
+        //std::cout << json_value << std::endl;
+
+        // Check if json value is a parseable error message
+        if (!json_value.isMember("code")) {
+            std::cerr << "Not a valid json object: " << json_value << std::endl;
+        }
         int errCode = json_value["code"].asInt();
         std::string errMsg = json_value["msg"].asString();
 
-        if (errCode == 345103) {
+        if (errCode == LimitTracker::ERR_HOUR_LIMIT_CODE) {
             // Your hourly quotation limit is reached. Please try again later in the next hour.
             std::cerr << errMsg << std::endl;
             LimitTracker::waitTillNextHour();
             
-        } else if (errCode == 345239) {
+        } else if (errCode == LimitTracker::ERR_DAY_LIMIT_CODE) {
             // Your daily quotation limit is reached. Please try again later next day.
             std::cerr << errMsg << std::endl;
             LimitTracker::waitTillNextDay();
         } else {
-            std::cerr << response << std::endl;
+            // Unhandled error message from Binance
+            std::cerr << errMsg << std::endl;
         }
-
         
         return QuoteEdge();
     }

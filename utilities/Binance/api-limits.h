@@ -44,6 +44,10 @@ public:
     static const std::string HEADER_SAPI_UID_1M_NAME;
     static const std::string HEADER_SAPI_IP_1M_NAME;
 
+    // Binance error codes
+    static const int ERR_HOUR_LIMIT_CODE;
+    static const int ERR_DAY_LIMIT_CODE;
+
     // API calls weights
     static const int sendQuoteReqestUID;
     static const int acceptQuoteUID;
