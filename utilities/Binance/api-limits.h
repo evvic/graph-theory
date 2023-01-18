@@ -64,11 +64,10 @@ public:
     /* Class members */
 
     // Constructor
-    LimitTracker();
+    LimitTracker();                     
 
     int getNumCalls();                  // Returns num_calls
     int incrememntCalls();              // Increments num_calls
-    int updateUidWeight();
     int updateUidWeight(int w);
     bool is1mLimitReached(int weight);
     bool enough1mFreeWeight(int calls);

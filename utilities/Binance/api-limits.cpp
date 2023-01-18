@@ -33,33 +33,6 @@ LimitTracker::LimitTracker() {
     num_calls = 0;
 }
 
-// Funcrtion to ping the binance server and update the current accumulated UID weight
-// int LimitTracker::updateUidWeight() {
-//     const std::string url = "https://api.binance.com/sapi/v1/asset/convert-transfer/queryByPage";
-
-//     // Object that handles http request
-//     HttpScaffold request;
-
-//     // Unimportant paramas
-//     const long startTime = 1673530356000;
-//     const long endTime   = 1673530423000;
-
-//     // Query parameters (appended to url)
-//     std::map<std::string, std::string> params;
-//     params.insert(std::make_pair("startTime", std::to_string(startTime)));
-//     params.insert(std::make_pair("endTime", std::to_string(endTime)));
-
-//     // Additional header
-//     std::map<std::string, std::string> headers;
-
-//     request.get(url, params, headers);
-
-//     std::cout << "updateUidWeight: " << request.getHeader(HEADER_SAPI_UID_1M_NAME) << std::endl;
-//     request.printResponseHeader();
-
-//     return 69;
-
-// }
 
 int LimitTracker::incrememntCalls() {
     num_calls++;
