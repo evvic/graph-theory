@@ -30,7 +30,7 @@ protected:
         unsigned short origin() { return this->_id; }  
     };
 
-    // DFS for findiong circular arbitrage
+    // DFS for finding circular arbitrage
     void dfs(const std::vector<std::vector<C2CEdge>>& graph, std::vector<bool>& visited, ProfitPath& tpath, unsigned short current);
 
 private:

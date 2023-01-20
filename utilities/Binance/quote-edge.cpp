@@ -4,7 +4,12 @@
 
 QuoteEdge::QuoteEdge(std::string _quoteId, double _ratio, double _inverseRatio, long _validTimestamp, double _toAmount, double _fromAmount)
     : quoteId(_quoteId), ratio(_ratio), inverseRatio(_inverseRatio), validTimestamp(_validTimestamp),
-    toAmount(_toAmount), fromAmount(_fromAmount) {}
+      toAmount(_toAmount), fromAmount(_fromAmount) {}
+
+QuoteEdge::QuoteEdge(std::string _toAsset, std::string _fromAsset, std::string _quoteId, double _ratio, double _inverseRatio, 
+                     long _validTimestamp, double _toAmount, double _fromAmount)
+    : toAsset(_toAsset), fromAsset(_fromAsset), quoteId(_quoteId), ratio(_ratio), inverseRatio(_inverseRatio), 
+      validTimestamp(_validTimestamp), toAmount(_toAmount), fromAmount(_fromAmount) {}
 
 QuoteEdge::QuoteEdge() {
     quoteId = "";

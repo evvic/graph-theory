@@ -55,13 +55,13 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
             cout << "Returned to starting node!" << endl;
 
             // function to iterate through the path to calculate profit (revenue)
-            int revenue = calculateProfit(tpath);
+            double profit = calculateProfit(tpath);
 
             // Condition if the profit is greater than 1.0 (break-even point):
             const double break_even = 1.0;
             
             // Execute circular trade
-            if (revenue > break_even) {
+            if (profit > break_even) {
                 executeCircularTrade(tpath);
             }
             
