@@ -1,5 +1,5 @@
-#ifndef DFS_THREADED_ARBITRAGE
-#define DFS_THREADED_ARBITRAGE
+#ifndef DFS_ASYNC_ARBITRAGE
+#define DFS_ASYNC_ARBITRAGE
 
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/api-limits.h"
@@ -13,7 +13,7 @@
 // Slippage is also not necessary to account for because the quoted rate is locked in
 // for the given amount of time (can be adjusted in API call parameter)
 
-class ThreadedArbitrage {
+class AsyncArbitrage {
 protected:
     // struct to hold (max) profit & path of edges to get it
     struct ProfitPath {
@@ -49,7 +49,7 @@ private:
 
 public:
     // Constructor requires number of vertices
-    ThreadedArbitrage(int V);
+    AsyncArbitrage(int V);
 
     // Add a directed edge to->from with the given rate (multiplicative for DFS)
     void addEdge(C2CEdge e);

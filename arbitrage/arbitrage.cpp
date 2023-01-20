@@ -4,7 +4,7 @@
 #include "../utilities/Binance/c2c-buy.h"
 #include "../utilities/Binance/api-limits.h"
 #include "../DFS/circular-arbitrage/dfs-arbitrage.h"
-#include "../DFS/circular-arbitrage/threaded-arbitrage.h"
+#include "../DFS/circular-arbitrage/async-arbitrage.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -66,7 +66,7 @@ int main() {
     cout << "number of vertices: " << convert.getVerticesCount() << endl;
 
     // init with number of vertices
-    ThreadedArbitrage method(convert.getVerticesCount());
+    AsyncArbitrage method(convert.getVerticesCount());
 
     // Populate edges
     for (auto edge : co_edges) {

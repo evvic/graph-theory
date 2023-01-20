@@ -1,4 +1,4 @@
-#include "threaded-arbitrage.h"
+#include "async-arbitrage.h"
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/convert.h"
 #include "../../utilities/Binance/c2c-buy.h"
@@ -11,16 +11,16 @@
 using namespace std;
 
 // CONSTRUCTOR
-ThreadedArbitrage::ThreadedArbitrage(int _V) : V(_V), adj(_V) {}
+AsyncArbitrage::AsyncArbitrage(int _V) : V(_V), adj(_V) {}
 
 // Add a directed edge to->from with the given rate (multiplicative for DFS)
-void ThreadedArbitrage::addEdge(const C2CEdge e) {
+void AsyncArbitrage::addEdge(const C2CEdge e) {
     adj[e.from].push_back(e);
 }
 
 // DFS for cicrular arbitrage
 // Define a function to search for circular arbitrage opportunities using DFS
-void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::vector<bool>& visited, ProfitPath& tpath, unsigned short current) {
+void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::vector<bool>& visited, ProfitPath& tpath, unsigned short current) {
     
     // Return if current node has no edges
     if (graph.at(current).empty()) {
@@ -54,15 +54,15 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
 
             cout << "Returned to starting node!" << endl;
 
-            // function to iterate through the path to calculate profit
-            int profit = calculateProfit(tpath);
+            // function to iterate through the path to calculate profit (revenue)
+            int revenue = calculateProfit(tpath);
 
             // Condition if the profit is greater than 1.0 (break-even point):
             const double break_even = 1.0;
             
             // Execute circular trade
-            if (p > break_even) {
-                executeCircularTrade(tpath)
+            if (revenue > break_even) {
+                executeCircularTrade(tpath);
             }
             
             // Remove edge completing circular path 
@@ -97,7 +97,7 @@ void ThreadedArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std:
 // Define a function to search for the best circular arbitrage opportunity
 // traversal_IDs holds all crypto IDs that should be used as the initial point of circular arbitrage
 // If traversal_IDs is empty, loop through all vertices
-std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
+std::vector<C2CEdge> AsyncArbitrage::findCircularArbitrage() {
     // Initialize the visited vector to all false values
     std::vector<bool> visited(adj.size(), false);
 
@@ -159,11 +159,11 @@ std::vector<C2CEdge> ThreadedArbitrage::findCircularArbitrage() {
     return std::vector<C2CEdge>();
 }
 
-double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
+double AsyncArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     int weightUID;          // Temp for getting UID weight from API call
     double p = 1.0;         // Calculate the profit for the circular path
-    double inverseP = 1.0   // TODO: calculate the inverse treansaction
+    double inverseP = 1.0;  // TODO: calculate the inverse treansaction
 
     // Init starting amount with amount in wallet
     double tAmount = wallet[tpath.path.at(0).fromAsset];
@@ -192,7 +192,7 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
         // Make API call to get quoted rate
         QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount, weightUID);
 
-        // TODO: save quoteedges
+        // TODO: save quoteedges at least quote id
         
         // Keep track of amount of API calls & their accumulated weight
         tracker.incrememntCalls();    // incrememnt api call count
@@ -220,6 +220,6 @@ double ThreadedArbitrage::calculateProfit(const ProfitPath& tpath) {
 
 
 // Performs all API calls for each conversion
-void executeCircularTrade(const ProfitPath& tpath) {
+void AsyncArbitrage::executeCircularTrade(const ProfitPath& tpath) {
 
 }
