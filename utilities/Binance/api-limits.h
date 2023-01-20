@@ -47,10 +47,15 @@ public:
     // Binance error codes
     static const int ERR_HOUR_LIMIT_CODE;
     static const int ERR_DAY_LIMIT_CODE;
+    static const int ERR_FAILED_TO_QUOTE;
 
     // API calls weights
     static const int sendQuoteReqestUID;
     static const int acceptQuoteUID;
+    static const int checkOrderStatus;
+
+    // Calculate ideal max circular arbitrage length
+    static const int MAX_CIRCULAR_TRADE_SIZE;
 
     // HELPER FUNCTIONS
     static void waitTillNextMinute();
@@ -60,6 +65,9 @@ public:
     // boilerplate function for wait until (time period)
     template <typename T>
     static void waitTillNext();
+
+    // Sleep for given amount of seconds
+    static void waitForSeconds(double seconds);
 
     /* Class members */
 

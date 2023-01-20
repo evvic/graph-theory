@@ -17,6 +17,7 @@ const int LimitTracker::SAPI_UID_1H_CALLS_LIMIT = 360;
 // Binance error codes
 const int LimitTracker::ERR_HOUR_LIMIT_CODE = 345103;
 const int LimitTracker::ERR_DAY_LIMIT_CODE  = 345239;
+const int LimitTracker::ERR_FAILED_TO_QUOTE = 345166;
 
 // Binance limit in sAPI calls header names
 const std::string LimitTracker::HEADER_SAPI_UID_1M_NAME = "X-SAPI-USED-UID-WEIGHT-1M";
@@ -24,7 +25,12 @@ const std::string LimitTracker::HEADER_SAPI_IP_1M_NAME  = "X-SAPI-USED-IP-WEIGHT
 
 // API calls weights
 const int LimitTracker::sendQuoteReqestUID = 200;
-const int LimitTracker::acceptQuoteUID     = 200;
+const int LimitTracker::acceptQuoteUID     = 500;
+const int LimitTracker::checkOrderStatus   = 100;
+
+// Calculate ideal max circular arbitrage length (how much weight in 1 minute to accept all quoted trades)
+//const int LimitTracker::MAX_CIRCULAR_TRADE_SIZE = LimitTracker::SAPI_UID_1M_WEIGHT_LIMIT / (LimitTracker::acceptQuoteUID + (2 * LimitTracker::checkOrderStatus));
+const int LimitTracker::MAX_CIRCULAR_TRADE_SIZE = 10;
 
 /* Constructor */
 LimitTracker::LimitTracker() {
@@ -73,7 +79,6 @@ void LimitTracker::waitTillNext() {
     std::cout << "Woken up! Time: " <<std::put_time(std::localtime(&now_time), "%F %T") << std::endl;
 }
 
-
 void LimitTracker::waitTillNextMinute() {
     LimitTracker::waitTillNext<std::chrono::minutes>();
 }
@@ -85,6 +90,11 @@ void LimitTracker::waitTillNextHour() {
 void LimitTracker::waitTillNextDay() {
     LimitTracker::waitTillNext<std::chrono::duration<int, std::ratio<3600*24>>>();
 }
+
+void LimitTracker::waitForSeconds(double seconds) {
+    std::this_thread::sleep_for(std::chrono::milliseconds((int)(seconds * 1000)));
+}
+
 
 bool LimitTracker::is1mLimitReached(int weight) {
     if (weight >= SAPI_UID_1M_WEIGHT_LIMIT) return true;
@@ -117,11 +127,11 @@ bool LimitTracker::enoughFreeCalls1h(int numCalls) {
 
     // Check enough calls left in the hour
     if (((numCalls % SAPI_UID_1H_CALLS_LIMIT) + num_calls) <= SAPI_UID_1H_CALLS_LIMIT) {
-        std::cout << (numCalls + num_calls) << " < " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
+        //std::cout << (numCalls + num_calls) << " < " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
         return true;
     }
     else {
-        std::cout << (numCalls + num_calls) << " > " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
+        //std::cout << (numCalls + num_calls) << " > " << SAPI_UID_1H_CALLS_LIMIT << std::endl;
         return false;
     }
 }

@@ -102,6 +102,7 @@ HttpScaffold BinanceConvert::sendQuote(const std::string& fromAsset, const std::
     params.insert(std::make_pair("fromAsset", fromAsset));
     params.insert(std::make_pair("toAsset", toAsset));
     params.insert(std::make_pair("fromAmount", std::to_string(fromAmount)));
+    params.insert(std::make_pair("validTime", "2m"));   // Time the quote is valid for (2m is max)
 
     // Any message to attach to the body
     std::string body = "";
@@ -112,6 +113,33 @@ HttpScaffold BinanceConvert::sendQuote(const std::string& fromAsset, const std::
     request.post(url, params, body, headers);
 
     return request;
+}
+
+// Independant (static)
+// Accept a quote given for the token pairs
+// Returns the raw response from the API. Response is the quited rate and window of time
+HttpScaffold BinanceConvert::acceptQuote(const QuoteEdge& quote) {
+
+    // Object that handles http request
+    HttpScaffold request;
+
+    // Creates and validates a new quote
+    std::string url = "https://api.binance.com/sapi/v1/convert/acceptQuote";
+
+    // Query parameters (appended to url)
+    std::map<std::string, std::string> params;
+    params.insert(std::make_pair("quoteId", quote.quoteId));
+
+    // Any message to attach to the body
+    std::string body = "";
+
+    // Additional header
+    std::map<std::string, std::string> headers;
+
+    request.post(url, params, body, headers);
+
+    return request;
+
 }
 
 // Independant (static)
@@ -162,6 +190,10 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         temp.toAmount = stod(json_value["toAmount"].asString());
         temp.fromAmount = stod(json_value["fromAmount"].asString());
 
+        // Include non-mandatory symbols
+        temp.toAsset = toAsset;
+        temp.fromAsset = fromAsset;
+
         std::cout << temp << std::endl;
 
         return temp;
@@ -196,3 +228,77 @@ QuoteEdge BinanceConvert::parseSendQuote(const std::string& fromAsset, const std
         return QuoteEdge();
     }
 }
+
+// Independant (static)
+// Wrapper for sendQuote to jsut return the conversion rate
+// Returns string orderStatus and UID weight as reference
+std::string BinanceConvert::parseAcceptQuote(const QuoteEdge& quote, int& weight) {
+
+    const std::string ORDER_ERROR = "ERROR";
+    
+    // Creates signature and performs all necessary http requests
+    HttpScaffold httpResponse = acceptQuote(quote);
+
+    // update UID weight from given header
+    weight = stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME));
+
+    //httpResponse.printResponseHeader();
+    std::cout << "weight = " << weight << std::endl;
+
+    std::string response = httpResponse.getResponseString();
+
+    // JSON parser
+    Json::Value json_value;
+    Json::Reader reader;
+
+    // Check if can parse
+    if (!reader.parse(response, json_value)) {
+        std::cerr << "Error parsing JSON string!" << std::endl;
+        return ORDER_ERROR;
+    }
+
+    // Check header for limit
+    if (stoi(httpResponse.getHeader(LimitTracker::HEADER_SAPI_UID_1M_NAME)) >= LimitTracker::SAPI_UID_1M_WEIGHT_LIMIT) {
+        std::cerr << "Reached " << LimitTracker::HEADER_SAPI_UID_1M_NAME << " limit." << std::endl;
+    }
+
+    try {
+
+        // Parse JSON object
+        std::string orderId = json_value["orderId"].asString();         // "933256278426274426"
+        std::string orderStatus = json_value["orderStatus"].asString(); // "PROCESS"
+        long createTime = (long)json_value["createTime"].asDouble();    // 1623381330472
+
+        return orderStatus;
+
+    } catch (std::exception& e) {
+        // Handle exception
+
+        std::cerr << "parseRefRate Error: " << e.what() << std::endl;
+        //std::cout << json_value << std::endl;
+
+        // Check if json value is a parseable error message
+        if (!json_value.isMember("code")) {
+            std::cerr << "Not a valid json object: " << json_value << std::endl;
+        }
+        int errCode = json_value["code"].asInt();
+        std::string errMsg = json_value["msg"].asString();
+
+        if (errCode == LimitTracker::ERR_HOUR_LIMIT_CODE) {
+            // Your hourly quotation limit is reached. Please try again later in the next hour.
+            std::cerr << errMsg << std::endl;
+            LimitTracker::waitTillNextHour();
+            
+        } else if (errCode == LimitTracker::ERR_DAY_LIMIT_CODE) {
+            // Your daily quotation limit is reached. Please try again later next day.
+            std::cerr << errMsg << std::endl;
+            LimitTracker::waitTillNextDay();
+        } else {
+            // Unhandled error message from Binance
+            std::cerr << errMsg << std::endl;
+        }
+        
+        return ORDER_ERROR;
+    }
+}
+

@@ -40,7 +40,13 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
     for (const C2CEdge& edge : graph[current]) {
 
         // If edge leads back to starting node but path length == 2, skip
-        if (edge.to == tpath.origin() && tpath.path.size() < 4) {
+        if (edge.to == tpath.origin() && tpath.path.size() < 3) {
+            visited[edge.to] = true;
+            continue;
+        }
+
+        // if edge leads back to starting node but path length too long, skip
+        if (edge.to == tpath.origin() && tpath.path.size() > LimitTracker::MAX_CIRCULAR_TRADE_SIZE) {
             visited[edge.to] = true;
             continue;
         }
@@ -54,15 +60,20 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
 
             cout << "Returned to starting node!" << endl;
 
-            // function to iterate through the path to calculate profit (revenue)
-            double profit = calculateProfit(tpath);
+            // Vect storing information from getting quotes for each conversion
+            std::vector<QuoteEdge> tradeCircle;
 
-            // Condition if the profit is greater than 1.0 (break-even point):
-            const double break_even = 1.0;
+            // function to iterate through the path to calculate profit (revenue)
+            double profit = calculateProfit(tpath, tradeCircle);
+
+            // Condition if the profit is greater than 1.0 (break-even point)
+            // TEMP CHNAGED BREAK EVEN TO TEXT EXECUTING TRADES
+            const double break_even = 0.98; //1.0
             
             // Execute circular trade
             if (profit > break_even) {
-                executeCircularTrade(tpath);
+                std::cout << "profit good enough for breakeven" << std::endl;
+                executeCircularTrade(tradeCircle);
             }
             
             // Remove edge completing circular path 
@@ -159,7 +170,11 @@ std::vector<C2CEdge> AsyncArbitrage::findCircularArbitrage() {
     return std::vector<C2CEdge>();
 }
 
-double AsyncArbitrage::calculateProfit(const ProfitPath& tpath) {
+double AsyncArbitrage::calculateProfit(const ProfitPath& tpath, std::vector<QuoteEdge>& tradeCircle) {
+
+    // Init vect to empty
+    // Will hold every edge quoting the conversion rate for a circular arbitrage
+    tradeCircle = vector<QuoteEdge>(); 
 
     int weightUID;          // Temp for getting UID weight from API call
     double p = 1.0;         // Calculate the profit for the circular path
@@ -167,6 +182,10 @@ double AsyncArbitrage::calculateProfit(const ProfitPath& tpath) {
 
     // Init starting amount with amount in wallet
     double tAmount = wallet[tpath.path.at(0).fromAsset];
+
+    // TEMP make it start with 50 cents and peform real trades
+    tAmount = 0.50; //////////////////////////////////////////
+    //////////////////////////////////////////////////////////
 
     // Check if loop can fully complete without reaching API call limit
     // given the number of edges (each edge == api call) 
@@ -193,6 +212,7 @@ double AsyncArbitrage::calculateProfit(const ProfitPath& tpath) {
         QuoteEdge quote = BinanceConvert::parseSendQuote(edge.fromAsset, edge.toAsset, tAmount, weightUID);
 
         // TODO: save quoteedges at least quote id
+        tradeCircle.push_back(quote);
         
         // Keep track of amount of API calls & their accumulated weight
         tracker.incrememntCalls();    // incrememnt api call count
@@ -220,6 +240,63 @@ double AsyncArbitrage::calculateProfit(const ProfitPath& tpath) {
 
 
 // Performs all API calls for each conversion
-void AsyncArbitrage::executeCircularTrade(const ProfitPath& tpath) {
+void AsyncArbitrage::executeCircularTrade(const std::vector<QuoteEdge>& tradeCircle) {
+    // asynchronously perform each trade
 
+    // If not enough API calls left in the hour, cannot perform trades
+    if (!tracker.enoughFreeCalls1h(tradeCircle.size())) {
+        //LimitTracker::waitTillNextHour();
+        return;
+    }
+
+    // Check if quote edges have quoteId initialized, if null ("")
+    // Binance did not give a quoteId therefore conersion cannot be made
+    for (QuoteEdge edge : tradeCircle) {
+        if (edge.quoteId == "") {
+            std::cerr << edge.fromAsset << '-' << edge.toAsset << " has no quoteId" << std::endl;
+            return;
+        }
+    }
+
+    std::cout << "Executing circular trades!" << std::endl;
+
+    int weightUID;          // Temp for getting UID weight from API call
+    int decrement = tradeCircle.size();
+
+    for (QuoteEdge edge : tradeCircle) {
+
+        // Check if loop can fully complete without reaching API call limit
+        // given the number of edges (each edge == api call) 
+        // If not enough free weight, wait till next minute to have more
+        if (!tracker.enough1mFreeWeight(decrement--)) {
+            LimitTracker::waitTillNextMinute();
+        }
+
+        std::string orderStatus = BinanceConvert::parseAcceptQuote(edge, weightUID);
+
+        tracker.updateUidWeight(weightUID);
+        
+        // If order processed, continue
+        if (orderStatus == "SUCCESS") continue;
+
+        // Else, wait (number of)s and check if order has processed
+        else if (orderStatus == "PROCESS") {
+            double wait_time = 5;
+            
+            std::cout << "orderStatus : " << orderStatus << std::endl;
+
+            LimitTracker::waitForSeconds(wait_time);
+
+            
+
+        }
+        else if (orderStatus == "ERROR") {
+
+            std::cout << "orderStatus : " << orderStatus << std::endl;
+
+        } else {
+            std::cerr << "Unknown order status: " << orderStatus << std::endl;
+        }
+
+    }
 }

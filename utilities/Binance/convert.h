@@ -35,6 +35,13 @@ public:
     // Returns updated sapi UID weight as reference
     static QuoteEdge parseSendQuote(const std::string& fromAsset, const std::string& toAsset, const double& fromAmount, int& weight);
     
+    // Accept a quote given for the token pairs
+    // Returns the raw response from the API. Response is the quited rate and window of time
+    static HttpScaffold acceptQuote(const QuoteEdge& quote);
+
+    // Wrapper for acceptQuote to just return the order status
+    // Returns updated sapi UID weight as reference
+    static std::string parseAcceptQuote(const QuoteEdge& quote, int& weight);
 
 };
 

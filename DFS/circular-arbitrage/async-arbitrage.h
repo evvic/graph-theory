@@ -3,6 +3,7 @@
 
 #include "../../utilities/edges/c2c-edge.h"
 #include "../../utilities/Binance/api-limits.h"
+#include "../../utilities/Binance/quote-edge.h"
 #include <vector>
 #include <limits>
 #include <stack>
@@ -35,17 +36,18 @@ protected:
 
 private:
     int V;                                  // Number of vertices
-    ProfitPath best;                        // For tracking best profit with its path
     std::vector<std::vector<C2CEdge>> adj;  // Adjacency list
 
+    ProfitPath best;                        // For tracking best profit with its path
     LimitTracker tracker;                   // Class to track when API Limit is reached
     std::map<std::string, double> wallet;   // map of coins and their current balance
 
-    // Returns the calcualated profit given the circualr path
-    double calculateProfit(const ProfitPath& tpath);
+    // Returns the calcualated profit given the circular path
+    // Pass tradeCircle by ref to return the circular trade of the quoted rates and amounts
+    double calculateProfit(const ProfitPath& tpath, std::vector<QuoteEdge>& tradeCircle);
 
     // Performs all API calls for each conversion
-    void executeCircularTrade(const ProfitPath& tpath);
+    void executeCircularTrade(const std::vector<QuoteEdge>& tradeCircle);
 
 public:
     // Constructor requires number of vertices
