@@ -9,6 +9,11 @@
 #include <stack>
 #include <map>
 
+// AsyncArbitrage performs each API call getting the quoted convert rate sequentially
+// Although this means running through the entire adjacency list finding circualr 
+// arbitrage is slower, the true bottleneck (limit) is the Binance API call limit
+// put on for the number of API calls allowed every minute, hour, and day.
+
 // Binance Convert API has no trade fees (included in conversion rate)
 // therefore no additional math required for calculating potential profit
 // Slippage is also not necessary to account for because the quoted rate is locked in

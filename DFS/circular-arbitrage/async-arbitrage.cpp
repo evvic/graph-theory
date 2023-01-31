@@ -41,15 +41,15 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
 
         // If edge leads back to starting node but path length == 2, skip
         if (edge.to == tpath.origin() && tpath.path.size() < 3) {
-            visited[edge.to] = true;
+            //visited[edge.to] = true;
             continue;
         }
 
-        // if edge leads back to starting node but path length too long, skip
-        if (edge.to == tpath.origin() && tpath.path.size() > LimitTracker::MAX_CIRCULAR_TRADE_SIZE) {
-            std::cerr << "Circular arbitrage reached MAX_CIRCULAR_TRADE_SIZE(" + to_string(LimitTracker::MAX_CIRCULAR_TRADE_SIZE) + "), skipping " 
-                      << edge.to << std::endl;
-            visited[edge.to] = true;
+        // If path length is too long, skip
+        if (tpath.path.size() > LimitTracker::MAX_CIRCULAR_TRADE_SIZE) {
+            std::cerr << "Circular arbitrage reached MAX_CIRCULAR_TRADE_SIZE(" + to_string(LimitTracker::MAX_CIRCULAR_TRADE_SIZE) 
+                      + "), skipping " << edge.fromAsset  << '-' << edge.toAsset << std::endl;
+            //visited[edge.to] = true;
             return; // Instead of continue, return because every edge from current node will pass max size
         }
 
