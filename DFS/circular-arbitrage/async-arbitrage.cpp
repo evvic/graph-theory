@@ -47,8 +47,10 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
 
         // if edge leads back to starting node but path length too long, skip
         if (edge.to == tpath.origin() && tpath.path.size() > LimitTracker::MAX_CIRCULAR_TRADE_SIZE) {
+            std::cerr << "Circular arbitrage reached MAX_CIRCULAR_TRADE_SIZE(" + to_string(LimitTracker::MAX_CIRCULAR_TRADE_SIZE) + "), skipping " 
+                      << edge.to << std::endl;
             visited[edge.to] = true;
-            continue;
+            return; // Instead of continue, return because every edge from current node will pass max size
         }
 
 
@@ -72,7 +74,7 @@ void AsyncArbitrage::dfs(const std::vector<std::vector<C2CEdge>>& graph, std::ve
             
             // Execute circular trade
             if (profit > break_even) {
-                std::cout << "profit good enough for breakeven" << std::endl;
+                std::cout << "Profit good enough for breakeven" << std::endl;
                 executeCircularTrade(tradeCircle);
             }
             
@@ -245,6 +247,7 @@ void AsyncArbitrage::executeCircularTrade(const std::vector<QuoteEdge>& tradeCir
 
     // If not enough API calls left in the hour, cannot perform trades
     if (!tracker.enoughFreeCalls1h(tradeCircle.size())) {
+        std::cerr << "Error. Hour API call limit reached. Cannot perform circular trade." << endl;
         //LimitTracker::waitTillNextHour();
         return;
     }
